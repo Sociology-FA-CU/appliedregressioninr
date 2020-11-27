@@ -1,0 +1,13 @@
+name: "applied_regression"
+output_dir: "."
+navbar:
+  title: "Applied Regression in R"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Lecture Materials"
+    - text: "Attestation"
+    - text: "Literature"
+output:
+  html_document:
+    theme: united
