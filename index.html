@@ -13,6 +13,7 @@
 
 <title>Course Annotation</title>
 
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
@@ -22,8 +23,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -78,6 +77,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -285,7 +285,27 @@ $(document).ready(function () {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li class="dropdown-header">Lecture Materials</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture Materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Purpose and goals of regression analysis</li>
+    <li class="dropdown-header">Simple linear regression</li>
+    <li class="dropdown-header">Multiple linear regression</li>
+    <li class="dropdown-header">Model fit</li>
+    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+    <li class="dropdown-header">Exporting results and multiple models</li>
+    <li class="dropdown-header">Prediction and regularization</li>
+    <li class="dropdown-header">Missing values imputations</li>
+  </ul>
+</li>
 <li class="dropdown-header">Attestation</li>
 <li class="dropdown-header">Literature</li>
       </ul>
