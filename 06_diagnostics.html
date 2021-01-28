@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Regression diagnostics</title>
+
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture Notes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Purpose and goals of regression analysis</li>
+    <li class="dropdown-header">Simple linear regression</li>
+    <li class="dropdown-header">Multiple linear regression</li>
+    <li class="dropdown-header">Model fit</li>
+    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li>
+      <a href="06_diagnostics.html">Regression diagnostics</a>
+    </li>
+    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+    <li class="dropdown-header">Exporting results and multiple models</li>
+    <li class="dropdown-header">Prediction and regularization</li>
+    <li class="dropdown-header">Missing values imputations</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture slides
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="L1_intro-about-the-course-and-regression.html">Purpose and goals of regression analysis</a>
+    </li>
+    <li class="dropdown-header">Simple linear regression</li>
+    <li class="dropdown-header">Multiple linear regression</li>
+    <li class="dropdown-header">Model fit</li>
+    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+    <li class="dropdown-header">Exporting results and multiple models</li>
+    <li class="dropdown-header">Prediction and regularization</li>
+    <li class="dropdown-header">Missing values imputations</li>
+  </ul>
+</li>
+<li class="dropdown-header">Attestation</li>
+<li class="dropdown-header">Literature</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Regression diagnostics</h1>
+
+</div>
+
+
+<p>While some regression assumptions, such as validity and representativeness, cannot be checked from the data directly, others can. Namely, the assumptions of linearity, constant variance, normality and the absence of influential observations and additivity should be checked every time they are relevant to a given goal. Note that not every assumption has to be satisfied for every model. For example, constant variance is only needed for hypothesis testing using the classically computed standard error. If our is not inference or if we use robust standard errors, constant variance is not needed to reach a valid conclusion.</p>
+<div id="basic-regression-diagnostics" class="section level1">
+<h1>Basic regression diagnostics</h1>
+<p>Basic regression diagnostic involves checking the assumption of linearity, constant variance, normality and absence of influential observations.</p>
+<p>Let’s start with creating a regression model predicting life expectancy of European countries by poverty rate and and Human development index:</p>
+<pre class="r"><code>mod1 = lm(life_exp ~ poverty_risk + hdi, data = countries)</code></pre>
+<p>For start, we can use the generic <code>plot()</code> function. The <code>plot()</code> function, when applied to a linear model object, produces by default four plots, each useful for checking a different assumption. We will go over all of them.</p>
+<div id="the-assumption-of-linearity" class="section level2">
+<h2>The assumption of linearity</h2>
+<p>The assumption of linearity refers to the fact that metric and ratio independent variables should have a linear relationship with the dependent variable. In other words, it should be possible to capture the relationship between variables by using a straight line.</p>
+<p>To check this assumption we can plot the residuals of our model against the predicted values of the dependent variable. If the assumption of linearity is fulfilled, the residuals should not exhibit any curvilinear pattern.</p>
+<div class="figure">
+<img src="06_diagnostics_files/figure-html/linearity-examples-1.png" alt="Example of A) Linear relationship B) Curvilinear relationship" width="960" />
+<p class="caption">
+Example of A) Linear relationship B) Curvilinear relationship
+</p>
+</div>
+<p>In the graph above, we can see that when the assumption of linearity is satisfied (plot A), there is no discernible pattern and data points are spread along the horizontal line starting at zero. On the other hand, the data plot B shows noticeable nonlinear pattern.</p>
+<p>To plot such diagnostic graph for our model, we can use the base <code>plot()</code> function with argument <code>which = 1</code>:</p>
+<pre class="r"><code>plot(mod1, which = 1)</code></pre>
+<p><img src="06_diagnostics_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Notice that the <code>plot()</code> function by default overlays the residual plot with a loess line, to help us discern the relationship between predicted values and residuals. We see that the relationship in our plot is not completely linear, indicating that our model is not correctly specified to capture the relationship between life expectancy, human development index and poverty rate.</p>
+</div>
+<div id="the-assumption-of-normality" class="section level2">
+<h2>The assumption of normality</h2>
+<p>The second common assumption is the assumption of normality. Linear regression assumes that errors follow the normal distribution. Though we cannot check the distribution of errors,we can check the distribution of residuals and these residuals should ideally be normally distributed.</p>
+<p>Arguably the best tool for checking if some data are following a specific theoretical distribution is Quantile-Quantile plot, or Q-Q plot. A Q-Q plot is simply a scatterplot of quantiles coming from the normal distribution on one axis and quantiles of our observed data on the other axis. To use Q-Q plot, we first compute the quantiles of normal distribution with the mean and standard deviation of our observed data. Next we compute the values coresponding to quantiles from out data. Lastly, we compare the values of the theoretical quantiles with the observed ones.</p>
+<div class="figure">
+<img src="06_diagnostics_files/figure-html/qqplot-example-1.png" alt="Q-Q plot examples of A) Normally distributed B) non-nonormally distributed data" width="960" />
+<p class="caption">
+Q-Q plot examples of A) Normally distributed B) non-nonormally distributed data
+</p>
+</div>
+<p>If our data come from the normal distribution, the Q-Q plot will show a straight line, indicating, indicating that the values of the theoretical quantiles match the values of the observed one. On the other hand, if the distribution of our sample deviates from the normal distribution, the points in our Q-Q plot will deviate from the straight line.</p>
+<p>To create Q-Q plot for residuals from our model, we simply use the generic <code>plot()</code> function with an argument <code>which = 2</code>:</p>
+<pre class="r"><code>plot(mod1, which = 2)</code></pre>
+<p><img src="06_diagnostics_files/figure-html/qqplot-model-1.png" width="672" /></p>
+<p>Looking at the Q-Q plot from our model, we can see that our residuals follow the normal distribution quite nicely.</p>
+</div>
+<div id="the-assumption-of-constant-variance-homoscedasticity" class="section level2">
+<h2>The assumption of constant variance (homoscedasticity)</h2>
+<p>The standard ordinary least square regression assumes that the variance of residuals is constant across the whole range of the dependent variable. This assumptions allows for a convenient mathematical shortcut when computing standard errors of regression coefficients, and as such is crucial in situations where our goal is statistical inference.</p>
+<p>Residuals, that are constant across the entire range of the predicted variable are called homoscedastic. The opposite of homoscedasticity is then heteroscedasticity.</p>
+<p>To check if the variance of residuals is constant, we can plot the residuals against the predicted values of the dependent variables. If the assumption of homoscedasticity (and the assumption of linearity) is fulfilled, we will see the residuals equally spaced along the expected value of the Y axis. On the other hand, if the assumption of constant variance is violated, the residuals will be more spread out in some parts of the plot than in the others. It is also common to take a square root of the residuals to “squish” the data points together to make the plot easily interpretable in presence of outliers.</p>
+<p>The following plot shows A) homoscedastic residuals and B) heteroscedastic residuals:</p>
+<div class="figure">
+<img src="06_diagnostics_files/figure-html/homoscedasticity-examples-1.png" alt="Example of A) homoscedastic data B) heteroscedastic data" width="960" />
+<p class="caption">
+Example of A) homoscedastic data B) heteroscedastic data
+</p>
+</div>
+<p>To create such plot for our model, we can use the <code>plot()</code> function with argument <code>which = 3</code>:</p>
+<pre class="r"><code>plot(mod1, which = 3)</code></pre>
+<p><img src="06_diagnostics_files/figure-html/diagnostic%20homoscedasticity-1.png" width="672" /></p>
+<p>Notice, that our residuals do not fulfill the assumption of linearity and therefore the expected value of the residuals is not the same at all values of the dependent variable. We are therefore interested if the the residuals of our model are equally spaced along the red loess line. This mostly appear to be true, indicating that the assumption of constant variance is fulfilled.</p>
+</div>
+</div>
+<div id="absence-of-influential-observations" class="section level1">
+<h1>Absence of influential observations</h1>
+<p>The last of the basic assumptions of linear regression is the absence of influential observations. Influential observations are those which have an overly large influence on the final form of our model, to the point where they bias our inference and predictions.</p>
+<p>The overall influence of an observation can be measured using Cook’s distance, a measure of how much would the predictions made by our model change, if that specific observation was removed from dataset. Cook’s distance itself is a function of residuals and leverage.</p>
+<p>Leverage tells us how big a role an observation plays when fitting a regression line. More specifically, observations with high leverage are those which lie far from the center of the data. To understand why, remember that a) the goal of linear is to minimize the (squared) vertical distance between the regression and observed values and b) the regression line will always go through the center of the data, i.e. the mean of all included variables. We can therefore think about fitting the regression line as a children’s seesaw, with pivot in the middle. From our kindergarten days, we should remember that the further from the pivot we sit on the seesaw, the stronger pull/push we have. In other words, the further we are from the center, the higher our leverage.</p>
+<p>However, just because an observation has high leverage does not necessarily mean it will distort our model. What if the observation lied far from the center of the date, but still in line with the general trend? Removing such observations would not affect the model much. Only in the situation where the observation has both high leverage and does not match the trend in our data, will the observation influence the model as a whole.</p>
+<div class="figure">
+<img src="06_diagnostics_files/figure-html/leverage-example-1.png" alt="Plots showing the effect of A) high leverage, low residual B) low leverage, high residual c) high leverage, high residual" width="960" />
+<p class="caption">
+Plots showing the effect of A) high leverage, low residual B) low leverage, high residual c) high leverage, high residual
+</p>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
