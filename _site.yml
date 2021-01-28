@@ -5,9 +5,24 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Lecture Materials"
+    - text: "Lecture Notes"
       menu:
         - text: "Purpose and goals of regression analysis"
+        - text: "Simple linear regression"
+        - text: "Multiple linear regression"
+        - text: "Model fit"
+        - text: "Ploting regression models, marginal effects"
+        - text: "Assumptions of linear models"
+        - text: "Regression diagnostics"
+        - text: "Linearity and normality"
+        - text: "Homoscedasticity"
+        - text: "Exporting results and multiple models"
+        - text: "Prediction and regularization"
+        - text: "Missing values imputations"
+    - text: "Lecture slides"
+      menu:
+        - text: "Purpose and goals of regression analysis"
+          href: L1_intro-about-the-course-and-regression.html
         - text: "Simple linear regression"
         - text: "Multiple linear regression"
         - text: "Model fit"

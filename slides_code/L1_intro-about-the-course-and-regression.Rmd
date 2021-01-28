@@ -210,7 +210,7 @@ Reporting               Inference                       Comparison across models
 
 ___
 
-![Similar to reliability vs validity or effectiveness vs unbiasedness](images/accuracy_vs_precision.png)
+![Similar to reliability vs validity or effectiveness vs unbiasedness](../images/accuracy_vs_precision.png)
 
 
 
@@ -250,7 +250,7 @@ Note that the authors of Regression and Other Stories frame all statistical infe
 
 <div>
 
-![Regression plan](images/linear-regression.png)
+![Regression plan](../images/linear-regression.png)
 <font size="1">Source: http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/</font>
 </div>
 
@@ -267,7 +267,7 @@ Note that the authors of Regression and Other Stories frame all statistical infe
 
 <div>
 
-![Regression plan](images/linear-regression.png)
+![Regression plan](../images/linear-regression.png)
 <font size="1">Source: http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/</font>
 </div>
 
