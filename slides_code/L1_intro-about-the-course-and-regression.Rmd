@@ -6,6 +6,8 @@ date: "Last updated in January 2021"
 output:
   ioslides_presentation:
     widescreen: true
+csl: "../apa.csl"
+bibliography: references_lecture_01.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -15,75 +17,72 @@ library(tidyverse)
 library(here)
 ```
 
-
-
 # About the course
 
 ## Context
-This course is part of a cluster on quantitative methods (taught mostly in R) at the Department of Sociology. The cluster on quantitative methods is under development. We plan that it is all taught in English. 
 
-- Clusters are designed to facilitate specialization. 
-- There is always one core course in each cluster and a few complementary courses. 
+This course is part of a cluster on quantitative methods (taught mostly in R) at the Department of Sociology. The cluster on quantitative methods is under development. We plan that it is all taught in English.
+
+-   Clusters are designed to facilitate specialization.
+-   There is always one core course in each cluster and a few complementary courses.
 
 ## Cluster on quantitative methods:
 
 Already taught:
 
-- Introduction to data analysis in R (recommended first)
-- **Applied regression in R** (this course, CORE)
+-   Introduction to data analysis in R (recommended first)
+-   **Applied regression in R** (this course, CORE)
 
-Planned: 
+Planned:
 
-- Generalized linear models in R
-- Automated data collection and quantitative text analysis in R
-- Social network analysis in R
-- Statistical modeling for network data in R
-- Design and evaluation of experimental studies
+-   Generalized linear models in R
+-   Automated data collection and quantitative text analysis in R
+-   Social network analysis in R
+-   Statistical modeling for network data in R
+-   Design and evaluation of experimental studies
 
 ## Proposition
 
-This course (as well as the entire cluster) is designed to be suitable for social scientists and their needs. 
+This course (as well as the entire cluster) is designed to be suitable for social scientists and their needs.
 
-- conceptual understanding and practical skills 
-- little math (but we provide reference to relevant literature)
+-   conceptual understanding and practical skills
+-   little math (but we provide reference to relevant literature)
 
 ## Goals
 
 After this course, students should:
 
-- have a good conceptual understanding of linear regression and its various purposes
-- command related terminology
-- understand related assumptions, when they are relevant, how they can be checked, and how problems with assumptions can be treated 
-- make well-argued and defensible decisions when conducting their own regression analysis
-- conduct regression analysis and report result and diagnostics in tables and charts
+-   have a good conceptual understanding of linear regression and its various purposes
+-   command related terminology
+-   understand related assumptions, when they are relevant, how they can be checked, and how problems with assumptions can be treated
+-   make well-argued and defensible decisions when conducting their own regression analysis
+-   conduct regression analysis and report result and diagnostics in tables and charts
 
 ## Materials
 
-- The course syllabus can found in the Student Information System [HERE](https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&tid=&do=predmet&kod=ASGV00995) 
-- This course has a dedicated webpage with course materials, homework, assignment details, and slides at <http://enter-link-to-webpage.com>
+-   The course syllabus can found in the Student Information System [HERE](https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&tid=&do=predmet&kod=ASGV00995)
+-   This course has a dedicated webpage with course materials, homework, assignment details, and slides at <https://sociology-fa-cu.github.io/appliedregressioninr/>
 
 ## About us
 
 XXXXXXXXX Chceme sem dát nějaký medailonek, nebo treba jen foto a prostě se nějak představíme?
-  
+
 # Introduction to linear regression
 
 ## Goals for today
 
-- Different usage of regression analysis
-- Basic concepts (some, more will follow across the course)
+-   Different usage of regression analysis
+-   Basic concepts (some, more will follow across the course)
 
 ## What is linear regression?
 
 <div class="columns-2">
 
-"Linear approach to modeling the relationship between a scalar response and one or more explanatory variables (also known as dependent and independent variables / predictors)." (Wikipedia)
-
-(Note: Scalar is a variable the value of which is fully determined by a single figure in given units.)
+Regression is a method that allows researchers to summarize how predictions or average values of an *outcame* vary across individuals defined by a set of *predictors* [@gelman2020, pp. 4]
 
 <div>
 
-```{r anonymous regression, message=FALSE, warning=FALSE, fig.width=5}
+```{r anonymous-regression, message=FALSE, warning=FALSE, fig.width=5}
 
 countries <- read.csv(here("data", "countries.csv"))
 
@@ -99,15 +98,40 @@ countries %>%
 
 </div>
 
-## Multivariate linear regression
+## Multiple linear regression
 
-More than one predictor.
+-   More than one predictor term
+-   Careful, more terms does not necessarily mean more predictors!
 
-## List of all the things regression does: 
+<div>
 
-- Detect linear regularities in given data
+```{r multi-anonymous regression, message=FALSE, warning=FALSE, fig.width=5}
 
-## So you had better be sure the relationship really is linear...
+countries <- read.csv(here("data", "countries.csv"))
+
+countries %>%
+  ggplot(aes(x= dem_index, y = life_exp, color = postsoviet)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
+       y = "response variable on y axis\nhere: life expectancy")
+
+countries %>%
+  ggplot(aes(x= dem_index, y = life_exp)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x,3)) +
+  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
+       y = "response variable on y axis\nhere: life expectancy")
+```
+
+<div>
+
+## List of all the things regression does:
+
+-   Detect relationships that can be expressed as linear combination of our predictors
+-   But it can only catch relationships you tell it to look for...
+
+## So you better be sure the model is specified correctly...
 
 ```{r anscombe, message=FALSE}
 
@@ -130,113 +154,137 @@ datLong %>%
 
 ## So it does just the one thing, but it is used for many things
 
-1. Descriptive modeling
-2. Sample-to-population inference modeling
-3. Predictive modeling
-4. Causal inference modeling (aka explanatory modeling)
+1.  Descriptive modeling
+2.  Sample-to-population inference modeling
+3.  Predictive modeling
+4.  Causal inference modeling (aka explanatory modeling)
 
+Computationally, all of these are still the same regression. But our different goals with regression have important implications for our assumptions and for what we report.
 
-Computationally, all of these are still the same regression. But our different goals with regression have important implications for our assumptions and for what we report. 
+See @shmueli2010 for details.
 
 # Different purposes of modeling
 
 ## Descriptive modeling
 
-- Goal: Summarizing or representing the data structure in a compact manner (capturing association)
-- Focus on the measurable level (properties of the actually observed data)
-- Few assumptions (but it is useful to check for non-linearity, remember Anscombe)
+-   Goal: Summarizing or representing the data structure in a compact manner (capturing association)
+
+-   Focus on the measurable level (properties of the actually observed data)
+
+-   Few assumptions (but it is useful to check for non-linearity, remember Anscombe)
+
+-   Example: Did the voter turnout in the last elections differ across administrative regions with the same level of unemployment?
 
 ## Sample-to-population inference modeling
 
-- Goal: Inferring form a sample properties of a population (too large to observe as a whole) 
-- Assumption that the data are sampled from a larger population
+-   Goal: Inferring form a sample properties of a population (too large to observe as a whole)
+
+-   Assumption that the data are sampled from a larger population in a representative manner (or that the data can be adjusted to make inference valid)
+
+-   Example: What is the relationship between age and voter turnout in the Czech republic?
 
 ## Causal inference / explanatory modeling
 
-- Strong role of theory (the theory (not the data) justifies causality)
-- Explanatory goals are related to the concept of truth: understand the underlying causal process, the true model
-- The worst fear of explanatory modeling: bias (to be systematically wrong, invalid)
+-   Strong role of theory (the theory (not the data) justifies causality)
+
+-   Explanatory goals are related to the concept of truth: understand the underlying causal process, the true model
+
+-   The worst fear of explanatory modeling: bias (to be systematically wrong, invalid)
+
+-   Example: Does exposure to political advertisements increases citizens willingness to vote?
 
 ## Predictive modeling
 
-- Predicting new or future observations
-- Rare in social science academic papers
-- Important in business, but also some other disciplines (epidemiology)
-- Theory often less important, or not at all (data mining, machine learning)
-- "Applied science" (practicality) as opposed to "Basic science"
-- The worst fear of predictive modeling: large estimation variance (uncertainty)
+-   Predicting new or future observations
 
+-   Rare in social science academic papers
+
+-   Important in business, but also some other disciplines (epidemiology)
+
+-   Theory often less important, or not at all (data mining, machine learning)
+
+-   "Applied science" (practicality) as opposed to "Basic science"
+
+-   The worst fear of predictive modeling: large estimation variance (uncertainty)
+
+-   Example: Predicting likely voters in pre-election survey
 
 ## Summary on different types of modeling
 
-- Descriptive modeling is about association(s): when using linear regression, check linearity of the association
-- Sample-to-population inference modeling also makes use of confidence intervals and statistical hypothesis testing (and related assumptions), it is also important how the data was collected
-- Explanatory and predictive modeling will be further contrasted against each other (while not incompatible, they are different strategies)
-
+-   Descriptive modeling is about association(s): when using linear regression, check linearity of the association
+-   Sample-to-population inference modeling also makes use of confidence intervals and statistical hypothesis testing (and related assumptions), it is also important how the data was collected
+-   Explanatory and predictive modeling will be further contrasted against each other (while not incompatible, they are different strategies)
 
 ## Summary comparison of predictive and explanatory modeling 1/3
 
-                        Explanatory                     Predictive     
-------                  -----------                     ----------
-Goal                    Explanation                     Prediction
-Amount of data          Enough (statistical power)      As much as possible       
-Design                  RCT as gold standard            Observational data with noise can be better
-Design in multilevel    More groups preferred           More observations per group preferred 
-Operationalization      More flexibility                Should be the same for training and predicting
-
++----------------------+----------------------------+------------------------------------------------+
+|                      | Explanatory                | Predictive                                     |
++======================+============================+================================================+
+| Goal                 | Explanation                | Prediction                                     |
++----------------------+----------------------------+------------------------------------------------+
+| Amount of data       | Enough (statistical power) | As much as possible                            |
++----------------------+----------------------------+------------------------------------------------+
+| Design               | RCT as gold standard       | Observational data with noise can be better    |
++----------------------+----------------------------+------------------------------------------------+
+| Design in multilevel | More groups preferred      | More observations per group preferred          |
++----------------------+----------------------------+------------------------------------------------+
+| Operationalization   | More flexibility           | Should be the same for training and predicting |
++----------------------+----------------------------+------------------------------------------------+
 
 ## Summary comparison of predictive and explanatory modeling 2/3
 
-
-                        Explanatory                     Predictive     
-------                  -----------                     ----------
-Measurement             Instrument validity (FA, IRT)   Measurement quality
-Missing data            Drop cases or imputation        Cannot be dropped, possibly reduced models used
-Data preparation        Partitioning rare               Partitioning common practice
-EDA                     Theory driven                   Freestyle, interactivity 
-Dimension reduction     Interpretability (eg. rotation) Freestyle
-
++---------------------+---------------------------------+-------------------------------------------------+
+|                     | Explanatory                     | Predictive                                      |
++=====================+=================================+=================================================+
+| Measurement         | Instrument validity (FA, IRT)   | Measurement quality                             |
++---------------------+---------------------------------+-------------------------------------------------+
+| Missing data        | Drop cases or imputation        | Cannot be dropped, possibly reduced models used |
++---------------------+---------------------------------+-------------------------------------------------+
+| Data preparation    | Partitioning rare               | Partitioning common practice                    |
++---------------------+---------------------------------+-------------------------------------------------+
+| EDA                 | Theory driven                   | Freestyle, interactivity                        |
++---------------------+---------------------------------+-------------------------------------------------+
+| Dimension reduction | Interpretability (eg. rotation) | Freestyle                                       |
++---------------------+---------------------------------+-------------------------------------------------+
 
 ## Summary comparison of predictive and explanatory modeling 3/3
 
++------------------+---------------------------------+----------------------------------------------------+
+|                  | Explanatory                     | Predictive                                         |
++==================+=================================+====================================================+
+| Choose variables | Defined by causal structure     | Freestyle (eg. interaction without main effect OK) |
++------------------+---------------------------------+----------------------------------------------------+
+| Choose methods   | Model with explicit functions   | Also algorithmic (neural networks, ensembles,...)  |
++------------------+---------------------------------+----------------------------------------------------+
+| Validation       | Model fit, residual diagnostics | Overfitting                                        |
++------------------+---------------------------------+----------------------------------------------------+
+| Reporting        | Inference                       | Comparison across models in terms of predicting    |
++------------------+---------------------------------+----------------------------------------------------+
 
-                        Explanatory                     Predictive     
-------                  -----------                     ----------
-Choose variables        Defined by causal structure     Freestyle (eg. interaction without main effect OK)
-Choose methods          Model with explicit functions   Also algorithmic (neural networks, ensembles,...)       
-Validation              Model fit, residual diagnostics Overfitting
-Reporting               Inference                       Comparison across models in terms of predicting
-
-
-___
+------------------------------------------------------------------------
 
 ![Similar to reliability vs validity or effectiveness vs unbiasedness](../images/accuracy_vs_precision.png)
 
-
-
-<font size="1">Source: https://flyingdonv.com/2016/03/07/get-your-geek-on-accuracy-precision-and-resolution-whats-the-difference-1/</font>
-
-
+<font size="1">Source: <https://flyingdonv.com/2016/03/07/get-your-geek-on-accuracy-precision-and-resolution-whats-the-difference-1/></font>
 
 ## Conclusions on modeling approaches
 
-- explanatory modeling focuses on causation, is theory-driven, retrospective, and its priority is minimizing bias
-- predictive modeling focuses on prediction, is data-driven (interpretability is not neccessary for good predictions), prospective (practicality), and can accept some bias when this reduces variance (i.e. uncertainty)
-- explanatory modeling is more developed within the field of statistics, predictive modeling within computer science
+-   explanatory modeling focuses on causation, is theory-driven, retrospective, and its priority is minimizing bias
+-   predictive modeling focuses on prediction, is data-driven (interpretability is not neccessary for good predictions), prospective (practicality), and can accept some bias when this reduces variance (i.e. uncertainty)
+-   explanatory modeling is more developed within the field of statistics, predictive modeling within computer science
 
 ## What Shmueli (2010) thinks
 
-- Predictive modeling should be used more in science because it can
-  - Generating new hypotheses about causal mechanisms (theory-free exploration)
-  - Help assess usefulness of explanatory theories for practical application
-- In addition, understanding predictability also means understanding un-predictability, which is theoretically important (e.g. Taleb, 2007)
+-   Predictive modeling should be used more in science because it can
 
-"An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased
-marginally. On the other hand, an explanatory model that is very far from
-the predictive benchmark would imply that there are substantial practical
-and theoretical gains to be had from further scientific development." (Shmueli, 2010)
+    -   Generating new hypotheses about causal mechanisms (theory-free exploration)
+    -   Help assess usefulness of explanatory theories for practical application
 
-Note that the authors of Regression and Other Stories frame all statistical inference as problems of prediction. Words are often used differently...
+-   In addition, understanding predictability also means understanding un-predictability, which is theoretically important [@taleb2007b].
+
+"An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development." [@shmueli2010]
+
+Note that the authors of Regression and Other Stories [@gelman2020] frame all statistical inference as problems of prediction. Words are often used differently...
 
 # Linear regression: some basic building blocks
 
@@ -244,51 +292,82 @@ Note that the authors of Regression and Other Stories frame all statistical infe
 
 <div class="columns-2">
 
-- α, sometimes also β0, is the intercept, i.e. the value of Y when X = 0
-- β, sometimes also β1, is the slope, i.e. rate of change in Y when X changes by 1 unit
-
+-   α, sometimes also β0, is the intercept, i.e. the value of Y when X = 0
+-   β, sometimes also β1, is the slope, i.e. rate of change in Y when X changes by 1 unit
 
 <div>
 
-![Regression plan](../images/linear-regression.png)
-<font size="1">Source: http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/</font>
+![Regression plan](../images/linear-regression.png) <font size="1">Source: <http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/></font>
+
 </div>
 
 ## The line and the points
 
 <div class="columns-2">
 
-- The formula y = α + βx represents the line
-- But the observed value of Y is usually below or above the line... "the stochastic nature of the dependent variable"
-- Assumption: randomness in the real World
-- For convenience in regression: X fixed, Y stochastic
-- The actual value of Y = linear model + stochastic error term 
-- Y = α + βx + ε
+-   The formula y = α + βx represents the line
+-   But the observed value of Y is usually below or above the line... "the stochastic nature of the dependent variable"
+-   Assumption: randomness in the real World
+-   For convenience in regression: X fixed, Y stochastic
+-   The actual value of Y = linear model + stochastic error term
+-   Y = α + βx + ε
 
 <div>
 
-![Regression plan](../images/linear-regression.png)
-<font size="1">Source: http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/</font>
-</div>
+![Regression plan](../images/linear-regression.png) <font size="1">Source: <http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/></font>
 
+</div>
 
 ## Error vs. Residual
 
-- Error = difference between the real value of Y and the real average value of Y for given X
-- Residual = difference between our observed value of Y and our regression model
-
+-   Error = difference between the real value of Y and the real average value of Y for given X
+-   Residual = difference between our observed value of Y and our regression model
 
 In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean. Residuals are the deviations of the actual observations we have from the sample conditional mean. Or in other words: observable estimates of the unobservable stochastic errors.
 
-
 ## Ordinary least square (OLS)
 
-- Another name for linear regression
-- The model is estimated by minimizing the sum of squares of residuals (RSS). This by definition results in having a sum of residuals equal 0.
+<div class="columns-2">
+
+-   Another name for simple linear regression
+
+-   The model is estimated by minimizing the sum of squares of residuals (RSS). This by definition results in having a sum of residuals equal 0.
+
+-   $\small Sum\:of\:squares=-2^2+1.1^2+\\\small2.8^2+(-4)^2+\\\small1.6^2+1.8^2+\\\small(-0.3^2)+(-0.2^2)+\\\small(-0.1^2)+(-0.7^2)=35.3$
+
+<div>
+
+```{r, warning=F, message=FALSE, fig.width=5}
+set.seed(1234)
+
+ss_df = tibble::tibble(x = 1:10,
+                       y = 2 + x + rnorm(n = 10, sd = 2))
+
+ss_mod = lm(y ~ x, data = ss_df)
+ss_df$pred = predict(ss_mod)
+ss_df$label_pos = ifelse(ss_df$pred < ss_df$y,
+                         ss_df$pred + (ss_df$y - ss_df$pred) / 2,
+                         ss_df$pred - (ss_df$pred - ss_df$y) / 2)
+ss_df$res = ss_df$y - ss_df$pred
+
+ggplot(ss_df,aes(x = x, y = y, label = round(y - pred, 1))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F) +
+  geom_segment(aes(xend = x, yend = pred, color = "tomato"), show.legend = F) +
+  geom_text(aes(x = x, y = label_pos), nudge_x = 0.2, color = "tomato")
+  
+```
+
+-   For details on how OLS is calculated, see @fox2015[pp. 83]
+
+<div>
 
 ## Not used
 
-- Different paradigms: 
-  - Classical statistics, Error statistics, NHT, Frequentist approach (probability of data given hypothesis)
-  - Bayesian inference (probability of hypothesis given data and prior belief)
-  - (Maximum likelihood estimation; AIC based inference for model selection)
+-   Different paradigms:
+
+    -   Classical statistics, Error statistics, NHT, Frequentist approach (probability of data given hypothesis)
+    -   Bayesian inference (probability of hypothesis given data and prior belief)
+    -   (Maximum likelihood estimation; AIC based inference for model selection)
+
+## References
