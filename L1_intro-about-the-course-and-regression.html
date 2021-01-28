@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Dpt. of Sociology, Faculty of Arts, Charles University" />
+
+
+<title>Lesson 1: Introduction to the course and regression</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture Materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Purpose and goals of regression analysis</li>
+    <li class="dropdown-header">Simple linear regression</li>
+    <li class="dropdown-header">Multiple linear regression</li>
+    <li class="dropdown-header">Model fit</li>
+    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+    <li class="dropdown-header">Exporting results and multiple models</li>
+    <li class="dropdown-header">Prediction and regularization</li>
+    <li class="dropdown-header">Missing values imputations</li>
+  </ul>
+</li>
+<li class="dropdown-header">Attestation</li>
+<li class="dropdown-header">Literature</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Lesson 1: Introduction to the course and regression</h1>
+<h3 class="subtitle">Jaromír Mazák &amp; Aleš Vomáčka</h3>
+<h4 class="author">Dpt. of Sociology, Faculty of Arts, Charles University</h4>
+<h4 class="date">Last updated in January 2021</h4>
+
+</div>
+
+
+<div id="about-the-course" class="section level1">
+<h1>About the course</h1>
+<div id="context" class="section level2">
+<h2>Context</h2>
+<p>This course is part of a cluster on quantitative methods (taught mostly in R) at the Department of Sociology. The cluster on quantitative methods is under development. We plan that it is all taught in English.</p>
+<ul>
+<li>Clusters are designed to facilitate specialization.</li>
+<li>There is always one core course in each cluster and a few complementary courses.</li>
+</ul>
+</div>
+<div id="cluster-on-quantitative-methods" class="section level2">
+<h2>Cluster on quantitative methods:</h2>
+<p>Already taught:</p>
+<ul>
+<li>Introduction to data analysis in R (recommended first)</li>
+<li><strong>Applied regression in R</strong> (this course, CORE)</li>
+</ul>
+<p>Planned:</p>
+<ul>
+<li>Generalized linear models in R</li>
+<li>Automated data collection and quantitative text analysis in R</li>
+<li>Social network analysis in R</li>
+<li>Statistical modeling for network data in R</li>
+<li>Design and evaluation of experimental studies</li>
+</ul>
+</div>
+<div id="proposition" class="section level2">
+<h2>Proposition</h2>
+<p>This course (as well as the entire cluster) is designed to be suitable for social scientists and their needs.</p>
+<ul>
+<li>conceptual understanding and practical skills</li>
+<li>little math (but we provide reference to relevant literature)</li>
+</ul>
+</div>
+<div id="goals" class="section level2">
+<h2>Goals</h2>
+<p>After this course, students should:</p>
+<ul>
+<li>have a good conceptual understanding of linear regression and its various purposes</li>
+<li>command related terminology</li>
+<li>understand related assumptions, when they are relevant, how they can be checked, and how problems with assumptions can be treated</li>
+<li>make well-argued and defensible decisions when conducting their own regression analysis</li>
+<li>conduct regression analysis and report result and diagnostics in tables and charts</li>
+</ul>
+</div>
+<div id="materials" class="section level2">
+<h2>Materials</h2>
+<ul>
+<li>The course syllabus can found in the Student Information System <a href="https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&amp;tid=&amp;do=predmet&amp;kod=ASGV00995">HERE</a></li>
+<li>This course has a dedicated webpage with course materials, homework, assignment details, and slides at <a href="http://enter-link-to-webpage.com" class="uri">http://enter-link-to-webpage.com</a></li>
+</ul>
+</div>
+<div id="about-us" class="section level2">
+<h2>About us</h2>
+<p>XXXXXXXXX Chceme sem dát nějaký medailonek, nebo treba jen foto a prostě se nějak představíme?</p>
+</div>
+</div>
+<div id="introduction-to-linear-regression" class="section level1">
+<h1>Introduction to linear regression</h1>
+<div id="goals-for-today" class="section level2">
+<h2>Goals for today</h2>
+<ul>
+<li>Different usage of regression analysis</li>
+<li>Basic concepts (some, more will follow across the course)</li>
+</ul>
+</div>
+<div id="what-is-linear-regression" class="section level2">
+<h2>What is linear regression?</h2>
+<div class="columns-2">
+
+<p>“Linear approach to modeling the relationship between a scalar response and one or more explanatory variables (also known as dependent and independent variables / predictors).” (Wikipedia)</p>
+<p>(Note: Scalar is a variable the value of which is fully determined by a single figure in given units.)</p>
+<div>
+<p><img src="L1_intro-about-the-course-and-regression_files/figure-html/anonymous%20regression-1.png" width="480" /></p>
+</div>
+</div>
+<div id="multivariate-linear-regression" class="section level2">
+<h2>Multivariate linear regression</h2>
+<p>More than one predictor.</p>
+</div>
+<div id="list-of-all-the-things-regression-does" class="section level2">
+<h2>List of all the things regression does:</h2>
+<ul>
+<li>Detect linear regularities in given data</li>
+</ul>
+</div>
+<div id="so-you-had-better-be-sure-the-relationship-really-is-linear" class="section level2">
+<h2>So you had better be sure the relationship really is linear…</h2>
+<p><img src="L1_intro-about-the-course-and-regression_files/figure-html/anscombe-1.png" width="672" /></p>
+</div>
+<div id="so-it-does-just-the-one-thing-but-it-is-used-for-many-things" class="section level2">
+<h2>So it does just the one thing, but it is used for many things</h2>
+<ol style="list-style-type: decimal">
+<li>Descriptive modeling</li>
+<li>Sample-to-population inference modeling</li>
+<li>Predictive modeling</li>
+<li>Causal inference modeling (aka explanatory modeling)</li>
+</ol>
+<p>Computationally, all of these are still the same regression. But our different goals with regression have important implications for our assumptions and for what we report.</p>
+</div>
+</div>
+<div id="different-purposes-of-modeling" class="section level1">
+<h1>Different purposes of modeling</h1>
+<div id="descriptive-modeling" class="section level2">
+<h2>Descriptive modeling</h2>
+<ul>
+<li>Goal: Summarizing or representing the data structure in a compact manner (capturing association)</li>
+<li>Focus on the measurable level (properties of the actually observed data)</li>
+<li>Few assumptions (but it is useful to check for non-linearity, remember Anscombe)</li>
+</ul>
+</div>
+<div id="sample-to-population-inference-modeling" class="section level2">
+<h2>Sample-to-population inference modeling</h2>
+<ul>
+<li>Goal: Inferring form a sample properties of a population (too large to observe as a whole)</li>
+<li>Assumption that the data are sampled from a larger population</li>
+</ul>
+</div>
+<div id="causal-inference-explanatory-modeling" class="section level2">
+<h2>Causal inference / explanatory modeling</h2>
+<ul>
+<li>Strong role of theory (the theory (not the data) justifies causality)</li>
+<li>Explanatory goals are related to the concept of truth: understand the underlying causal process, the true model</li>
+<li>The worst fear of explanatory modeling: bias (to be systematically wrong, invalid)</li>
+</ul>
+</div>
+<div id="predictive-modeling" class="section level2">
+<h2>Predictive modeling</h2>
+<ul>
+<li>Predicting new or future observations</li>
+<li>Rare in social science academic papers</li>
+<li>Important in business, but also some other disciplines (epidemiology)</li>
+<li>Theory often less important, or not at all (data mining, machine learning)</li>
+<li>“Applied science” (practicality) as opposed to “Basic science”</li>
+<li>The worst fear of predictive modeling: large estimation variance (uncertainty)</li>
+</ul>
+</div>
+<div id="summary-on-different-types-of-modeling" class="section level2">
+<h2>Summary on different types of modeling</h2>
+<ul>
+<li>Descriptive modeling is about association(s): when using linear regression, check linearity of the association</li>
+<li>Sample-to-population inference modeling also makes use of confidence intervals and statistical hypothesis testing (and related assumptions), it is also important how the data was collected</li>
+<li>Explanatory and predictive modeling will be further contrasted against each other (while not incompatible, they are different strategies)</li>
+</ul>
+</div>
+<div id="summary-comparison-of-predictive-and-explanatory-modeling-13" class="section level2">
+<h2>Summary comparison of predictive and explanatory modeling 1/3</h2>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Explanatory</th>
+<th>Predictive</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Goal</td>
+<td>Explanation</td>
+<td>Prediction</td>
+</tr>
+<tr class="even">
+<td>Amount of data</td>
+<td>Enough (statistical power)</td>
+<td>As much as possible</td>
+</tr>
+<tr class="odd">
+<td>Design</td>
+<td>RCT as gold standard</td>
+<td>Observational data with noise can be better</td>
+</tr>
+<tr class="even">
+<td>Design in multilevel</td>
+<td>More groups preferred</td>
+<td>More observations per group preferred</td>
+</tr>
+<tr class="odd">
+<td>Operationalization</td>
+<td>More flexibility</td>
+<td>Should be the same for training and predicting</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="summary-comparison-of-predictive-and-explanatory-modeling-23" class="section level2">
+<h2>Summary comparison of predictive and explanatory modeling 2/3</h2>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Explanatory</th>
+<th>Predictive</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Measurement</td>
+<td>Instrument validity (FA, IRT)</td>
+<td>Measurement quality</td>
+</tr>
+<tr class="even">
+<td>Missing data</td>
+<td>Drop cases or imputation</td>
+<td>Cannot be dropped, possibly reduced models used</td>
+</tr>
+<tr class="odd">
+<td>Data preparation</td>
+<td>Partitioning rare</td>
+<td>Partitioning common practice</td>
+</tr>
+<tr class="even">
+<td>EDA</td>
+<td>Theory driven</td>
+<td>Freestyle, interactivity</td>
+</tr>
+<tr class="odd">
+<td>Dimension reduction</td>
+<td>Interpretability (eg. rotation)</td>
+<td>Freestyle</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="summary-comparison-of-predictive-and-explanatory-modeling-33" class="section level2">
+<h2>Summary comparison of predictive and explanatory modeling 3/3</h2>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>Explanatory</th>
+<th>Predictive</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Choose variables</td>
+<td>Defined by causal structure</td>
+<td>Freestyle (eg. interaction without main effect OK)</td>
+</tr>
+<tr class="even">
+<td>Choose methods</td>
+<td>Model with explicit functions</td>
+<td>Also algorithmic (neural networks, ensembles,…)</td>
+</tr>
+<tr class="odd">
+<td>Validation</td>
+<td>Model fit, residual diagnostics</td>
+<td>Overfitting</td>
+</tr>
+<tr class="even">
+<td>Reporting</td>
+<td>Inference</td>
+<td>Comparison across models in terms of predicting</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<div class="figure">
+<img src="images/accuracy_vs_precision.png" alt="" />
+<p class="caption">Similar to reliability vs validity or effectiveness vs unbiasedness</p>
+</div>
+<p><font size="1">Source: <a href="https://flyingdonv.com/2016/03/07/get-your-geek-on-accuracy-precision-and-resolution-whats-the-difference-1/" class="uri">https://flyingdonv.com/2016/03/07/get-your-geek-on-accuracy-precision-and-resolution-whats-the-difference-1/</a></font></p>
+</div>
+<div id="conclusions-on-modeling-approaches" class="section level2">
+<h2>Conclusions on modeling approaches</h2>
+<ul>
+<li>explanatory modeling focuses on causation, is theory-driven, retrospective, and its priority is minimizing bias</li>
+<li>predictive modeling focuses on prediction, is data-driven (interpretability is not neccessary for good predictions), prospective (practicality), and can accept some bias when this reduces variance (i.e. uncertainty)</li>
+<li>explanatory modeling is more developed within the field of statistics, predictive modeling within computer science</li>
+</ul>
+</div>
+<div id="what-shmueli-2010-thinks" class="section level2">
+<h2>What Shmueli (2010) thinks</h2>
+<ul>
+<li>Predictive modeling should be used more in science because it can
+<ul>
+<li>Generating new hypotheses about causal mechanisms (theory-free exploration)</li>
+<li>Help assess usefulness of explanatory theories for practical application</li>
+</ul></li>
+<li>In addition, understanding predictability also means understanding un-predictability, which is theoretically important (e.g. Taleb, 2007)</li>
+</ul>
+<p>“An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development.” (Shmueli, 2010)</p>
+<p>Note that the authors of Regression and Other Stories frame all statistical inference as problems of prediction. Words are often used differently…</p>
+</div>
+</div>
+<div id="linear-regression-some-basic-building-blocks" class="section level1">
+<h1>Linear regression: some basic building blocks</h1>
+<div id="bivariate-linear-regression-formula-y-α-βx" class="section level2">
+<h2>Bivariate linear regression formula: y = α + βx</h2>
+<div class="columns-2">
+
+<ul>
+<li>α, sometimes also β0, is the intercept, i.e. the value of Y when X = 0</li>
+<li>β, sometimes also β1, is the slope, i.e. rate of change in Y when X changes by 1 unit</li>
+</ul>
+<div>
+<p><img src="images/linear-regression.png" alt="Regression plan" /> <font size="1">Source: <a href="http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/" class="uri">http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/</a></font></p>
+</div>
+</div>
+<div id="the-line-and-the-points" class="section level2">
+<h2>The line and the points</h2>
+<div class="columns-2">
+
+<ul>
+<li>The formula y = α + βx represents the line</li>
+<li>But the observed value of Y is usually below or above the line… “the stochastic nature of the dependent variable”</li>
+<li>Assumption: randomness in the real World</li>
+<li>For convenience in regression: X fixed, Y stochastic</li>
+<li>The actual value of Y = linear model + stochastic error term</li>
+<li>Y = α + βx + ε</li>
+</ul>
+<div>
+<p><img src="images/linear-regression.png" alt="Regression plan" /> <font size="1">Source: <a href="http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/" class="uri">http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/</a></font></p>
+</div>
+</div>
+<div id="error-vs.-residual" class="section level2">
+<h2>Error vs. Residual</h2>
+<ul>
+<li>Error = difference between the real value of Y and the real average value of Y for given X</li>
+<li>Residual = difference between our observed value of Y and our regression model</li>
+</ul>
+<p>In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean. Residuals are the deviations of the actual observations we have from the sample conditional mean. Or in other words: observable estimates of the unobservable stochastic errors.</p>
+</div>
+<div id="ordinary-least-square-ols" class="section level2">
+<h2>Ordinary least square (OLS)</h2>
+<ul>
+<li>Another name for linear regression</li>
+<li>The model is estimated by minimizing the sum of squares of residuals (RSS). This by definition results in having a sum of residuals equal 0.</li>
+</ul>
+</div>
+<div id="not-used" class="section level2">
+<h2>Not used</h2>
+<ul>
+<li>Different paradigms:
+<ul>
+<li>Classical statistics, Error statistics, NHT, Frequentist approach (probability of data given hypothesis)</li>
+<li>Bayesian inference (probability of hypothesis given data and prior belief)</li>
+<li>(Maximum likelihood estimation; AIC based inference for model selection)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
