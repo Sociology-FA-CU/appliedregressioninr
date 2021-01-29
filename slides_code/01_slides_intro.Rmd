@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 library(tidyverse)
 library(here)
+library(polynom)
 ```
 
 # About the course
@@ -63,9 +64,14 @@ After this course, students should:
 -   The course syllabus can found in the Student Information System [HERE](https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&tid=&do=predmet&kod=ASGV00995)
 -   This course has a dedicated webpage with course materials, homework, assignment details, and slides at <https://sociology-fa-cu.github.io/appliedregressioninr/>
 
+
 ## About us
 
-XXXXXXXXX Chceme sem dát nějaký medailonek, nebo treba jen foto a prostě se nějak představíme?
+<div style="float: left; width: 40%;">
+```{r, out.width = "90%", fig.cap= "Jaromír Mazák"}
+knitr::include_graphics(here("images", "lyzar3.jpg"))
+```
+</div>
 
 # Introduction to linear regression
 
@@ -76,13 +82,13 @@ XXXXXXXXX Chceme sem dát nějaký medailonek, nebo treba jen foto a prostě se 
 
 ## What is linear regression?
 
-<div class="columns-2">
+<div style="float: left; width: 50%;">
 
 Regression is a method that allows researchers to summarize how predictions or average values of an *outcame* vary across individuals defined by a set of *predictors* [@gelman2020, pp. 4]
+</div>
 
-<div>
-
-```{r anonymous-regression, message=FALSE, warning=FALSE, fig.width=5}
+<div style="float: right; width: 50%;">
+```{r anonymous-regression, message=FALSE, warning=FALSE, fig.width=4.5}
 
 countries <- read.csv(here("data", "countries.csv"))
 
@@ -95,41 +101,39 @@ countries %>%
 
   
 ```
-
 </div>
 
 ## Multiple linear regression
 
 -   More than one predictor term
--   Careful, more terms does not necessarily mean more predictors!
+-   Note, more terms does not necessarily mean more predictors!
 
 <div>
 
 ```{r multi-anonymous regression, message=FALSE, warning=FALSE, fig.width=5}
 
-countries <- read.csv(here("data", "countries.csv"))
-
 countries %>%
   ggplot(aes(x= dem_index, y = life_exp, color = postsoviet)) +
   geom_point()+
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) +
   labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
-       y = "response variable on y axis\nhere: life expectancy")
+       y = "response variable on y axis\nhere: life expectancy",
+       caption = "life_expectancy = democratic_index + is_postsoviet")
 
 countries %>%
   ggplot(aes(x= dem_index, y = life_exp)) +
   geom_point()+
   geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x,3)) +
   labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
-       y = "response variable on y axis\nhere: life expectancy")
+       y = "response variable on y axis\nhere: life expectancy",
+       caption = "life_expectancy = democratic_index + democratic_index^2 + democratic_index^3")
 ```
-
 <div>
+
 
 ## List of all the things regression does:
 
--   Detect relationships that can be expressed as linear combination of our predictors
--   But it can only catch relationships you tell it to look for...
+-   Detect relationships that can be expressed as linear combination of our predictors (but only those you tell it to look for!)
 
 ## So you better be sure the model is specified correctly...
 
@@ -173,7 +177,7 @@ See @shmueli2010 for details.
 
 -   Few assumptions (but it is useful to check for non-linearity, remember Anscombe)
 
--   Example: Did the voter turnout in the last elections differ across administrative regions with the same level of unemployment?
+-   Example: Is the voter turnout across administrative regions associated with the level of unemployment?
 
 ## Sample-to-population inference modeling
 
@@ -181,7 +185,7 @@ See @shmueli2010 for details.
 
 -   Assumption that the data are sampled from a larger population in a representative manner (or that the data can be adjusted to make inference valid)
 
--   Example: What is the relationship between age and voter turnout in the Czech republic?
+-   Example: What is the relationship between age and voter turnout in the Czech Republic?
 
 ## Causal inference / explanatory modeling
 
@@ -191,7 +195,7 @@ See @shmueli2010 for details.
 
 -   The worst fear of explanatory modeling: bias (to be systematically wrong, invalid)
 
--   Example: Does exposure to political advertisements increases citizens willingness to vote?
+-   Example: Does exposure to political advertising increase citizens' willingness to vote?
 
 ## Predictive modeling
 
@@ -231,6 +235,9 @@ See @shmueli2010 for details.
 | Operationalization   | More flexibility           | Should be the same for training and predicting |
 +----------------------+----------------------------+------------------------------------------------+
 
+
+See @shmueli2010.
+
 ## Summary comparison of predictive and explanatory modeling 2/3
 
 +---------------------+---------------------------------+-------------------------------------------------+
@@ -247,6 +254,9 @@ See @shmueli2010 for details.
 | Dimension reduction | Interpretability (eg. rotation) | Freestyle                                       |
 +---------------------+---------------------------------+-------------------------------------------------+
 
+
+See @shmueli2010.
+
 ## Summary comparison of predictive and explanatory modeling 3/3
 
 +------------------+---------------------------------+----------------------------------------------------+
@@ -260,6 +270,9 @@ See @shmueli2010 for details.
 +------------------+---------------------------------+----------------------------------------------------+
 | Reporting        | Inference                       | Comparison across models in terms of predicting    |
 +------------------+---------------------------------+----------------------------------------------------+
+
+
+See @shmueli2010.
 
 ------------------------------------------------------------------------
 
@@ -306,10 +319,10 @@ Note that the authors of Regression and Other Stories [@gelman2020] frame all st
 <div class="columns-2">
 
 -   The formula y = α + βx represents the line
--   But the observed value of Y is usually below or above the line... "the stochastic nature of the dependent variable"
+-   But the observed value of Y is usually below or above the line... "the random nature of the dependent variable"
 -   Assumption: randomness in the real World
--   For convenience in regression: X fixed, Y stochastic
--   The actual value of Y = linear model + stochastic error term
+-   For convenience in regression: X fixed, Y random
+-   The actual value of Y = linear model + random error term
 -   Y = α + βx + ε
 
 <div>
@@ -323,17 +336,19 @@ Note that the authors of Regression and Other Stories [@gelman2020] frame all st
 -   Error = difference between the real value of Y and the real average value of Y for given X
 -   Residual = difference between our observed value of Y and our regression model
 
-In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean. Residuals are the deviations of the actual observations we have from the sample conditional mean. Or in other words: observable estimates of the unobservable stochastic errors.
+In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean. Residuals are the deviations of the actual observations we have from the sample conditional mean. Or in other words: observable estimates of the unobservable random errors.
 
 ## Ordinary least square (OLS)
 
 <div class="columns-2">
 
--   Another name for simple linear regression
+-   Another name for linear regression
 
 -   The model is estimated by minimizing the sum of squares of residuals (RSS). This by definition results in having a sum of residuals equal 0.
 
--   $\small Sum\:of\:squares=-2^2+1.1^2+\\\small2.8^2+(-4)^2+\\\small1.6^2+1.8^2+\\\small(-0.3^2)+(-0.2^2)+\\\small(-0.1^2)+(-0.7^2)=35.3$
+-   $\small Sum\:of\:squares=-2^2+1.1^2+\\\small2.8^2+(-4)^2+1.6^2+1.8^2+\\\small(-0.3^2)+(-0.2^2)+\\\small(-0.1^2)+(-0.7^2)=35.3$
+
+-   $\small Sum\:of\:residuals=-2+1.1\\\small+2.8-4+1.6+1.8-0.3\\\small-0.2-0.1-0.7=0$
 
 <div>
 
@@ -358,16 +373,9 @@ ggplot(ss_df,aes(x = x, y = y, label = round(y - pred, 1))) +
   
 ```
 
--   For details on how OLS is calculated, see @fox2015[pp. 83]
+<font size="3">For details on how OLS is calculated, see @fox2015[pp. 83]</font>
 
 <div>
 
-## Not used
-
--   Different paradigms:
-
-    -   Classical statistics, Error statistics, NHT, Frequentist approach (probability of data given hypothesis)
-    -   Bayesian inference (probability of hypothesis given data and prior belief)
-    -   (Maximum likelihood estimation; AIC based inference for model selection)
 
 ## References
