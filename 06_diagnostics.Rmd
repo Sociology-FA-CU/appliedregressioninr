@@ -177,7 +177,14 @@ To understand why, remember that a) the goal of linear is to minimize the (squar
 We can therefore think about fitting the regression line as a children seesaw, with pivot in the middle.
 From our kindergarten days, we should remember that the further from the pivot we sit on the seesaw, the stronger pull/push we have.
 In other words, the further we are from the center, the higher our leverage.
-A more detailed explanation, including the formula for computing leverage, can be found in @casella1983.
+More formally, leverage can be expressed as [@casella1983]:
+
+$$
+leverage_i = \frac{\partial \hat{y_i}}{\partial y_i} = \frac{partial\:change\:in\:expected\:y_i}{partial\:change\:in\:observed\:y_i} 
+$$
+
+Where $\partial$ can be recognized as partial derivative, $y_i$ is an observed value of the dependent variable and $\hat{y_i}$ is a expected value of the dependent variable.
+As we can see, the bigger effect on the expected value would changing the observed value have, the bigger that observation's leverage.
 
 However, just because an observation has high leverage does not necessarily mean it will distort our model.
 What if the observation lied far from the center of the date, but still in line with the general trend?
@@ -236,9 +243,12 @@ plot(mod1, which = 5)
 As we can see the, no observation in our model has both exceedingly high (or exceedingly low) value of standardized residual and also high leverage.
 We can therefore see no excessively influential observations are present.
 
-The value of residuals and leverage can also be summarized using Cook's distance [@cook1977].
-Cook's distance of a single observation is a scaled difference between the predicted values of the model including all observations and the predicted values of the model with the specific observation removed.
-Therefore, observations with high Cook's distance are those, which has either very high leverage, a very high residual or some combination of both.
+The value of residuals and leverage can also be summarized using Cook's distance [@cook1977]. Cook's distance of a single observation is a scaled difference between the predicted values of the model including all observations and the predicted values of the model with the specific observation removed. Therefore, observations with high Cook's distance are those, which has either very high leverage, a very high residual or some combination of both. Formally [@cook1977]:
+
+$$
+Cook's\:distance_i=\frac{residual_i^2}{number\:of\:parameters*MSE}*\left[\frac{leverage_i}{(1-leverage_i)^2}\right]
+$$
+$MSE$ here represents the mean square error and the number of parameters is the number of regression terms, including the intercept. Notice that the formula has two parts. The left part deals with residual, while the right one deals with leverage. The number of parameters and the mean square error are constant for all observation and serve only for scaling. Apart from them, notice that there are two ways to get a large value of Cook's distance. One way is by having large residual, i.e. having large value on the left size of the formula. The other way by having a large leverage.
 
 A plot, showing Cook's distance for all observations, can be created using the `plot()` function and including the argument `which = 4`
 
