@@ -1,3 +1,23 @@
 ---
 title: "Course Annotation"
 ---
+
+The course will introduce students to linear regression analysis with emphasis on applied applications in R software. The course is designed for social science students, which is reflected in its focus on a conceptual understanding of linear regression and practical applications in the social sciences. The course contains very little mathematics, but for those interested we refer also to literature with more technical/mathematical treatment of topics covered. After completing the course, students should have a good conceptual understanding of linear regression and the diverse purposes for which it is used (deskription, sample-to-population inference, causal inference, prediction), should command common terminology, understand assumptions associated with regression modelling, be able to verify them and respond adequately in the event of a breach of assumptions. Above all, though, they should be able to make well-argued decisions when conducting their own regression analysis, and they should be able to present and interpret the results of the analysis correctly.
+
+<br>
+
+### Lecturers
+
+Jaromír Mazák, PhD. ([Jaromir.Mazak\@ff.cuni.cz](mailto:Jaromir.Mazak@ff.cuni.cz){.email})
+
+Aleš Vomáčka, MSc. ([alesvomacka\@seznam.cz](mailto:alesvomacka@seznam.cz){.email})
+
+<br>
+
+### Course Implementation in case of Distance Teaching/Learning
+
+The lessons will be conducted online according to the time schedule published on the webpage of the Department of Sociology
+
+**Online learning platform**: Zoom (enrolled students will receive the link short before the first session)
+
+**Requirements to pass the course**: same as under normal conditions

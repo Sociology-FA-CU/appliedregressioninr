@@ -20,7 +20,7 @@ navbar:
         - text: "Exporting results and multiple models"
         - text: "Prediction and regularization"
         - text: "Missing values imputations"
-    - text: "Lecture slides"
+    - text: "Lecture Slides"
       menu:
         - text: "Purpose and goals of regression analysis"
           href: 01_slides_intro.html
@@ -35,8 +35,12 @@ navbar:
         - text: "Exporting results and multiple models"
         - text: "Prediction and regularization"
         - text: "Missing values imputations"
-    - text: "Attestation"
+    - text: "Completion Requirements"
     - text: "Literature"
+      href: literature.html
+  right:
+    - text: "Department website"
+      href: https://ksoc.ff.cuni.cz/
 output:
   html_document:
     theme: united
