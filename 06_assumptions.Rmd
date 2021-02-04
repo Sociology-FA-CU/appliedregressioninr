@@ -1,0 +1,16 @@
+---
+title: "Assumptions of linear regression"
+output: html_document
+bibliography: 06_assumptions.bib
+csl: apa.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+So far, we discussed how to create and interpret linear regression models. However, if we want to summarize complex relationships that exist in the real world using mathematical models, certain assumptions have to be made. The validity of our results then dependents on how well our models match these assumptions. In this context, it is important to note that no model can be at the same time both parsimonious and perfectly accurate, and therefore no assumption we can make regarding our models will ever be satisfied perfectly.
+
+This does no mean that we should resign on the critical reflection of our models and blindly accept whatever results they may give. On the contrary, we should think carefully about the ways in which our models deviate from the assumptions we established and what consequences these deviations may have. As the british statistician George E. P. Box (allegedly) said: *"All models are wrong, but some are useful"*.
+
+The most important assumptions of linear regression model, in order of relative importance, are as follows [@gelman2020].
