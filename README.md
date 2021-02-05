@@ -1,1 +1,7 @@
-# appliedregressioninr
+# Applied regression in R
+
+Repository for course at the department of socioogy, Faculty of Arts, Charles University
+
+Course website: https://sociology-fa-cu.github.io/appliedregressioninr/
+
+The course will introduce students to linear regression analysis with emphasis on applied applications in R software. The course is designed for social science students, which is reflected in its focus on a conceptual understanding of linear regression and practical applications in the social sciences. The course contains very little mathematics, but for those interested we refer also to literature with more technical/mathematical treatment of topics covered. After completing the course, students should have a good conceptual understanding of linear regression and the diverse purposes for which it is used (deskription, sample-to-population inference, causal inference, prediction), should command common terminology, understand assumptions associated with regression modelling, be able to verify them and respond adequately in the event of a breach of assumptions. Above all, though, they should be able to make well-argued decisions when conducting their own regression analysis, and they should be able to present and interpret the results of the analysis correctly.
