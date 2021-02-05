@@ -9,8 +9,77 @@ csl: apa.csl
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r data-and-packages}
+library(tidyverse)
+library(patchwork)
+```
+
 So far, we discussed how to create and interpret linear regression models. However, if we want to summarize complex relationships that exist in the real world using mathematical models, certain assumptions have to be made. The validity of our results then dependents on how well our models match these assumptions. In this context, it is important to note that no model can be at the same time both parsimonious and perfectly accurate, and therefore no assumption we can make regarding our models will ever be satisfied perfectly.
 
 This does no mean that we should resign on the critical reflection of our models and blindly accept whatever results they may give. On the contrary, we should think carefully about the ways in which our models deviate from the assumptions we established and what consequences these deviations may have. As the british statistician George E. P. Box (allegedly) said: *"All models are wrong, but some are useful"*.
 
 The most important assumptions of linear regression model, in order of relative importance, are as follows [@gelman2020].
+
+# Validity
+
+The most important, and at the same time most elusive, is the assumption of validity, which relates both to the variables of interest and the model itself.
+Firstly, we should make sure that the data we use are sufficient to answer the research question at hand.
+This often becomes a problem in secondary analyses, in which we reuse data from previous studies.
+Since no two studies have the same goal, data gathered by other researchers will probably not align perfectly with our research questions, and consequently important variables may be missing or not be measured in sufficient detail.
+
+Secondly, all traits and phenomena we want to analyze need to be measured with sufficient quality.
+Theoretical constructs have to be operationalized adequately, so that we don't miss any of its important facets and, if possible, validated measuring tools should be used, to make sure that our measurement is both reliable and valid.
+We should also be careful not to mistake related traits with each other. For example, it may be tempting to use school grades as a measure of academic proficiency, but grades are often influenced not by academic skills, but also by behavior and personal traits of students and hence may not be an ideal proxy.
+
+Thirdly, data must be gathered in such way that inference to the desired population is possible.
+A sample of university students may be fine if our goal is to learn about this specific population, but we should be careful about generalizing to any more general group. In the similar vein, a representative sample of Czech population may not be ideal if our goal is to study a narrowly specified subset, such as second generation immigrants.
+
+Lastly, our models has to be correctly specified to capture the true relationships between variables. If we were to specify a linear relationship between age and income, when in reality the two variables would be nonlinear dependent, our conclusions would be biased. To correctly specify a model, we can either lean on theory to guide us or make our model sufficiently flexible so that we don't introduce unreasonable assumptions about the nature of the studied topic.
+
+Overall, while it is impossible to design a perfect study, which would fully satisfy all facets of validity, we should strive to do as well as possible, as the loss of validity strongly lessens the usefulness of our findings.
+
+# Representativeness
+
+The second assumption is the one of representativeness
+If our goal is either prediction or inference, our data needs to be a representative sample of the population of interest.
+More specifically, we assume that the distribution of the dependent variable is representative of the population, given the the predictors.
+This is a distinction with an important implication.
+While it is crucial for the dependent variable to be sampled in representative manner, it is not strictly necessary for the the rest of the variables in the model.
+Consider for example model predicting income based on age:
+
+$$
+income = \beta_0 + \beta_1*age+\epsilon
+$$
+Ideally, we would have sample representative in both age and income, as shown in the subplot A below.
+Notice however, that even if we only sampled respondents with above average age, the estimated relationship between age and income would still be identical to the one from the fully representative sample (subplot B).
+Only in the situation where the sampling is biased in term of income, would our inference be significantly of (subplot C).
+
+```{r representativeness-example, fig.cap="Example of A) Fully representative sample, B) Sample with indepdendent variable bias c) Sample with dependent variable bias" message=FALSE}
+rep_df = tibble(age = rnorm(1000, 40, 10),
+                income = 10000 + 100*age + rnorm(100, 0, 1000))
+
+full_plot = ggplot(data = rep_df, aes(x = age, y = income)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "tomato") +
+  scale_x_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(8000,18000))
+
+con_age_plot = ggplot(data = rep_df[rep_df$age > mean(rep_df$age),], aes(x = age, y = income)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, fullrange = T) +
+  geom_smooth(method = "lm", se = F, fullrange = T, data = rep_df, color = "tomato") +
+  scale_x_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(8000,18000))
+
+con_income_plot = ggplot(data = rep_df[rep_df$income > mean(rep_df$income),], aes(x = age, y = income)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, fullrange = T) +
+    geom_smooth(method = "lm", se = F, fullrange = T, data = rep_df, color = "tomato") +
+  scale_x_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(8000,18000))
+
+full_plot + con_age_plot + con_income_plot + plot_layout(nrow = 2) + plot_annotation(tag_levels = "A")
+```
+
+This also naturally extends to undersampling and oversampling.
+Oversampling older respondents would be of little worry, while oversampling respondents with low income would be a considerable problem. We should therefore pay special attention to potential sampling biases regarding our dependent variables, especially if our goal is inference.
