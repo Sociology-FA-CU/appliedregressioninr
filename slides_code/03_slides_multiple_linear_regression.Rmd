@@ -1,0 +1,85 @@
+---
+title: "Lesson 3: Multiple linear regression and interactions"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in February 2021"
+output:
+  ioslides_presentation:
+    widescreen: true
+csl: "../apa.csl"
+bibliography: references_lecture_03.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(here)
+
+countries <- read.csv(here("data", "countries.csv"))
+```
+
+
+## Goals for today
+
+- Understanding multiple linear regression
+- Building and interpreting multiple linear regression in R
+- Coding categorical predictors as dummy variables
+- Using and interpreting interactions
+
+
+## Multiple linear regression
+
+-   More than one predictor term
+-   Note, more terms does not necessarily mean more predictors!
+
+<div>
+
+```{r multi-anonymous regression, message=FALSE, warning=FALSE, fig.width=5}
+
+countries <- read.csv(here("data", "countries.csv"))
+
+countries %>%
+  ggplot(aes(x= dem_index, y = life_exp, color = postsoviet)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) +
+  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
+       y = "response variable on y axis\nhere: life expectancy",
+       caption = "life_expectancy = democratic_index + is_postsoviet")
+
+countries %>%
+  ggplot(aes(x= dem_index, y = life_exp)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x,3)) +
+  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
+       y = "response variable on y axis\nhere: life expectancy",
+       caption = "life_expectancy = democratic_index + democratic_index^2 + democratic_index^3")
+```
+<div>
+
+
+## Interpreting coefficients in multivariate regression
+
+- Additional effect: each coefficient represents additional effect of adding the variable in the model
+- In other words: individual coefficients show the conditional effect given all the other variables in the model are already accounted for
+- This implies that coefficients will change when other variables are added to the model (or dropped from the model)
+
+
+## What multiple regression is used for
+
+- Descriptive modeling: See effects of individual variables net of the effects of other variables in the model (AKA „when all the other variables are held constant“)
+- Predictive modeling: Improve prediction, more variables = more information on the entry = usually better predictions (but risk of overfitting!)
+- Modeling for causal inference: adjusting for background variables, discovering potentially spurious relationships
+
+## Dummy variables
+
+- Categorical variables among regressors (predictors): (1) binary factors, (2)
+
+
+
+## What are interactions?
+```{r, out.width='80%', fig.cap= "Simplest scenario - comparing treatment and control group", echo=FALSE}
+
+knitr::include_graphics(here("images","estimating_effect.png"))
+```
+<font size="1">Source: [@gelman2020] </font>

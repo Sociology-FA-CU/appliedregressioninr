@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jaromír Mazák" />
+
+
+<title>Sample Equations used in Statistics</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture Notes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Purpose and goals of regression analysis</li>
+    <li class="dropdown-header">Simple linear regression</li>
+    <li class="dropdown-header">Multiple linear regression</li>
+    <li class="dropdown-header">Model fit</li>
+    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li>
+      <a href="06_diagnostics.html">Regression diagnostics</a>
+    </li>
+    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+    <li class="dropdown-header">Exporting results and multiple models</li>
+    <li class="dropdown-header">Prediction and regularization</li>
+    <li class="dropdown-header">Missing values imputations</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture slides
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_slides_intro.html">Purpose and goals of regression analysis</a>
+    </li>
+    <li class="dropdown-header">Simple linear regression</li>
+    <li class="dropdown-header">Multiple linear regression</li>
+    <li class="dropdown-header">Model fit</li>
+    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+    <li class="dropdown-header">Exporting results and multiple models</li>
+    <li class="dropdown-header">Prediction and regularization</li>
+    <li class="dropdown-header">Missing values imputations</li>
+  </ul>
+</li>
+<li class="dropdown-header">Attestation</li>
+<li class="dropdown-header">Literature</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Sample Equations used in Statistics</h1>
+<h4 class="author">Jaromír Mazák</h4>
+<h4 class="date">5 2 2021</h4>
+
+</div>
+
+
+<div id="summations" class="section level3">
+<h3>Summations</h3>
+</div>
+<div id="without-indices" class="section level3">
+<h3>Without Indices</h3>
+<p><span class="math inline">\(\sum x_{i}\)</span></p>
+<p><span class="math inline">\(\sum x_{i}^2\)</span></p>
+<p><span class="math inline">\(\sum x_{i}y_{i}\)</span></p>
+<div id="with-indices---inline-form" class="section level4">
+<h4>With Indices - Inline Form</h4>
+<p><span class="math inline">\(\sum_{i=1}^n x_{i}\)</span></p>
+<p><span class="math inline">\(\sum_{i=1}^n x_{i}^2\)</span></p>
+<p><span class="math inline">\(\sum_{i=1}^n x_{i}y_{i}\)</span></p>
+</div>
+<div id="with-indices---display-form" class="section level4">
+<h4>With Indices - Display Form</h4>
+<p><span class="math display">\[\sum_{i=1}^n x_{i}y_{i}\]</span></p>
+</div>
+</div>
+<div id="independent-samples" class="section level3">
+<h3>Independent Samples</h3>
+<p><span class="math display">\[\mu_{\bar{x_{1}} - \bar{x_{2}}} = \mu_{1} - \mu_{2}\]</span></p>
+<p><span class="math display">\[\sigma_{\bar{x_{1}} - \bar{x_{2}}}^2 = \frac {\sigma_{1}^2}{n_{1}} + \frac{\sigma_{2}^2}{n_{2}}\]</span></p>
+<p><span class="math display">\[\mu_{\hat{p}_{1} - \hat{p}_{2}} = p_{1} - p_{2}\]</span></p>
+<p><span class="math display">\[\sigma_{\hat{p}_{1} - \hat{p}_{2}}^2 = \frac {p_{1}(1 - p_{1})}{n_{1}} + \frac {p_{2}(1 - p_{2})}{n_{2}}\]</span></p>
+</div>
+<div id="pooled-sample-variance" class="section level3">
+<h3>Pooled Sample Variance</h3>
+<p><span class="math display">\[s_{p}^2 = \frac {(n_{1} - 1)s_{1}^2 + (n_{2} - 1)s_{2}^2}{n_{1} + n_{2} - 2}\]</span></p>
+</div>
+<div id="pooled-sample-proportion" class="section level3">
+<h3>Pooled Sample Proportion</h3>
+<p><span class="math display">\[\hat{p} = \frac {n_{1}\hat{p}_1 + n_{2}\hat{p}_{2}}{n_{1} + n_{2}}\]</span></p>
+</div>
+<div id="chi-square-test" class="section level3">
+<h3>Chi-Square Test</h3>
+<p><span class="math display">\[\chi^2 = \sum \frac {(O - E)^2}{E}\]</span></p>
+</div>
+<div id="correlations" class="section level3">
+<h3>Correlations</h3>
+<p><span class="math display">\[{SS}_{xx} = \sum (x - \bar{x})^2 = \sum x^2 - \frac {(\sum x)^2}{n}\]</span></p>
+<p><span class="math display">\[{SS}_{xy} = \sum (x - \bar{x})(y - \bar{y}) = \sum xy - \frac {(\sum x)(\sum y)}{n}\]</span></p>
+<p><span class="math display">\[r = \frac {{SS}_{xy}}{\sqrt {{SS}_{xx}{SS}_{yy}}}\]</span></p>
+</div>
+<div id="regression" class="section level3">
+<h3>Regression</h3>
+<div id="population-regression-line" class="section level4">
+<h4>Population Regression Line</h4>
+<p><span class="math display">\[E(y) = \alpha + \beta{x}\]</span></p>
+<p><span class="math display">\[var(y) = \sigma^2\]</span></p>
+</div>
+<div id="least-squares-line" class="section level4">
+<h4>Least Squares Line</h4>
+<p><span class="math display">\[\hat{y} = a + bx\]</span></p>
+<p>where</p>
+<p><span class="math display">\[b = \frac {{SS}_{xy}}{{SS}_{xx}}\]</span></p>
+<p>and</p>
+<p><span class="math display">\[\bar{y} = a + b\bar{x}\]</span></p>
+</div>
+<div id="residual-sum-of-squares" class="section level4">
+<h4>Residual Sum of Squares</h4>
+<p><span class="math display">\[SSResid = \sum (y - \hat{y})^2 = \sum y^2 - a\sum y - b \sum xy\]</span></p>
+</div>
+<div id="standard-errors" class="section level4">
+<h4>Standard Errors</h4>
+<p><span class="math display">\[s_{e} = \sqrt \frac {SSResid}{n - 2}\]</span></p>
+<p><span class="math display">\[s_{b} = \frac {s_{e}}{\sqrt {{SS}_{xx}}}\]</span></p>
+<p><span class="math display">\[s_{a + bx} = s_{e} \sqrt {1 + \frac {1}{n} + \frac {(x - \bar{x})^2}{{SS}_{xx}}}\]</span></p>
+<p>for prediction:</p>
+<p><span class="math display">\[se(y - \hat{y}) = s_{e} \sqrt {1 + \frac {1}{n} + \frac {(x - \bar{x})^2}{{SS}_{xx}}}\]</span></p>
+</div>
+</div>
+<div id="variance" class="section level3">
+<h3>Variance</h3>
+<p><span class="math display">\[SSTr = \frac {T_{1}^2}{n_{1}} + \frac {T_{2}^2}{n_{2}} + ... + \frac {T_{k}^2}{n_{k}} - \frac {T^2}{n}\]</span></p>
+<p><span class="math display">\[SSTo = x_{1}^2 + x_{2}^2 + ... + x_{k}^2 - \frac {T^2}{n}\]</span></p>
+<p><span class="math display">\[SSE = SSTo - SSTr\]</span></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
