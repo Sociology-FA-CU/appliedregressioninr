@@ -13,6 +13,7 @@ navbar:
         - text: "Model fit"
         - text: "Ploting regression models, marginal effects"
         - text: "Assumptions of linear models"
+          href: 06_assumptions.html
         - text: "Regression diagnostics"
           href: 06_diagnostics.html
         - text: "Linearity and normality"
