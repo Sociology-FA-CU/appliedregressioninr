@@ -85,7 +85,7 @@ knitr::include_graphics(here("images", "lyzar3.jpg"))
 
 ## Goals for today
 
--   Different usage of regression analysis (and the thinking behind it)
+-   Understanding different usage of regression analysis (and the thinking behind it)
 
 ## What is linear regression?
 
@@ -217,60 +217,31 @@ knitr::include_graphics(here("images","adjusting_pre-treatment.png"))
 -   Sample-to-population inference modeling also makes use of confidence intervals and statistical hypothesis testing (and related assumptions), it is also important how the data was collected
 -   Explanatory and predictive modeling will be further contrasted against each other (while not incompatible, they are different strategies)
 
-## Summary comparison of predictive and explanatory modeling 1/3
+## Summary comparison of predictive and explanatory modeling 1/2
 
-+----------------------+----------------------------+------------------------------------------------+
-|                      | Explanatory                | Predictive                                     |
-+======================+============================+================================================+
-| Goal                 | Explanation                | Prediction                                     |
-+----------------------+----------------------------+------------------------------------------------+
-| Amount of data       | Enough (statistical power) | As much as possible                            |
-+----------------------+----------------------------+------------------------------------------------+
-| Design               | RCT as gold standard       | Observational data with noise can be better    |
-+----------------------+----------------------------+------------------------------------------------+
-| Design in multilevel | More groups preferred      | More observations per group preferred          |
-+----------------------+----------------------------+------------------------------------------------+
-| Operationalization   | More flexibility           | Should be the same for training and predicting |
-+----------------------+----------------------------+------------------------------------------------+
-
+|                     | Explanatory                     | Predictive                                         |
+|---------------------|---------------------------------|----------------------------------------------------|
+| Goal                | Explanation                     | Prediction                                         |
+| Design              | RCT as gold standard            | Observational data with noise                      |
+| Choice of variables | Defined by causal structure     | Freestyle (eg. interaction without main effect OK) |
+| Number of variables | Parsimony                       | Possibly many                                      |
+| Operacionalization  | Triangulation across studies    | Same for training and predicting                   |
+| Dimension reduction | Interpretability (eg. rotation) | Freestyle                                          |
 
 See @shmueli2010.
 
-## Summary comparison of predictive and explanatory modeling 2/3
+## Summary comparison of predictive and explanatory modeling 2/2
 
-+---------------------+---------------------------------+-------------------------------------------------+
-|                     | Explanatory                     | Predictive                                      |
-+=====================+=================================+=================================================+
-| Measurement         | Instrument validity (FA, IRT)   | Measurement quality                             |
-+---------------------+---------------------------------+-------------------------------------------------+
-| Missing data        | Drop cases or imputation        | Cannot be dropped, possibly reduced models used |
-+---------------------+---------------------------------+-------------------------------------------------+
-| Data preparation    | Partitioning rare               | Partitioning common practice                    |
-+---------------------+---------------------------------+-------------------------------------------------+
-| EDA                 | Theory driven                   | Freestyle, interactivity                        |
-+---------------------+---------------------------------+-------------------------------------------------+
-| Dimension reduction | Interpretability (eg. rotation) | Freestyle                                       |
-+---------------------+---------------------------------+-------------------------------------------------+
+|                    | Explanatory                     | Predictive                      |
+|--------------------|---------------------------------|---------------------------------|
+| Measurement        | Instrument validity (FA, IRT)   | Measurement quality             |
+| N. of observations | Enough (statistical power)      | As much as possible             |
+| Data preparation   | Partitioning rare               | Partitioning common practice    |
+| Validation         | Model fit, residual diagnostics | Overfitting                     |
+| Reporting          | Inference                       | Comparison of predictive models |
 
+For more differences, see @shmueli2010.
 
-See @shmueli2010.
-
-## Summary comparison of predictive and explanatory modeling 3/3
-
-+------------------+---------------------------------+----------------------------------------------------+
-|                  | Explanatory                     | Predictive                                         |
-+==================+=================================+====================================================+
-| Choose variables | Defined by causal structure     | Freestyle (eg. interaction without main effect OK) |
-+------------------+---------------------------------+----------------------------------------------------+
-| Choose methods   | Model with explicit functions   | Also algorithmic (neural networks, ensembles,...)  |
-+------------------+---------------------------------+----------------------------------------------------+
-| Validation       | Model fit, residual diagnostics | Overfitting                                        |
-+------------------+---------------------------------+----------------------------------------------------+
-| Reporting        | Inference                       | Comparison across models in terms of predicting    |
-+------------------+---------------------------------+----------------------------------------------------+
-
-
-See @shmueli2010.
 
 ------------------------------------------------------------------------
 

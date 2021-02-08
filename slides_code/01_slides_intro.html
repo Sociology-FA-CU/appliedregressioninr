@@ -196,7 +196,7 @@ Jaromír Mazák
 </article></slide><slide class=""><hgroup><h2>Goals for today</h2></hgroup><article  id="goals-for-today">
 
 <ul>
-<li>Different usage of regression analysis (and the thinking behind it)</li>
+<li>Understanding different usage of regression analysis (and the thinking behind it)</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>What is linear regression?</h2></hgroup><article  id="what-is-linear-regression">
@@ -307,12 +307,12 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 <li>Explanatory and predictive modeling will be further contrasted against each other (while not incompatible, they are different strategies)</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Summary comparison of predictive and explanatory modeling 1/3</h2></hgroup><article  id="summary-comparison-of-predictive-and-explanatory-modeling-13">
+</article></slide><slide class=""><hgroup><h2>Summary comparison of predictive and explanatory modeling 1/2</h2></hgroup><article  id="summary-comparison-of-predictive-and-explanatory-modeling-12">
 
 <table class = 'rmdtable'>
-<col width="22.772277%" />
-<col width="28.712871%" />
-<col width="48.514851%" />
+<col width="19.811321%" />
+<col width="31.132075%" />
+<col width="49.056604%" />
 <tr class="header">
 <th align="left"></th>
 <th align="left">Explanatory</th>
@@ -324,35 +324,37 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 <td align="left">Prediction</td>
 </tr>
 <tr class="even">
-<td align="left">Amount of data</td>
-<td align="left">Enough (statistical power)</td>
-<td align="left">As much as possible</td>
-</tr>
-<tr class="odd">
 <td align="left">Design</td>
 <td align="left">RCT as gold standard</td>
-<td align="left">Observational data with noise can be better</td>
-</tr>
-<tr class="even">
-<td align="left">Design in multilevel</td>
-<td align="left">More groups preferred</td>
-<td align="left">More observations per group preferred</td>
+<td align="left">Observational data with noise</td>
 </tr>
 <tr class="odd">
-<td align="left">Operationalization</td>
-<td align="left">More flexibility</td>
-<td align="left">Should be the same for training and predicting</td>
+<td align="left">Choice of variables</td>
+<td align="left">Defined by causal structure</td>
+<td align="left">Freestyle (eg. interaction without main effect OK)</td>
+</tr>
+<tr class="even">
+<td align="left">Number of variables</td>
+<td align="left">Parsimony</td>
+<td align="left">Possibly many</td>
+</tr>
+<tr class="odd">
+<td align="left">Operacionalization</td>
+<td align="left">Triangulation across studies</td>
+<td align="left">Same for training and predicting</td>
+</tr>
+<tr class="even">
+<td align="left">Dimension reduction</td>
+<td align="left">Interpretability (eg. rotation)</td>
+<td align="left">Freestyle</td>
 </tr>
 </table>
 
 <p>See <span class="cite">Shmueli (2010)</span>.</p>
 
-</article></slide><slide class=""><hgroup><h2>Summary comparison of predictive and explanatory modeling 2/3</h2></hgroup><article  id="summary-comparison-of-predictive-and-explanatory-modeling-23">
+</article></slide><slide class=""><hgroup><h2>Summary comparison of predictive and explanatory modeling 2/2</h2></hgroup><article  id="summary-comparison-of-predictive-and-explanatory-modeling-22">
 
 <table class = 'rmdtable'>
-<col width="20.754717%" />
-<col width="32.075472%" />
-<col width="47.169811%" />
 <tr class="header">
 <th align="left"></th>
 <th align="left">Explanatory</th>
@@ -364,9 +366,9 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 <td align="left">Measurement quality</td>
 </tr>
 <tr class="even">
-<td align="left">Missing data</td>
-<td align="left">Drop cases or imputation</td>
-<td align="left">Cannot be dropped, possibly reduced models used</td>
+<td align="left">N. of observations</td>
+<td align="left">Enough (statistical power)</td>
+<td align="left">As much as possible</td>
 </tr>
 <tr class="odd">
 <td align="left">Data preparation</td>
@@ -374,53 +376,18 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 <td align="left">Partitioning common practice</td>
 </tr>
 <tr class="even">
-<td align="left">EDA</td>
-<td align="left">Theory driven</td>
-<td align="left">Freestyle, interactivity</td>
-</tr>
-<tr class="odd">
-<td align="left">Dimension reduction</td>
-<td align="left">Interpretability (eg. rotation)</td>
-<td align="left">Freestyle</td>
-</tr>
-</table>
-
-<p>See <span class="cite">Shmueli (2010)</span>.</p>
-
-</article></slide><slide class=""><hgroup><h2>Summary comparison of predictive and explanatory modeling 3/3</h2></hgroup><article  id="summary-comparison-of-predictive-and-explanatory-modeling-33">
-
-<table class = 'rmdtable'>
-<col width="17.924528%" />
-<col width="32.075472%" />
-<col width="50.000000%" />
-<tr class="header">
-<th align="left"></th>
-<th align="left">Explanatory</th>
-<th align="left">Predictive</th>
-</tr>
-<tr class="odd">
-<td align="left">Choose variables</td>
-<td align="left">Defined by causal structure</td>
-<td align="left">Freestyle (eg. interaction without main effect OK)</td>
-</tr>
-<tr class="even">
-<td align="left">Choose methods</td>
-<td align="left">Model with explicit functions</td>
-<td align="left">Also algorithmic (neural networks, ensembles,…)</td>
-</tr>
-<tr class="odd">
 <td align="left">Validation</td>
 <td align="left">Model fit, residual diagnostics</td>
 <td align="left">Overfitting</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">Reporting</td>
 <td align="left">Inference</td>
-<td align="left">Comparison across models in terms of predicting</td>
+<td align="left">Comparison of predictive models</td>
 </tr>
 </table>
 
-<p>See <span class="cite">Shmueli (2010)</span>.</p>
+<p>For more differences, see <span class="cite">Shmueli (2010)</span>.</p>
 
 </article></slide><slide class=""><hgroup><h2></h2></hgroup><article >
 
@@ -491,16 +458,16 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 <p>&ldquo;A challenge in serious applied work is how to be critical without being nihilistic, to accept that we can learn from statistical analysis—we can generalize from sample to population, from treatment to control, and from observed measurements to underlying constructs of interest—even while these inferences can be flawed.&rdquo; <span class="cite">(Gelman et al., 2020, p. 13)</span></p>
 
-</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  class="unnumbered" id="references">
+</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references" class="unnumbered">
 
-<div id="refs" line-spacing="2" class="references csl-bib-body hanging-indent">
-<div class="csl-entry" id="ref-gelman2020">
+<div class="references csl-bib-body hanging-indent" id="refs" line-spacing="2">
+<div id="ref-gelman2020" class="csl-entry">
 <p>Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href='https://doi.org/10.1017/9781139161879' title=''>https://doi.org/10.1017/9781139161879</a></p></div>
 
-<div class="csl-entry" id="ref-shmueli2010">
+<div id="ref-shmueli2010" class="csl-entry">
 <p>Shmueli, G. (2010). <em>To Explain or To Predict?</em> <a href='https://doi.org/10.2139/ssrn.1351252' title=''>https://doi.org/10.2139/ssrn.1351252</a></p></div>
 
-<div class="csl-entry" id="ref-taleb2007b">
+<div id="ref-taleb2007b" class="csl-entry">
 <p>Taleb, N. N. (2007). Black Swans and the Domains of Statistics. <em>The American Statistician</em>, <em>61</em>(3), 198–200. <a href='https://doi.org/10.1198/000313007x219996' title=''>https://doi.org/10.1198/000313007x219996</a></p></div></div></article></slide>
 
 
