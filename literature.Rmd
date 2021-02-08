@@ -1,0 +1,22 @@
+---
+title: "Course literature"
+output: html_document
+---
+
+<br>
+
+### Primary literature
+
+-   Gelman, A., Hill, J., & Vehtari, A. (2020). Regression and Other Stories. Cambridge University Press. <https://doi.org/10.1017/9781139161879>
+-   Harrell, F. (2001). Regression Modeling Strategies: With Applications to Linear Models, Logistic Regression, and Survival Analysis. Springer-Verlag. <https://doi.org/10.1007/978-1-4757-3462-1>
+
+<br>
+
+### Secondary literature
+
+-   Cole, S. R., Platt, R. W., Schisterman, E. F., Chu, H., Westreich, D., Richardson, D., & Poole, C. (2010). Illustrating bias due to conditioning on a collider. International Journal of Epidemiology, 39(2), 417--420. <https://doi.org/10.1093/ije/dyp334>
+-   Cook, R. D. (1977). Detection of Influential Observation in Linear Regression. Technometrics, 19(1), 15--18. <https://doi.org/10.2307/1268249>
+-   Fox, J. (2015). Applied Regression Analysis and Generalized Linear Models (Third edition). SAGE Publications, Inc.
+-   Greenland, S., Senn, S. J., Rothman, K. J., Carlin, J. B., Poole, C., Goodman, S. N., & Altman, D. G. (2016). Statistical tests, P values, confidence intervals, and power: A guide to misinterpretations. European Journal of Epidemiology, 31(4), 337--350. <https://doi.org/10.1007/s10654-016-0149-3>
+-   King, G., & Roberts, M. E. (2015). How Robust Standard Errors Expose Methodological Problems They Do Not Fix, and What to Do About It. Political Analysis, 23(2), 159--179.
+-   Shmueli, G. (2010). To Explain or To Predict? (SSRN Scholarly Paper ID 1351252). Social Science Research Network. <https://doi.org/10.2139/ssrn.1351252>
