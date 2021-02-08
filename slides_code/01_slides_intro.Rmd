@@ -2,7 +2,7 @@
 title: "Lesson 1: Introduction to the course and regression"
 subtitle: "Jaromír Mazák & Aleš Vomáčka"
 author: "Dpt. of Sociology, Faculty of Arts, Charles University"
-date: "Last updated in January 2021"
+date: "Last updated in February 2021"
 output:
   ioslides_presentation:
     widescreen: true
@@ -16,6 +16,8 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(here)
 library(polynom)
+
+countries <- read.csv(here("data", "countries.csv"))
 ```
 
 # About the course
@@ -64,6 +66,12 @@ After this course, students should:
 -   The course syllabus can found in the Student Information System [HERE](https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&tid=&do=predmet&kod=ASGV00995)
 -   This course has a dedicated webpage with course materials, homework, assignment details, and slides at <https://sociology-fa-cu.github.io/appliedregressioninr/>
 
+## Software and hardware
+
+- You will need a computer with administor rights (rights to install)
+- R, download [here](https://cran.r-project.org/) or the Czech mirror of the same thing [here](https://mirrors.nic.cz/R/)
+- RStudio, download [here](https://rstudio.com/products/rstudio/download/#download)
+
 
 ## About us
 
@@ -77,8 +85,7 @@ knitr::include_graphics(here("images", "lyzar3.jpg"))
 
 ## Goals for today
 
--   Different usage of regression analysis
--   Basic concepts (some, more will follow across the course)
+-   Different usage of regression analysis (and the thinking behind it)
 
 ## What is linear regression?
 
@@ -89,8 +96,6 @@ Regression is a method that allows researchers to summarize how predictions or a
 
 <div style="float: right; width: 50%;">
 ```{r anonymous-regression, message=FALSE, warning=FALSE, fig.width=4.5}
-
-countries <- read.csv(here("data", "countries.csv"))
 
 countries %>%
   ggplot(aes(x= dem_index, y = life_exp)) +
@@ -103,39 +108,14 @@ countries %>%
 ```
 </div>
 
-## Multiple linear regression
-
--   More than one predictor term
--   Note, more terms does not necessarily mean more predictors!
-
-<div>
-
-```{r multi-anonymous regression, message=FALSE, warning=FALSE, fig.width=5}
-
-countries %>%
-  ggplot(aes(x= dem_index, y = life_exp, color = postsoviet)) +
-  geom_point()+
-  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) +
-  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
-       y = "response variable on y axis\nhere: life expectancy",
-       caption = "life_expectancy = democratic_index + is_postsoviet")
-
-countries %>%
-  ggplot(aes(x= dem_index, y = life_exp)) +
-  geom_point()+
-  geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x,3)) +
-  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
-       y = "response variable on y axis\nhere: life expectancy",
-       caption = "life_expectancy = democratic_index + democratic_index^2 + democratic_index^3")
-```
-<div>
-
 
 ## List of all the things regression does:
 
 -   Detect relationships that can be expressed as linear combination of our predictors (but only those you tell it to look for!)
 
 ## So you better be sure the model is specified correctly...
+
+It is always possible to estimate a linear model, it does not mean it fits the data.
 
 ```{r anscombe, message=FALSE}
 
@@ -177,7 +157,7 @@ See @shmueli2010 for details.
 
 -   Few assumptions (but it is useful to check for non-linearity, remember Anscombe)
 
--   Example: Is the voter turnout across administrative regions associated with the level of unemployment?
+-   Example: Is the voter turnout across administrative regions associated with the level of unemployment? What is the average height of people in this class?
 
 ## Sample-to-population inference modeling
 
@@ -185,17 +165,35 @@ See @shmueli2010 for details.
 
 -   Assumption that the data are sampled from a larger population in a representative manner (or that the data can be adjusted to make inference valid)
 
--   Example: What is the relationship between age and voter turnout in the Czech Republic?
+-   Example: What is the relationship between age and voter turnout in the Czech Republic? What is the average height of people in the Czech Republic?
 
-## Causal inference / explanatory modeling
+## Explanatory modeling (causal inference)
 
 -   Strong role of theory (the theory (not the data) justifies causality)
-
 -   Explanatory goals are related to the concept of truth: understand the underlying causal process, the true model
-
 -   The worst fear of explanatory modeling: bias (to be systematically wrong, invalid)
+-   Two ways of use: (1) estimating relationship, (2) adjusting for background variables
 
--   Example: Does exposure to political advertising increase citizens' willingness to vote?
+-   Example: Does exposure to political advertising increase citizens' willingness to vote? Does vegetarian diet in childhood affect height?
+
+## Explanatory modeling: estimating relationship
+
+```{r, out.width='80%', fig.cap= "Simplest scenario - comparing treatment and control group", echo=FALSE}
+
+knitr::include_graphics(here("images","estimating_effect.png"))
+```
+<font size="1">Source: [@gelman2020] </font>
+
+
+## Explanatory modeling: adjusting for background variables
+
+```{r, out.width='70%', fig.cap= "Note: x-axis is a pre-treatment predictor, not the treatment level", echo=FALSE}
+
+knitr::include_graphics(here("images","adjusting_pre-treatment.png"))
+```
+<font size="1">Source: [@gelman2020] </font>
+
+
 
 ## Predictive modeling
 
@@ -280,7 +278,7 @@ See @shmueli2010.
 
 <font size="1">Source: <https://flyingdonv.com/2016/03/07/get-your-geek-on-accuracy-precision-and-resolution-whats-the-difference-1/></font>
 
-## Conclusions on modeling approaches
+## Conclusions on explanatory vs. predictive
 
 -   explanatory modeling focuses on causation, is theory-driven, retrospective, and its priority is minimizing bias
 -   predictive modeling focuses on prediction, is data-driven (interpretability is not neccessary for good predictions), prospective (practicality), and can accept some bias when this reduces variance (i.e. uncertainty)
@@ -297,85 +295,44 @@ See @shmueli2010.
 
 "An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development." [@shmueli2010]
 
-Note that the authors of Regression and Other Stories [@gelman2020] frame all statistical inference as problems of prediction. Words are often used differently...
+## Different meanings of the word prediction
 
-# Linear regression: some basic building blocks
+Note that the authors of Regression and Other Stories [@gelman2020] frame all statistical inference as problems of prediction in the introduction chapter. Words are often used differently... Common distinction in data science is between prediction and classification which puts regression in the prediction category.
 
-## Bivariate linear regression formula: y = α + βx
 
-<div class="columns-2">
+## Three ingredients of regression
 
--   α, sometimes also β0, is the intercept, i.e. the value of Y when X = 0
--   β, sometimes also β1, is the slope, i.e. rate of change in Y when X changes by 1 unit
+- Information
+- Assumptions
+- Interpretation (inference) 
 
-<div>
+## Information
 
-![Regression plan](../images/linear-regression.png) <font size="1">Source: <http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/></font>
+- Data itself (visualize before your model)
+- Information related to data collection (e.g. mode of survey, sampling, measurement issues)
+- Prior knowledge (theory)
 
-</div>
+## Assumptions
 
-## The line and the points
+- Functional form 
+- Sampling-related assumptions (what population is actually covered, random treatment assignment,...)
+- Real-world relevance of the data (accurate responses, responses stable in time, meaningful constructs,...)
 
-<div class="columns-2">
 
--   The formula y = α + βx represents the line
--   But the observed value of Y is usually below or above the line... "the random nature of the dependent variable"
--   Assumption: randomness in the real World
--   For convenience in regression: X fixed, Y random
--   The actual value of Y = linear model + random error term
--   Y = α + βx + ε
+## Prior knowledge: Two schools of inference 
 
-<div>
+We (almost) always use prior knowledge from existing theory. But there are two schools of inference with different view of incorporating prior knowledge directly in the modeling process.  
 
-![Regression plan](../images/linear-regression.png) <font size="1">Source: <http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/></font>
+- Classical inference (Error statistics, NHT, Frequentist approach): clear ("objective") path from data to inferences without relying on external information (estimate from data + confidence interval). Probability of data given hypothesis.
+- Bayesian inference: incorporates prior information into inference. Probability of hypothesis given data and prior belief. Enables incorporate relevant information that is not in the model (e.g. publication bias, prior information on average effect size, etc.)
 
-</div>
 
-## Error vs. Residual
+## Message for this course
 
--   Error = difference between the real value of Y and the real average value of Y for given X
--   Residual = difference between our observed value of Y and our regression model
-
-In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean. Residuals are the deviations of the actual observations we have from the sample conditional mean. Or in other words: observable estimates of the unobservable random errors.
-
-## Ordinary least square (OLS)
-
-<div class="columns-2">
-
--   Another name for linear regression
-
--   The model is estimated by minimizing the sum of squares of residuals (RSS). This by definition results in having a sum of residuals equal 0.
-
--   $\small Sum\:of\:squares=-2^2+1.1^2+\\\small2.8^2+(-4)^2+1.6^2+1.8^2+\\\small(-0.3^2)+(-0.2^2)+\\\small(-0.1^2)+(-0.7^2)=35.3$
-
--   $\small Sum\:of\:residuals=-2+1.1\\\small+2.8-4+1.6+1.8-0.3\\\small-0.2-0.1-0.7=0$
-
-<div>
-
-```{r, warning=F, message=FALSE, fig.width=5}
-set.seed(1234)
-
-ss_df = tibble::tibble(x = 1:10,
-                       y = 2 + x + rnorm(n = 10, sd = 2))
-
-ss_mod = lm(y ~ x, data = ss_df)
-ss_df$pred = predict(ss_mod)
-ss_df$label_pos = ifelse(ss_df$pred < ss_df$y,
-                         ss_df$pred + (ss_df$y - ss_df$pred) / 2,
-                         ss_df$pred - (ss_df$pred - ss_df$y) / 2)
-ss_df$res = ss_df$y - ss_df$pred
-
-ggplot(ss_df,aes(x = x, y = y, label = round(y - pred, 1))) +
-  geom_point() +
-  geom_smooth(method = "lm", se = F) +
-  geom_segment(aes(xend = x, yend = pred, color = "tomato"), show.legend = F) +
-  geom_text(aes(x = x, y = label_pos), nudge_x = 0.2, color = "tomato")
-  
-```
-
-<font size="3">For details on how OLS is calculated, see @fox2015[pp. 83]</font>
-
-<div>
+"A challenge in serious applied work is how to be critical without being nihilistic, to accept that
+we can learn from statistical analysis—we can generalize from sample to population, from treatment
+to control, and from observed measurements to underlying constructs of interest—even while these
+inferences can be flawed." [@gelman2020, pp. 13]
 
 
 ## References

@@ -1,0 +1,17 @@
+---
+title: "Lesson 4: Model fit"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in February 2021"
+output:
+  ioslides_presentation:
+    widescreen: true
+csl: "../apa.csl"
+bibliography: references_lecture_04.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Goals for today
