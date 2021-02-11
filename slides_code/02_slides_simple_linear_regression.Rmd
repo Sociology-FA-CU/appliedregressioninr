@@ -46,11 +46,15 @@ For each distribution of a variable z, we can calculate the mean, a.k.a. the exp
 
 Variance = expected value of the squared deviation from the mean.
 
-Var = E[(z − μ~z~ )^2^]
+$$
+var(z) = E[(z_i-\mu_z)^2] = \frac{\sum (z_i - \bar{z})}{n}
+$$
 
 We typically work with the standard deviation rather than the variance because it is on the original scale of the distribution.
 
-σ~z~ = sqrt(Var)
+$$
+\sigma_z = \sqrt{var{(z)}}
+$$
 
 ## Visual representation is often preferred to understand variability in the variable
 
@@ -83,7 +87,7 @@ p4 <- data %>% ggplot(aes(y=z, x=""))+geom_violin()+geom_boxplot(width=0.4) + la
 
 ## Sampling distribution 2/2
 
--   Standard deviation of the distribution of a given estimate is called standard error = σ/sqrt(N). Confidence intervals are extension of standard errors, see picture below (beta-hat is the estimate of the regression coefficient beta from the data).
+-   Standard deviation of the distribution of a given estimate is called standard error = $ \frac{\sigma}{n} $. Confidence intervals are extension of standard errors, see picture below (beta-hat is the estimate of the regression coefficient beta from the data).
 -   P-value: for a t-test of estimates where H0: estimate = 0
 
 ::: {.centered}
@@ -149,9 +153,14 @@ See the ASA statement which links to plenty of other relevant literature on p-va
 
 Measure of joint variability in a linear relationship between two variables.
 
-Var(x) = E[(x − μ~x~ )^2^] = E[(x − μ~x~ )\*(x − μ~x~ )]
+$$
+var(x) = E[(x_i - \mu_x)^2] = E[(x_i - \mu_x)*(x_i - \mu_x)] = \frac{(x_i - \mu_x)*(x_z-\mu_z)}{n}
+$$
+<br>
 
-Cov(x,y) = E[(x − μ~x~ )\*(y − μ~y~ )]
+$$
+cov(x) =E[(x_i - \mu_x)*(y_i - \mu_y)] = \frac{(x_i - \mu_x)*(y_i-\mu_y)}{n}
+$$
 
 ## Visual representation to understand association between two variables
 
@@ -278,12 +287,12 @@ data %>% ggplot(aes(x=x, y=y, color = group, group=group))+
 
 <div class="columns-2">
 
--   The formula y = α + βx represents the line
+-   The formula $y = \alpha + \beta_1*x_1$  represents the line
 -   But the observed value of Y is usually below or above the line... "the random nature of the dependent variable"
 -   Assumption: randomness in the real World
 -   For convenience in regression: X fixed, Y random
 -   The actual value of Y = linear model + random error term
--   Y = α + βx + ε
+-   $y = \alpha + \beta_1*x_1 + \epsilon_i$
 
 <div>
 
