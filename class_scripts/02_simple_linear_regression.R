@@ -73,6 +73,13 @@ fit_postsoviet <- lm(life_exp ~ postsoviet, data = countries)
 summary(fit_postsoviet)
 
 
+# standradized betas
+
+browseURL("http://www.stat.columbia.edu/~gelman/standardize/")
+
+
+
+
 
 # fit_2 <- stan_glm(y ~ x, data=fake)
 # print(fit_2, digits = 2)

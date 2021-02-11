@@ -6,10 +6,12 @@ date: "Last updated in February 2021"
 output:
   ioslides_presentation:
     widescreen: true
+    incremental: true
 csl: "../apa.csl"
 bibliography: references_lecture_02.bib
 editor_options: 
   chunk_output_type: console
+zotero: "ksoc-ff-uk-quantitative"
 ---
 
 ```{r setup, include=FALSE}
@@ -25,29 +27,26 @@ countries <- read.csv(here("data", "countries.csv"))
 
 ## Goals for today
 
-- Quick recap on some basic concepts in statistics
-- Understanding basic concepts and building block for regression analysis
-- Building and interpreting simple linear regression in R
-- Centering variables for better interpretation 
+-   Quick recap on some basic concepts in statistics
+-   Basic concepts and building block for regression analysis
+-   Building and interpreting simple linear regression in R (yay, we are gonna work in R!)
+-   Centering variables for better interpretation
 
 # Recap on selected concepts in statistics
 
 ## Probability distribution
 
-![](../images/probability_distribution.png) 
+![](../images/probability_distribution.png)
 
 <font size="1">Source: [@gelman2020, pp. 41]</font>
 
 For each distribution of a variable z, we can calculate the mean, a.k.a. the expected value written as E(z) or μ~z~ to refer specifically to population mean or $\overline{x}$ to refer to sample mean.
-
 
 ## The variance of distribution
 
 Variance = expected value of the squared deviation from the mean.
 
 Var = E[(z − μ~z~ )^2^]
-
-
 
 We typically work with the standard deviation rather than the variance because it is on the original scale of the distribution.
 
@@ -77,90 +76,82 @@ p4 <- data %>% ggplot(aes(y=z, x=""))+geom_violin()+geom_boxplot(width=0.4) + la
 
 ## Sampling distribution 1/2
 
-"The sampling distribution is the set of possible datasets that could have been observed if the data
-collection process had been re-done, ..." [@gelman2020, pp. 50]
+"The sampling distribution is the set of possible datasets that could have been observed if the data collection process had been re-done, ..." [@gelman2020, pp. 50]
 
-- In modeling, we work with estimates (sample mean, sample regression coefficients, i.e. betas etc.) (we expect estimates to be different for each sample, i.e. they come from a distribution with some variance). 
-- BUT we only have one sample from the sampling distribution! I.e. one value of sample mean, one value of given regression coefficient... we observe no variation. We need to estimate (or conceptualize) it from the observed data. (For regression coefficients, this is where assumptions kick in, we will talk about it later.)
+-   In modeling, we work with estimates (sample mean, sample regression coefficients, i.e. betas etc.) (we expect estimates to be different for each sample, i.e. they come from a distribution with some variance).
+-   BUT we only have one sample from the sampling distribution! No variation! We need to estimate (or conceptualize) it from the observed data. (For regression coefficients, this is where assumptions kick in, we will talk about it later.)
 
 ## Sampling distribution 2/2
 
-- Standard deviation of the distribution of a given estimate is called standard error = σ/sqrt(N). Confidence intervals are extension of standard errors, see picture below (beta-hat is the estimate of the regression coefficient beta from the data).
-- P-value: for a t-test of estimates where H0: estimate = 0
+-   Standard deviation of the distribution of a given estimate is called standard error = σ/sqrt(N). Confidence intervals are extension of standard errors, see picture below (beta-hat is the estimate of the regression coefficient beta from the data).
+-   P-value: for a t-test of estimates where H0: estimate = 0
 
-<div class="centered">
-![ If the model is correct, then in repeated applications 95% confidence intervals will include the true value 95% of the time](../images/sampling_distribution.png) 
+::: {.centered}
+![If the model is correct, then in repeated applications 95% confidence intervals will include the true value 95% of the time](../images/sampling_distribution.png)
 
 <font size="1">Source: [@gelman2020, pp. 51]</font>
-</div>
+:::
 
 ## T-distribution (used for statistical significance testing of estimates)
 
-- t-distribution: similar to normal (symmetric), but heavier tails, three parameters: center, scale, degrees of freedom 
-
+-   Similar to normal (symmetric), but heavier tails, three parameters: center, scale, degrees of freedom
 
 ## Statistical significance and hypothesis testing
 
-- conventional wisdom: statistical significance is p-value less than 0.05, relative to some null hypothesis (hypothesis of no effect)
-- intuition behind it: an estimate is said to be NOT statistically significant if the observed value could reasonably be explained by chance 
+-   conventional wisdom: statistical significance is p-value less than 0.05, relative to some null hypothesis (hypothesis of no difference / no effect)
+-   intuition behind it: an estimate is said to be NOT statistically significant if the observed value could reasonably be explained by chance
 
 ## Null-hypothesis testing (NHT)
 
-- null hypothesis: estimate = 0
-- alternative hypothesis: estimate != 0
-- p-value: "the probability under a specified statistical model that a statistical summary of the data (e.g., the sample mean difference between two compared groups) would be equal to or more extreme than its observed value" CITE ASA
-
+-   null hypothesis: estimate = 0
+-   alternative hypothesis: estimate != 0
+-   p-value: "the probability under a specified statistical model that a statistical summary of the data (e.g., the sample mean difference between two compared groups) would be equal to or more extreme than its observed value" [@wasserstein2016, pp.]
 
 ## Type 1 and type 2 error in NHT
 
-<div class="centered">
-
+::: {.centered}
 ```{r out.width = "50%", echo=FALSE}
 
 knitr::include_graphics(here("images","type_1and2_errors.png"))
 ```
 
 <font size="1">Source <https://www.researchgate.net/figure/Graphical-representation-of-type-1-and-type-2-errors_fig1_268035363></font>
-</div>
+:::
 
-- type 1 error: the probability of falsely rejecting a null hypothesis, if it is in fact true
-- type 2 error: the probability of not rejecting a null hypothesis that is in fact false
+-   type 1 error: the probability of falsely rejecting a null hypothesis, if it is in fact true
+-   type 2 error: the probability of not rejecting a null hypothesis that is in fact false
 
+------------------------------------------------------------------------
 
+::: {.centered}
+![](../memes/fail_to_reject.jpg)
+:::
 
-_____
-<div class="centered">
-![](../memes/fail_to_reject.jpg) 
-</div>
+## Critique of NHT 1/3
 
+-   NH is unrealistic in social sciences (only a matter of sample size)
+-   NH is theoretically uninteresting (effect size and variations of effect sizes in different groups is)
+-   NH is a very low threshold - non-rejection tells us that there is not even enough information in the data to move beyond the banal null hypothesis
+-   Even statistically non-significant data can carry important information (not just for meta-analysis)
 
-## Critique of NHT 1/2
+## Critique of NHT 2/3
 
-- NH is unrealistic in social sciences (only a matter of sample size)
-- NH is theoretically uninteresting (effect size and variations of effect sizes in different groups is)
-- NH is a very low threshold - non-rejection tells us that there is not even enough information in the data to move beyond the banal  null hypothesis
-- Even statistically non-significant data can carry important information (not just for meta-analysis)
+-   p-value is often used as a license for making a claim of a scientific finding (or implied truth) while neglecting many other important considerations ("design of a study, the quality of the measurements, the external evidence for the phenomenon under study, and the validity of assumptions that underlie the data analysis" [@wasserstein2016]
+-   p-value is often used incorrectly (significance chasing a.k.a. p-hacking): (1) multiple statistical tests, (2) choice of data to be presented based on statistical-significance result
+-   p-value is often interpreted incorrectly (such as when non-significant p-value is considered evidence for no difference)
+-   there is (usually almost) no difference between 5.1% and 4.9% significance level
 
+## Critique of NHT 3/3
 
-## Critique of NHT 2/2
-
-- p-value is often used as a license for making a claim of a scientific finding (or implied truth) while neglecting many other important considerations ("design of a study, the quality of the measurements, the external evidence for the phenomenon under study, and the validity of assumptions that underlie the data analysis" CITE ASA)
-- p-value is often used incorrectly (significance chasing a.k.a. p-hacking): (1) multiple statistical tests, (2) choice of data to be presented based on statistical-significance result
-- p-value is often interpreted incorrectly (such as when non-significant p-value is considered evidence for no difference)
-- there is (usually almost) no difference between 5.1% and 4.9% significance level
-
-
-CITE: ASA statement which links to other relevant literature as well https://doi.org/10.1080/00031305.2016.1154108
-
+See the ASA statement which links to plenty of other relevant literature on p-value [@wasserstein2016]
 
 ## Covariance
 
-Measure of joint variability in a linear relationship between two variables. 
+Measure of joint variability in a linear relationship between two variables.
 
-Var(x) = E[(x − μ~x~ )^2^] = E[(x − μ~x~ )*(x − μ~x~ )]
+Var(x) = E[(x − μ~x~ )^2^] = E[(x − μ~x~ )\*(x − μ~x~ )]
 
-Cov(x,y) = E[(x − μ~x~ )*(y − μ~y~ )]
-
+Cov(x,y) = E[(x − μ~x~ )\*(y − μ~y~ )]
 
 ## Visual representation to understand association between two variables
 
@@ -195,7 +186,6 @@ patchwork +   plot_annotation(title = 'Association between university education 
 
 ```
 
-
 ## The value of covariance is rarely useful as the end product
 
 For a set of selected countries:
@@ -208,7 +198,6 @@ cat(paste0("The covariance of population and area is ", cov(countries$population
 ```
 
 ## Correlation is standardized covariance
-
 
 ```{r comment='>'}
 cat(paste0("The correlation of life expectancy and proportion of university degree is ", round(cor(countries$life_exp, countries$uni_prc, use = "complete.obs", method = "pearson"),2)))
@@ -244,8 +233,6 @@ ggplot(X, aes(y,z, group=rho)) +
 
 <font size="1"> Code by whuber from: <https://stats.stackexchange.com/questions/15011/generate-a-random-variable-with-a-defined-correlation-to-an-existing-variables></font>
 
-
-
 # Linear regression: basic building blocks
 
 ## Bivariate linear regression formula: y = α + βx
@@ -257,7 +244,7 @@ ggplot(X, aes(y,z, group=rho)) +
 
 <div>
 
-![Regression plan](../images/linear-regression.png) 
+![Regression plan](../images/linear-regression.png)
 
 <font size="1">Source: <http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/></font>
 
@@ -287,7 +274,6 @@ data %>% ggplot(aes(x=x, y=y, color = group, group=group))+
 
 ```
 
-
 ## The line and the points
 
 <div class="columns-2">
@@ -308,9 +294,10 @@ data %>% ggplot(aes(x=x, y=y, color = group, group=group))+
 ## Error vs. Residual
 
 -   Error = difference between the real value of Y and the real average value of Y for given X
+
 -   Residual = difference between our observed value of Y and our regression model
 
-In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean. Residuals are the deviations of the actual observations we have from the sample conditional mean. Or in other words: observable estimates of the unobservable random errors.
+-   In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean. Residuals are the deviations of the actual observations we have from the sample conditional mean. Or in other words: observable estimates of the unobservable random errors.
 
 ## Ordinary least square (OLS)
 
@@ -347,10 +334,9 @@ ggplot(ss_df,aes(x = x, y = y, label = round(y - pred, 1))) +
   
 ```
 
-<font size="3">For details on how OLS is calculated, see @fox2015[pp. 83]</font>
+<font size="3">For details on how OLS is calculated, see @fox2015 [pp. 83]</font>
 
 <div>
-
 
 ## Regression and t-test
 
@@ -371,19 +357,20 @@ countries %>% mutate(postsoviet = as.numeric(postsoviet=="yes")) %>%
        caption = "Red error bars indicate 95% CI of the mean values")
 ```
 
-
-
 ## Centering predictors for better interpretation
 
-- Centering in OLS - interpretation purposes
-- Centering by subtracting the mean: intercept interpreted y when predictor x is set to its mean 
-- Using conventional centering point (such as subtracting 100 in IQ) 
-
+-   Centering in OLS - interpretation purposes
+-   Centering by subtracting the mean: intercept interpreted y when predictor x is set to its mean
+-   Using conventional centering point (such as subtracting 100 in IQ)
 
 ## Beta-standardized coefficients
 
-- Used to determine relative weight of independent variables: Effect of an increase in X by one standard deviation on Y, also measured in standard deviations. 
-- Usually: standardize all variables (z-scores).
-- Maybe better: standardizing by subtracting the mean and dividing by 2 standard deviations (not 1) - direct comparability with untransformed binary predictors
+-   Used to determine relative weight of independent variables: Effect of an increase in X by one standard deviation on Y, also measured in standard deviations.
+
+    -   Simple: standardize all variables (z-scores).
+
+-   Sometimes better: standardizing by subtracting the mean and dividing by 2 standard deviations (not 1)
+
+    -   Direct comparability with untransformed binary predictors [@gelman2008]
 
 ## References

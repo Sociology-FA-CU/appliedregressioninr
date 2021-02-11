@@ -6,6 +6,7 @@ date: "Last updated in February 2021"
 output:
   ioslides_presentation:
     widescreen: true
+    incremental: true
 csl: "../apa.csl"
 bibliography: references_lecture_01.bib
 ---
@@ -24,10 +25,10 @@ countries <- read.csv(here("data", "countries.csv"))
 
 ## Context
 
-This course is part of a cluster on quantitative methods (taught mostly in R) at the Department of Sociology. The cluster on quantitative methods is under development. We plan that it is all taught in English.
+Cluster on quantitative methods (taught mostly in R and English), under development.
 
--   Clusters are designed to facilitate specialization.
--   There is always one core course in each cluster and a few complementary courses.
+-   Clusters: facilitate specialization.
+-   Cluster = 1 core course + a few complementary courses. 
 
 ## Cluster on quantitative methods:
 
@@ -44,27 +45,27 @@ Planned:
 -   Statistical modeling for network data in R
 -   Design and evaluation of experimental studies
 
-## Proposition
+## Cluster proposition
 
-This course (as well as the entire cluster) is designed to be suitable for social scientists and their needs.
+Designed to be suitable for social scientists and their needs.
 
--   conceptual understanding and practical skills
--   little math (but we provide reference to relevant literature)
+-   conceptual understanding + practical skills
+-   little math (but we provide reference to literature)
 
 ## Goals
 
-After this course, students should:
+Students after this course:
 
--   have a good conceptual understanding of linear regression and its various purposes
--   command related terminology
--   understand related assumptions, when they are relevant, how they can be checked, and how problems with assumptions can be treated
+-   good conceptual understanding of linear regression for various purposes
+-   command terminology
+-   understand assumptions
 -   make well-argued and defensible decisions when conducting their own regression analysis
--   conduct regression analysis and report result and diagnostics in tables and charts
+-   smart reporting
 
 ## Materials
 
--   The course syllabus can found in the Student Information System [HERE](https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&tid=&do=predmet&kod=ASGV00995)
--   This course has a dedicated webpage with course materials, homework, assignment details, and slides at <https://sociology-fa-cu.github.io/appliedregressioninr/>
+-   The course syllabus in the Student Information System [HERE](https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&tid=&do=predmet&kod=ASGV00995)
+-   Dedicated webpage with course materials at <https://sociology-fa-cu.github.io/appliedregressioninr/>
 
 ## Software and hardware
 
@@ -112,6 +113,7 @@ countries %>%
 ## List of all the things regression does:
 
 -   Detect relationships that can be expressed as linear combination of our predictors (but only those you tell it to look for!)
+- END OF LIST
 
 ## So you better be sure the model is specified correctly...
 
@@ -143,9 +145,10 @@ datLong %>%
 3.  Predictive modeling
 4.  Causal inference modeling (aka explanatory modeling)
 
-Computationally, all of these are still the same regression. But our different goals with regression have important implications for our assumptions and for what we report.
 
-See @shmueli2010 for details.
+- Computationally, all of these are the same. 
+- But different goals = different implications for our assumptions and for what we report.
+- See @shmueli2010 for details.
 
 # Different purposes of modeling
 
@@ -155,7 +158,7 @@ See @shmueli2010 for details.
 
 -   Focus on the measurable level (properties of the actually observed data)
 
--   Few assumptions (but it is useful to check for non-linearity, remember Anscombe)
+-   Few assumptions (but remember Anscombe)
 
 -   Example: Is the voter turnout across administrative regions associated with the level of unemployment? What is the average height of people in this class?
 
@@ -170,8 +173,8 @@ See @shmueli2010 for details.
 ## Explanatory modeling (causal inference)
 
 -   Strong role of theory (the theory (not the data) justifies causality)
--   Explanatory goals are related to the concept of truth: understand the underlying causal process, the true model
--   The worst fear of explanatory modeling: bias (to be systematically wrong, invalid)
+-   Understand the underlying causal process, the true model
+-   The worst fear: bias (to be systematically wrong)
 -   Two ways of use: (1) estimating relationship, (2) adjusting for background variables
 
 -   Example: Does exposure to political advertising increase citizens' willingness to vote? Does vegetarian diet in childhood affect height?
@@ -207,7 +210,7 @@ knitr::include_graphics(here("images","adjusting_pre-treatment.png"))
 
 -   "Applied science" (practicality) as opposed to "Basic science"
 
--   The worst fear of predictive modeling: large estimation variance (uncertainty)
+-   The worst fear: large estimation variance (big uncertainty)
 
 -   Example: Predicting likely voters in pre-election survey
 
@@ -259,12 +262,12 @@ For more differences, see @shmueli2010.
 
 -   Predictive modeling should be used more in science because it can
 
-    -   Generating new hypotheses about causal mechanisms (theory-free exploration)
+    -   Generate new hypotheses about causal mechanisms (theory-free exploration)
     -   Help assess usefulness of explanatory theories for practical application
 
 -   In addition, understanding predictability also means understanding un-predictability, which is theoretically important [@taleb2007b].
 
-"An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development." [@shmueli2010]
+- "An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development." [@shmueli2010]
 
 ## Different meanings of the word prediction
 

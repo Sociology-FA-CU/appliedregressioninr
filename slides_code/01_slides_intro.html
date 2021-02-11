@@ -117,25 +117,25 @@ slide:not(.current) .plotly.html-widget{
 
 </article></slide><slide class=""><hgroup><h2>Context</h2></hgroup><article  id="context">
 
-<p>This course is part of a cluster on quantitative methods (taught mostly in R) at the Department of Sociology. The cluster on quantitative methods is under development. We plan that it is all taught in English.</p>
+<p>Cluster on quantitative methods (taught mostly in R and English), under development.</p>
 
-<ul>
-<li>Clusters are designed to facilitate specialization.</li>
-<li>There is always one core course in each cluster and a few complementary courses.</li>
+<ul class = 'build'>
+<li>Clusters: facilitate specialization.</li>
+<li>Cluster = 1 core course + a few complementary courses.</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Cluster on quantitative methods:</h2></hgroup><article  id="cluster-on-quantitative-methods">
 
 <p>Already taught:</p>
 
-<ul>
+<ul class = 'build'>
 <li>Introduction to data analysis in R (recommended first)</li>
 <li><strong>Applied regression in R</strong> (this course, CORE)</li>
 </ul>
 
 <p>Planned:</p>
 
-<ul>
+<ul class = 'build'>
 <li>Generalized linear models in R</li>
 <li>Automated data collection and quantitative text analysis in R</li>
 <li>Social network analysis in R</li>
@@ -143,37 +143,37 @@ slide:not(.current) .plotly.html-widget{
 <li>Design and evaluation of experimental studies</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Proposition</h2></hgroup><article  id="proposition">
+</article></slide><slide class=""><hgroup><h2>Cluster proposition</h2></hgroup><article  id="cluster-proposition">
 
-<p>This course (as well as the entire cluster) is designed to be suitable for social scientists and their needs.</p>
+<p>Designed to be suitable for social scientists and their needs.</p>
 
-<ul>
-<li>conceptual understanding and practical skills</li>
-<li>little math (but we provide reference to relevant literature)</li>
+<ul class = 'build'>
+<li>conceptual understanding + practical skills</li>
+<li>little math (but we provide reference to literature)</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Goals</h2></hgroup><article  id="goals">
 
-<p>After this course, students should:</p>
+<p>Students after this course:</p>
 
-<ul>
-<li>have a good conceptual understanding of linear regression and its various purposes</li>
-<li>command related terminology</li>
-<li>understand related assumptions, when they are relevant, how they can be checked, and how problems with assumptions can be treated</li>
+<ul class = 'build'>
+<li>good conceptual understanding of linear regression for various purposes</li>
+<li>command terminology</li>
+<li>understand assumptions</li>
 <li>make well-argued and defensible decisions when conducting their own regression analysis</li>
-<li>conduct regression analysis and report result and diagnostics in tables and charts</li>
+<li>smart reporting</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Materials</h2></hgroup><article  id="materials">
 
-<ul>
-<li>The course syllabus can found in the Student Information System <a href='https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&amp;tid=&amp;do=predmet&amp;kod=ASGV00995' title=''>HERE</a></li>
-<li>This course has a dedicated webpage with course materials, homework, assignment details, and slides at <a href='https://sociology-fa-cu.github.io/appliedregressioninr/' title=''>https://sociology-fa-cu.github.io/appliedregressioninr/</a></li>
+<ul class = 'build'>
+<li>The course syllabus in the Student Information System <a href='https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&amp;tid=&amp;do=predmet&amp;kod=ASGV00995' title=''>HERE</a></li>
+<li>Dedicated webpage with course materials at <a href='https://sociology-fa-cu.github.io/appliedregressioninr/' title=''>https://sociology-fa-cu.github.io/appliedregressioninr/</a></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Software and hardware</h2></hgroup><article  id="software-and-hardware">
 
-<ul>
+<ul class = 'build'>
 <li>You will need a computer with administor rights (rights to install)</li>
 <li>R, download <a href='https://cran.r-project.org/' title=''>here</a> or the Czech mirror of the same thing <a href='https://mirrors.nic.cz/R/' title=''>here</a></li>
 <li>RStudio, download <a href='https://rstudio.com/products/rstudio/download/#download' title=''>here</a></li>
@@ -195,7 +195,7 @@ Jaromír Mazák
 
 </article></slide><slide class=""><hgroup><h2>Goals for today</h2></hgroup><article  id="goals-for-today">
 
-<ul>
+<ul class = 'build'>
 <li>Understanding different usage of regression analysis (and the thinking behind it)</li>
 </ul>
 
@@ -209,8 +209,9 @@ Jaromír Mazák
 
 </article></slide><slide class=""><hgroup><h2>List of all the things regression does:</h2></hgroup><article  id="list-of-all-the-things-regression-does">
 
-<ul>
+<ul class = 'build'>
 <li>Detect relationships that can be expressed as linear combination of our predictors (but only those you tell it to look for!)</li>
+<li>END OF LIST</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>So you better be sure the model is specified correctly…</h2></hgroup><article  id="so-you-better-be-sure-the-model-is-specified-correctly">
@@ -221,31 +222,33 @@ Jaromír Mazák
 
 </article></slide><slide class=""><hgroup><h2>So it does just the one thing, but it is used for many things</h2></hgroup><article  id="so-it-does-just-the-one-thing-but-it-is-used-for-many-things">
 
-<ol>
+<ol class = 'build'>
 <li>Descriptive modeling</li>
 <li>Sample-to-population inference modeling</li>
 <li>Predictive modeling</li>
 <li>Causal inference modeling (aka explanatory modeling)</li>
 </ol>
 
-<p>Computationally, all of these are still the same regression. But our different goals with regression have important implications for our assumptions and for what we report.</p>
-
-<p>See <span class="cite">Shmueli (2010)</span> for details.</p>
+<ul class = 'build'>
+<li>Computationally, all of these are the same.</li>
+<li>But different goals = different implications for our assumptions and for what we report.</li>
+<li>See <span class="cite">Shmueli (2010)</span> for details.</li>
+</ul>
 
 </article></slide><slide class="segue dark nobackground level1"><hgroup class = 'auto-fadein'><h2>Different purposes of modeling</h2></hgroup><article  id="different-purposes-of-modeling">
 
 </article></slide><slide class=""><hgroup><h2>Descriptive modeling</h2></hgroup><article  id="descriptive-modeling">
 
-<ul>
+<ul class = 'build'>
 <li><p>Goal: Summarizing or representing the data structure in a compact manner (capturing association)</p></li>
 <li><p>Focus on the measurable level (properties of the actually observed data)</p></li>
-<li><p>Few assumptions (but it is useful to check for non-linearity, remember Anscombe)</p></li>
+<li><p>Few assumptions (but remember Anscombe)</p></li>
 <li><p>Example: Is the voter turnout across administrative regions associated with the level of unemployment? What is the average height of people in this class?</p></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Sample-to-population inference modeling</h2></hgroup><article  id="sample-to-population-inference-modeling">
 
-<ul>
+<ul class = 'build'>
 <li><p>Goal: Inferring form a sample properties of a population (too large to observe as a whole)</p></li>
 <li><p>Assumption that the data are sampled from a larger population in a representative manner (or that the data can be adjusted to make inference valid)</p></li>
 <li><p>Example: What is the relationship between age and voter turnout in the Czech Republic? What is the average height of people in the Czech Republic?</p></li>
@@ -253,10 +256,10 @@ Jaromír Mazák
 
 </article></slide><slide class=""><hgroup><h2>Explanatory modeling (causal inference)</h2></hgroup><article  id="explanatory-modeling-causal-inference">
 
-<ul>
+<ul class = 'build'>
 <li><p>Strong role of theory (the theory (not the data) justifies causality)</p></li>
-<li><p>Explanatory goals are related to the concept of truth: understand the underlying causal process, the true model</p></li>
-<li><p>The worst fear of explanatory modeling: bias (to be systematically wrong, invalid)</p></li>
+<li><p>Understand the underlying causal process, the true model</p></li>
+<li><p>The worst fear: bias (to be systematically wrong)</p></li>
 <li><p>Two ways of use: (1) estimating relationship, (2) adjusting for background variables</p></li>
 <li><p>Example: Does exposure to political advertising increase citizens’ willingness to vote? Does vegetarian diet in childhood affect height?</p></li>
 </ul>
@@ -289,19 +292,19 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 </article></slide><slide class=""><hgroup><h2>Predictive modeling</h2></hgroup><article  id="predictive-modeling">
 
-<ul>
+<ul class = 'build'>
 <li><p>Predicting new or future observations</p></li>
 <li><p>Rare in social science academic papers</p></li>
 <li><p>Important in business, but also some other disciplines (epidemiology)</p></li>
 <li><p>Theory often less important, or not at all (data mining, machine learning)</p></li>
 <li><p>&ldquo;Applied science&rdquo; (practicality) as opposed to &ldquo;Basic science&rdquo;</p></li>
-<li><p>The worst fear of predictive modeling: large estimation variance (uncertainty)</p></li>
+<li><p>The worst fear: large estimation variance (big uncertainty)</p></li>
 <li><p>Example: Predicting likely voters in pre-election survey</p></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Summary on different types of modeling</h2></hgroup><article  id="summary-on-different-types-of-modeling">
 
-<ul>
+<ul class = 'build'>
 <li>Descriptive modeling is about association(s): when using linear regression, check linearity of the association</li>
 <li>Sample-to-population inference modeling also makes use of confidence intervals and statistical hypothesis testing (and related assumptions), it is also important how the data was collected</li>
 <li>Explanatory and predictive modeling will be further contrasted against each other (while not incompatible, they are different strategies)</li>
@@ -397,7 +400,7 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 </article></slide><slide class=""><hgroup><h2>Conclusions on explanatory vs. predictive</h2></hgroup><article  id="conclusions-on-explanatory-vs.-predictive">
 
-<ul>
+<ul class = 'build'>
 <li>explanatory modeling focuses on causation, is theory-driven, retrospective, and its priority is minimizing bias</li>
 <li>predictive modeling focuses on prediction, is data-driven (interpretability is not neccessary for good predictions), prospective (practicality), and can accept some bias when this reduces variance (i.e. uncertainty)</li>
 <li>explanatory modeling is more developed within the field of statistics, predictive modeling within computer science</li>
@@ -405,17 +408,16 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 </article></slide><slide class=""><hgroup><h2>What Shmueli (2010) thinks</h2></hgroup><article  id="what-shmueli-2010-thinks">
 
-<ul>
+<ul class = 'build'>
 <li><p>Predictive modeling should be used more in science because it can</p>
 
-<ul>
-<li>Generating new hypotheses about causal mechanisms (theory-free exploration)</li>
+<ul class = 'build'>
+<li>Generate new hypotheses about causal mechanisms (theory-free exploration)</li>
 <li>Help assess usefulness of explanatory theories for practical application</li>
 </ul></li>
 <li><p>In addition, understanding predictability also means understanding un-predictability, which is theoretically important <span class="cite">(Taleb, 2007)</span>.</p></li>
+<li><p>&ldquo;An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development.&rdquo; <span class="cite">(Shmueli, 2010)</span></p></li>
 </ul>
-
-<p>&ldquo;An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development.&rdquo; <span class="cite">(Shmueli, 2010)</span></p>
 
 </article></slide><slide class=""><hgroup><h2>Different meanings of the word prediction</h2></hgroup><article  id="different-meanings-of-the-word-prediction">
 
@@ -423,7 +425,7 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 </article></slide><slide class=""><hgroup><h2>Three ingredients of regression</h2></hgroup><article  id="three-ingredients-of-regression">
 
-<ul>
+<ul class = 'build'>
 <li>Information</li>
 <li>Assumptions</li>
 <li>Interpretation (inference)</li>
@@ -431,7 +433,7 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 </article></slide><slide class=""><hgroup><h2>Information</h2></hgroup><article  id="information">
 
-<ul>
+<ul class = 'build'>
 <li>Data itself (visualize before your model)</li>
 <li>Information related to data collection (e.g. mode of survey, sampling, measurement issues)</li>
 <li>Prior knowledge (theory)</li>
@@ -439,7 +441,7 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 </article></slide><slide class=""><hgroup><h2>Assumptions</h2></hgroup><article  id="assumptions">
 
-<ul>
+<ul class = 'build'>
 <li>Functional form</li>
 <li>Sampling-related assumptions (what population is actually covered, random treatment assignment,…)</li>
 <li>Real-world relevance of the data (accurate responses, responses stable in time, meaningful constructs,…)</li>
@@ -449,7 +451,7 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 <p>We (almost) always use prior knowledge from existing theory. But there are two schools of inference with different view of incorporating prior knowledge directly in the modeling process.</p>
 
-<ul>
+<ul class = 'build'>
 <li>Classical inference (Error statistics, NHT, Frequentist approach): clear (&ldquo;objective&rdquo;) path from data to inferences without relying on external information (estimate from data + confidence interval). Probability of data given hypothesis.</li>
 <li>Bayesian inference: incorporates prior information into inference. Probability of hypothesis given data and prior belief. Enables incorporate relevant information that is not in the model (e.g. publication bias, prior information on average effect size, etc.)</li>
 </ul>
@@ -458,16 +460,16 @@ Note: x-axis is a pre-treatment predictor, not the treatment level
 
 <p>&ldquo;A challenge in serious applied work is how to be critical without being nihilistic, to accept that we can learn from statistical analysis—we can generalize from sample to population, from treatment to control, and from observed measurements to underlying constructs of interest—even while these inferences can be flawed.&rdquo; <span class="cite">(Gelman et al., 2020, p. 13)</span></p>
 
-</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references" class="unnumbered">
+</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  class="unnumbered" id="references">
 
-<div class="references csl-bib-body hanging-indent" id="refs" line-spacing="2">
-<div id="ref-gelman2020" class="csl-entry">
+<div line-spacing="2" id="refs" class="references csl-bib-body hanging-indent">
+<div class="csl-entry" id="ref-gelman2020">
 <p>Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href='https://doi.org/10.1017/9781139161879' title=''>https://doi.org/10.1017/9781139161879</a></p></div>
 
-<div id="ref-shmueli2010" class="csl-entry">
+<div class="csl-entry" id="ref-shmueli2010">
 <p>Shmueli, G. (2010). <em>To Explain or To Predict?</em> <a href='https://doi.org/10.2139/ssrn.1351252' title=''>https://doi.org/10.2139/ssrn.1351252</a></p></div>
 
-<div id="ref-taleb2007b" class="csl-entry">
+<div class="csl-entry" id="ref-taleb2007b">
 <p>Taleb, N. N. (2007). Black Swans and the Domains of Statistics. <em>The American Statistician</em>, <em>61</em>(3), 198–200. <a href='https://doi.org/10.1198/000313007x219996' title=''>https://doi.org/10.1198/000313007x219996</a></p></div></div></article></slide>
 
 
