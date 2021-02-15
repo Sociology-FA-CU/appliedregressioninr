@@ -8,6 +8,7 @@ navbar:
     - text: "Lecture Notes"
       menu:
         - text: "Introduction - goals of regression analysis"
+          href: 01_intro.html
         - text: "Simple linear regression"
         - text: "Multiple linear regression"
         - text: "Model fit"
