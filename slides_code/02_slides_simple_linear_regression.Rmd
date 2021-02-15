@@ -87,7 +87,7 @@ p4 <- data %>% ggplot(aes(y=z, x=""))+geom_violin()+geom_boxplot(width=0.4) + la
 
 ## Sampling distribution 2/2
 
--   Standard deviation of the distribution of a given estimate is called standard error = $ \frac{\sigma}{n} $. Confidence intervals are extension of standard errors, see picture below (beta-hat is the estimate of the regression coefficient beta from the data).
+-   Standard deviation of the distribution of a given estimate is called standard error = $\frac{\sigma}{\sqrt n}$. Confidence intervals are extension of standard errors, see picture below (beta-hat is the estimate of the regression coefficient beta from the data).
 -   P-value: for a t-test of estimates where H0: estimate = 0
 
 ::: {.centered}
@@ -154,12 +154,12 @@ See the ASA statement which links to plenty of other relevant literature on p-va
 Measure of joint variability in a linear relationship between two variables.
 
 $$
-var(x) = E[(x_i - \mu_x)^2] = E[(x_i - \mu_x)*(x_i - \mu_x)] = \frac{(x_i - \mu_x)*(x_z-\mu_z)}{n}
+var(x) = E[(x_i - \mu_x)^2] = E[(x_i - \mu_x)*(x_i - \mu_x)] = \\ \frac{\sum[(x_i - \mu_x)*(x_z-\mu_x)]}{n}
 $$
 <br>
 
 $$
-cov(x) =E[(x_i - \mu_x)*(y_i - \mu_y)] = \frac{(x_i - \mu_x)*(y_i-\mu_y)}{n}
+cov(x) =E[(x_i - \mu_x)*(y_i - \mu_y)] = \\ \frac{\sum[(x_i - \mu_x)*(y_i-\mu_y)]}{n}
 $$
 
 ## Visual representation to understand association between two variables
