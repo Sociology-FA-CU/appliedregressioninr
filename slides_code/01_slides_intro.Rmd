@@ -164,7 +164,7 @@ datLong %>%
 
 ## Sample-to-population inference modeling
 
--   Goal: Inferring form a sample properties of a population (too large to observe as a whole)
+-   Goal: Inferring from a sample properties of a population (too large to observe as a whole)
 
 -   Assumption that the data are sampled from a larger population in a representative manner (or that the data can be adjusted to make inference valid)
 

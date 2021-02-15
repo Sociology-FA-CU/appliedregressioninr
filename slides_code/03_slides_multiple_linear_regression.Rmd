@@ -19,19 +19,23 @@ library(here)
 countries <- read.csv(here("data", "countries.csv"))
 ```
 
-
 ## Goals for today
 
-- Understanding multiple linear regression
-- Building and interpreting multiple linear regression in R
-- Coding categorical predictors as dummy variables
-- Using and interpreting interactions
-
+-   Understanding the concept of multiple linear regression
+-   Building and interpreting multiple linear regression in R
+-   Coding categorical predictors as dummy variables
+-   Using and interpreting interactions
 
 ## Multiple linear regression
 
 -   More than one predictor term
--   Note, more terms does not necessarily mean more predictors!
+-   Simple linear regression: $y = \alpha + \beta*x + \epsilon_i$
+-   Multiple linear regression: $y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i$
+
+
+## Multiple = more predictor terms
+
+Note, more predictor terms does not necessarily mean more predictor variables!
 
 <div>
 
@@ -55,31 +59,92 @@ countries %>%
        y = "response variable on y axis\nhere: life expectancy",
        caption = "life_expectancy = democratic_index + democratic_index^2 + democratic_index^3")
 ```
+
 <div>
+
+## Multiple regression: estimating more complex structures of relationships
+
+-   Descriptive modeling: See effects of individual variables net of the effects of other variables in the model (AKA „when all the other variables are held constant")
+-   Predictive modeling: Improve prediction, more variables = more information on the entry = usually better predictions (but risk of overfitting!)
+-   Modeling for causal inference: adjusting for background variables, discovering potentially spurious relationships
+
 
 
 ## Interpreting coefficients in multivariate regression
 
-- Additional effect: each coefficient represents additional effect of adding the variable in the model
-- In other words: individual coefficients show the conditional effect given all the other variables in the model are already accounted for
-- This implies that coefficients will change when other variables are added to the model (or dropped from the model)
+-   Additional effect: each coefficient represents additional effect of adding the variable in the model
+-   In other words: individual coefficients show the conditional effect given all the other variables in the model are already accounted for
+-   This implies that coefficients will change when other variables are added to the model (or dropped from the model)
 
+## Counterfactual and predictive interpretations
 
-## What multiple regression is used for
+- predictive interpretation: " how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors"
+- counterfactual interpretation (causal): " the coefficient is the expected change in y caused by adding 1 to the relevant predictor" (i.e. changes within individuals, rather than comparisons between individuals)
 
-- Descriptive modeling: See effects of individual variables net of the effects of other variables in the model (AKA „when all the other variables are held constant“)
-- Predictive modeling: Improve prediction, more variables = more information on the entry = usually better predictions (but risk of overfitting!)
-- Modeling for causal inference: adjusting for background variables, discovering potentially spurious relationships
+<font size="1">Source: [@gelman2020, pp. 134]</font>
+
+## Conservative (careful) interpretation: comparisons
+
+To be on the save side, interpret regression coefficients as comparisons between units, not about changes within units, unless you specifically claim causality.
+
+“When comparing two children whose mothers have the same level of education, the child whose mother is x IQ points higher is predicted to have a test score that is 6x higher, on average.”
+
+<font size="1">Source: [@gelman2020, pp. 134]</font>
 
 ## Dummy variables
 
-- Categorical variables among regressors (predictors): (1) binary factors, (2)
+Categorical variables among regressors (predictors) are usually treated as dummies:
 
 
+- Binary factors: transformed to one dummy variable
+- Multivariate factors: transformed into set of binary dummy variables (n-1)
+- Regression coefficients identify differences in group means compared to one reference group
 
-## What are interactions?
-```{r, out.width='80%', fig.cap= "Simplest scenario - comparing treatment and control group", echo=FALSE}
 
-knitr::include_graphics(here("images","estimating_effect.png"))
+## Sets of binary dummy variables
+
+
+```{r}
+set.seed(41)
+dummies <- countries %>% select(di_cat) %>% sample_n(5)
+dummies <- fastDummies::dummy_cols(dummies)
+knitr::kable(dummies)
 ```
-<font size="1">Source: [@gelman2020] </font>
+
+- Next, decide for reference category and do not include it in the model
+- The conditional mean for the reference category will be captured by the intercept
+- The coefficients of the dummies = distances of their conditional mean from the reference category
+
+
+## Main effects and interactions
+
+- There are two kinds of main effects 
+
+    - bivariate association between independent and dependent variable (simple regression) or 
+    - additional effects of multiple independent variables (multiple regression)
+    
+- Main effects in equation: $... +  \beta_i*x_i +...$
+
+- Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable
+
+    - e.g. interaction between smoking and inhaling asbestos in their effect on lung cancer risk
+
+- Interactions in equation: $... +  \beta_1*x_1 + \beta_2*x_2 + \beta_3*x_1*x2 + ...$
+    
+    
+## Interaction effects as "it depends effects"
+
+What is the effect of X on Y? If the answer is "it depends", there is interaction. For example, do you like your food more with ketchup added? It depends, yes, if the food is french fries, no, if the food is sundae. 
+
+<font size="1">Source: Jim Frost "Statistics by Jim" <https://cutt.ly/HkXcMY4></font>
+
+## Interpreting interaction coefficients 
+
+This can be tricky, we will go through it in the lab part of this session. Also see [@gelman2020, pp. 134-136]. 
+
+One things to keep in mind:
+
+- Linear regression is an additive model - sensible interpretation of the effect of any given predictor variables needs to take into account both the main effect and all interactions. 
+
+
+## References

@@ -287,12 +287,12 @@ data %>% ggplot(aes(x=x, y=y, color = group, group=group))+
 
 <div class="columns-2">
 
--   The formula $y = \alpha + \beta_1*x_1$  represents the line
+-   The formula $y = \alpha + \beta*x$  represents the line
 -   But the observed value of Y is usually below or above the line... "the random nature of the dependent variable"
 -   Assumption: randomness in the real World
 -   For convenience in regression: X fixed, Y random
 -   The actual value of Y = linear model + random error term
--   $y = \alpha + \beta_1*x_1 + \epsilon_i$
+-   $y = \alpha + \beta*x + \epsilon_i$
 
 <div>
 

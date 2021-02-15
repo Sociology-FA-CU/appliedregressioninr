@@ -7,7 +7,7 @@ navbar:
       href: index.html
     - text: "Lecture Notes"
       menu:
-        - text: "Purpose and goals of regression analysis"
+        - text: "Introduction - goals of regression analysis"
         - text: "Simple linear regression"
         - text: "Multiple linear regression"
         - text: "Model fit"
