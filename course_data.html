@@ -11,7 +11,7 @@
 
 
 
-<title>Course Annotation</title>
+<title>Data used in the course</title>
 
 <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -370,24 +370,112 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Course Annotation</h1>
+<h1 class="title toc-ignore">Data used in the course</h1>
 
 </div>
 
 
-<p>The course will introduce students to linear regression analysis with emphasis on applied applications in R software. The course is designed for social science students, which is reflected in its focus on a conceptual understanding of linear regression and practical applications in the social sciences. The course contains very little mathematics, but for those interested we refer also to literature with more technical/mathematical treatment of topics covered. After completing the course, students should have a good conceptual understanding of linear regression and the diverse purposes for which it is used (deskription, sample-to-population inference, causal inference, prediction), should command common terminology, understand assumptions associated with regression modelling, be able to verify them and respond adequately in the event of a breach of assumptions. Above all, though, they should be able to make well-argued decisions when conducting their own regression analysis, and they should be able to present and interpret the results of the analysis correctly.</p>
-<p><br></p>
-<div id="lecturers" class="section level3">
-<h3>Lecturers</h3>
-<p>Jaromír Mazák, PhD. (<a href="mailto:Jaromir.Mazak@ff.cuni.cz" class="email">Jaromir.Mazak@ff.cuni.cz</a>)</p>
-<p>Aleš Vomáčka, MSc. (<a href="mailto:alesvomacka@seznam.cz" class="email">alesvomacka@seznam.cz</a>)</p>
-<p><br></p>
+<p>In this course, we employ several datasets</p>
+<div id="countries-dataset" class="section level1">
+<h1>Countries dataset</h1>
+<p>Data on European countries, primarily from Eurostat. It can be downloaded in several formats</p>
+<ul>
+<li><p><strong>Comma separated values format</strong> is available <a href="https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/countries.csv">here</a> (right click and choose <em>Save link as…</em>).</p></li>
+<li><p><strong>RDS format</strong> <a href="https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/countries.rds">here</a>.</p></li>
+</ul>
+<p>The data contains the following variables:</p>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="64%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Jméno proměnné</th>
+<th align="left">Popis</th>
+<th align="left">Zdroj</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">country</td>
+<td align="left">Country name</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">code</td>
+<td align="left">Two digit coutry code</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">gdp</td>
+<td align="left">GDP in the milions of EUR (2018)</td>
+<td align="left">Eurostat</td>
+</tr>
+<tr class="even">
+<td align="left">population</td>
+<td align="left">Country population on the 1.1.2018</td>
+<td align="left">Eurostat</td>
+</tr>
+<tr class="odd">
+<td align="left">area</td>
+<td align="left">Area of the country</td>
+<td align="left">CIA factbook</td>
+</tr>
+<tr class="even">
+<td align="left">eu_member</td>
+<td align="left">Is the country a EU member? (2019)</td>
+<td align="left">European Union</td>
+</tr>
+<tr class="odd">
+<td align="left">postsoviet</td>
+<td align="left">Was the country a member of the Eastern block</td>
+<td align="left">Wikipedia</td>
+</tr>
+<tr class="even">
+<td align="left">life_exp</td>
+<td align="left">Life expectancy at birth (2017)</td>
+<td align="left">UN</td>
+</tr>
+<tr class="odd">
+<td align="left">uni_prc</td>
+<td align="left">% of people with university education between 15-64 years (2018)</td>
+<td align="left">Eurostat</td>
+</tr>
+<tr class="even">
+<td align="left">poverty_risk</td>
+<td align="left">% of people in risk of poverty (2017)</td>
+<td align="left">Eurostat</td>
+</tr>
+<tr class="odd">
+<td align="left">material_dep</td>
+<td align="left">% of people in material deprivation, 3 or less items (2017)</td>
+<td align="left">Eurostat</td>
+</tr>
+<tr class="even">
+<td align="left">hdi</td>
+<td align="left">Human development index (2018)</td>
+<td align="left">UN</td>
+</tr>
+<tr class="odd">
+<td align="left">foundation_date</td>
+<td align="left">Date of founding</td>
+<td align="left">Wikipedia</td>
+</tr>
+<tr class="even">
+<td align="left">maj_belief</td>
+<td align="left">Biggest religious group (2018)</td>
+<td align="left">Pew Researcher Center</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="course-implementation-in-case-of-distance-teachinglearning" class="section level3">
-<h3>Course Implementation in case of Distance Teaching/Learning</h3>
-<p>The lessons will be conducted online according to the time schedule published on the webpage of the Department of Sociology</p>
-<p><strong>Online learning platform</strong>: Zoom (enrolled students will receive the link short before the first session)</p>
-<p><strong>Requirements to pass the course</strong>: same as under normal conditions</p>
+<div id="czech-2017-parliamentary-elections-voter-turnout" class="section level1">
+<h1>Czech 2017 parliamentary elections voter turnout</h1>
+<p>Data on the voter turnout in the Czech 2017 parliamentary elections from the 8th round of the European Social Survey.</p>
+<p><strong>Comma seperated values format</strong> is available <a href="https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/parl_vote_2017.csv">here</a> (right click and choose <em>Save link as…</em>).</p>
+<p>We recommend to download the data and save them ina folder called <code>data</code> together with other materials for the course.</p>
 </div>
 
 

@@ -1,0 +1,42 @@
+---
+title: "Data used in the course"
+output: html_document
+---
+
+In this course, we employ several datasets
+
+# Countries dataset
+
+Data on European countries, primarily from Eurostat. It can be downloaded in several formats
+
+- **Comma separated values format** is available [here](https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/countries.csv) (right click and choose *Save link as...*).
+
+- **RDS format** [here](https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/countries.rds).
+
+The data contains the following variables:
+
+|Jméno proměnné |Popis                                                            |Zdroj                |
+|:--------------|:----------------------------------------------------------------|:--------------------|
+|country        |Country name                                                     |                     |
+|code           |Two digit coutry code                                            |                     |
+|gdp            |GDP in the milions of EUR (2018)                                 |Eurostat             |
+|population     |Country population on the 1.1.2018                               |Eurostat             |
+|area           |Area of the country                                              |CIA factbook         |
+|eu_member      |Is the country a EU member?   (2019)                             |European Union       |
+|postsoviet     |Was the country a member of the Eastern block                    |Wikipedia            |
+|life_exp       |Life expectancy at birth (2017)                                  |UN                   |
+|uni_prc        |% of people with university education between 15-64 years (2018) |Eurostat             |
+|poverty_risk   |% of people in risk of poverty (2017)                            |Eurostat             |
+|material_dep   |% of people in material deprivation, 3 or less items (2017)      |Eurostat             |
+|hdi            |Human development index (2018)                                   |UN                   |
+|foundation_date|Date of founding                                                 |Wikipedia            |
+|maj_belief     |Biggest religious group (2018)                                   |Pew Researcher Center|
+
+
+# Czech 2017 parliamentary elections voter turnout
+
+Data on the voter turnout in the Czech 2017 parliamentary elections from the 8th round of the European Social Survey. 
+
+**Comma seperated values format** is available [here](https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/parl_vote_2017.csv) (right click and choose *Save link as...*).
+
+We recommend to download the data and save them ina folder called `data` together with other materials for the course.

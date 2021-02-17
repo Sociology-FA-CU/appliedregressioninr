@@ -11,7 +11,7 @@
 
 
 
-<title>Course Annotation</title>
+<title>Linearity and normality</title>
 
 <script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -370,24 +370,83 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Course Annotation</h1>
+<h1 class="title toc-ignore">Linearity and normality</h1>
 
 </div>
 
 
-<p>The course will introduce students to linear regression analysis with emphasis on applied applications in R software. The course is designed for social science students, which is reflected in its focus on a conceptual understanding of linear regression and practical applications in the social sciences. The course contains very little mathematics, but for those interested we refer also to literature with more technical/mathematical treatment of topics covered. After completing the course, students should have a good conceptual understanding of linear regression and the diverse purposes for which it is used (deskription, sample-to-population inference, causal inference, prediction), should command common terminology, understand assumptions associated with regression modelling, be able to verify them and respond adequately in the event of a breach of assumptions. Above all, though, they should be able to make well-argued decisions when conducting their own regression analysis, and they should be able to present and interpret the results of the analysis correctly.</p>
-<p><br></p>
-<div id="lecturers" class="section level3">
-<h3>Lecturers</h3>
-<p>Jaromír Mazák, PhD. (<a href="mailto:Jaromir.Mazak@ff.cuni.cz" class="email">Jaromir.Mazak@ff.cuni.cz</a>)</p>
-<p>Aleš Vomáčka, MSc. (<a href="mailto:alesvomacka@seznam.cz" class="email">alesvomacka@seznam.cz</a>)</p>
-<p><br></p>
+<pre class="r"><code>library(tidyverse)
+library(splines)
+library(lspline)
+library(ggeffects)
+
+vote = read.csv(&quot;data/parl_vote_2017.csv&quot;)</code></pre>
+<p>In this chapter, we will look into ways of modeling nonlinear relationship, as well solving the problem of nonconstant variance.</p>
+<div id="modeling-nonlinearity" class="section level1">
+<h1>Modeling nonlinearity</h1>
+<p>There are many ways one could go around modeling nonlinear relationship through regression models. We will present three basic, which are common and easy to implement: a) categorization b ) polynomial functions and c) splines, also called piecewise polynomials.</p>
+<p>For demonstration, we will use data from the eight round of the European Social Survey. More specificaly, data on voter turnouver per age group in the last pairlamentary elections in the Czech republic. Just by ploting the data, we can notice a nonlinear relationship between voter turnout and age:</p>
+<pre class="r"><code>ggplot(data = vote, aes(x = agea, y = vote)) +
+  geom_point() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(x = &quot;Age&quot;, y = &quot;% of respondents who attended the elections&quot;)</code></pre>
+<div class="figure">
+<img src="07_linearity_and_normality_files/figure-html/age-vs-vote-1.png" alt="Age vs voter turnout" width="672" />
+<p class="caption">
+Age vs voter turnout
+</p>
 </div>
-<div id="course-implementation-in-case-of-distance-teachinglearning" class="section level3">
-<h3>Course Implementation in case of Distance Teaching/Learning</h3>
-<p>The lessons will be conducted online according to the time schedule published on the webpage of the Department of Sociology</p>
-<p><strong>Online learning platform</strong>: Zoom (enrolled students will receive the link short before the first session)</p>
-<p><strong>Requirements to pass the course</strong>: same as under normal conditions</p>
+<p>We can reach the same conclusion by fitting a linear model and checking the residual plot:</p>
+<pre class="r"><code>mod_linear = lm(vote ~ agea, data = vote)
+
+plot(mod_linear, which = 1)</code></pre>
+<p><img src="07_linearity_and_normality_files/figure-html/linear-mod-example-1.png" width="672" /></p>
+<p>While the sample size is relatively small, the residual plot suggests that simple linear regression may not give us the full picture on the relationship between age and voter turnout.</p>
+<div id="categorization" class="section level2">
+<h2>Categorization</h2>
+<p>THe easiest and by far the most popular way to model nonlinear relationship between variables is to simply categorize the independent variable. The categorization can be done in multiple ways and choice is mostly arbitrary. The <code>ggplot2</code> is particulary helpful, as it offers three categorization function: <code>cut_interval()</code>, <code>cut_number()</code> and <code>cut_width()</code>.</p>
+<p>The function <code>cut_interval()</code> discretize a metric variable into <code>n</code> group of equal range. For example, to categorize age into three groups with equal range and plot the model:</p>
+<pre class="r"><code>vote$agea_interval = cut_interval(vote$agea, n = 3)
+
+mod_interval = lm(vote ~ agea_interval, data = vote)
+
+plot(ggeffect(mod_interval))</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;lme4&#39;:
+##   method                          from
+##   cooks.distance.influence.merMod car 
+##   influence.merMod                car 
+##   dfbeta.influence.merMod         car 
+##   dfbetas.influence.merMod        car</code></pre>
+<pre><code>## $agea_interval</code></pre>
+<p><img src="07_linearity_and_normality_files/figure-html/cut-interval-example-1.png" width="672" /></p>
+<p>As we can see, the age variable was cut into three groups, each with range of 24.65. Alternatively we can use the <code>cut_number()</code> function to categorize age into <code>n</code> groups with (aproximately) the same number of observations:</p>
+<pre class="r"><code>vote$agea_number = cut_number(vote$agea, n = 3)
+
+mod_number = lm(vote ~ agea_number, data = vote)
+
+plot(ggeffect(mod_number))</code></pre>
+<pre><code>## $agea_number</code></pre>
+<p><img src="07_linearity_and_normality_files/figure-html/cut-number-example-1.png" width="672" /></p>
+<p>The third option is to discretize the metric variable into categories of equal <code>width</code>. This can be done using the <code>cut_width()</code> function:</p>
+<pre class="r"><code>vote$agea_width = cut_width(vote$agea, width  = 30)
+
+mod_width = lm(vote ~ agea_width, data = vote)
+
+plot(ggeffect(mod_width))</code></pre>
+<pre><code>## $agea_width</code></pre>
+<p><img src="07_linearity_and_normality_files/figure-html/cut-width-example-1.png" width="672" /></p>
+<p>The last option is to base the categorization of our data not on the properties of our sample, such as range or quantiles, but determine our the categories according to a theory. For example, in the context of political behaviour, people are often categorized into three cohort: a) age 25 and younger b) 26 to 55 years and c) 56 or more.</p>
+<pre class="r"><code>vote$agea_theory = case_when(
+                             vote$agea &lt;= 25 ~ &quot;25 or less&quot;,
+                             vote$agea &lt;= 55 ~ &quot;26 to 55&quot;,
+                             vote$agea &gt; 55 ~ &quot;55 or more&quot;)
+
+mod_theory = lm(vote ~ agea_theory, data = vote)
+
+plot(ggeffect(mod_theory))</code></pre>
+<pre><code>## $agea_theory</code></pre>
+<p><img src="07_linearity_and_normality_files/figure-html/cut-theory-example-1.png" width="672" /></p>
+</div>
 </div>
 
 

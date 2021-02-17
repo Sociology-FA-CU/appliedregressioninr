@@ -13,7 +13,7 @@
 
 <title>Course literature</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
@@ -23,8 +23,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -79,6 +77,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -288,59 +287,74 @@ $(document).ready(function () {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Lecture Notes
+    Lecture materials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="01_intro.html">Introduction - goals of regression analysis</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Notes</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_intro.html">Introduction - goals of regression analysis</a>
+        </li>
+        <li class="dropdown-header">Simple linear regression</li>
+        <li class="dropdown-header">Multiple linear regression</li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li>
+          <a href="06_assumptions.html">Assumptions of linear models</a>
+        </li>
+        <li>
+          <a href="06_diagnostics.html">Regression diagnostics</a>
+        </li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
     </li>
-    <li class="dropdown-header">Simple linear regression</li>
-    <li class="dropdown-header">Multiple linear regression</li>
-    <li class="dropdown-header">Model fit</li>
-    <li class="dropdown-header">Ploting regression models, marginal effects</li>
-    <li>
-      <a href="06_assumptions.html">Assumptions of linear models</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Slides</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_slides_intro.html">Purpose and goals of regression analysis</a>
+        </li>
+        <li>
+          <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+        </li>
+        <li class="dropdown-header">Multiple linear regression</li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li class="dropdown-header">Assumptions of linear models</li>
+        <li class="dropdown-header">Regression diagnostics</li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
     </li>
-    <li>
-      <a href="06_diagnostics.html">Regression diagnostics</a>
-    </li>
-    <li class="dropdown-header">Linearity and normality</li>
-    <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
+</li>
+<li>
+  <a href="completion_requirements.html">Completion Requirements</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Lecture Slides
+    Data and literature
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_slides_intro.html">Purpose and goals of regression analysis</a>
+      <a href="course_data.html">Course data</a>
     </li>
     <li>
-      <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+      <a href="literature.html">Literature</a>
     </li>
-    <li class="dropdown-header">Multiple linear regression</li>
-    <li class="dropdown-header">Model fit</li>
-    <li class="dropdown-header">Ploting regression models, marginal effects</li>
-    <li class="dropdown-header">Assumptions of linear models</li>
-    <li class="dropdown-header">Regression diagnostics</li>
-    <li class="dropdown-header">Linearity and normality</li>
-    <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
-</li>
-<li class="dropdown-header">Completion Requirements</li>
-<li>
-  <a href="literature.html">Literature</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">

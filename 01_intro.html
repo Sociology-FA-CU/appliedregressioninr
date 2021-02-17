@@ -13,7 +13,7 @@
 
 <title>Intro - different purposes of regression analysis</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
@@ -23,8 +23,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -77,6 +75,29 @@ h6 {
 }
 .table th:not([align]) {
   text-align: left;
+}
+</style>
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
 }
 </style>
 
@@ -288,59 +309,74 @@ $(document).ready(function () {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Lecture Notes
+    Lecture materials
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="01_intro.html">Introduction - goals of regression analysis</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Notes</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_intro.html">Introduction - goals of regression analysis</a>
+        </li>
+        <li class="dropdown-header">Simple linear regression</li>
+        <li class="dropdown-header">Multiple linear regression</li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li>
+          <a href="06_assumptions.html">Assumptions of linear models</a>
+        </li>
+        <li>
+          <a href="06_diagnostics.html">Regression diagnostics</a>
+        </li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
     </li>
-    <li class="dropdown-header">Simple linear regression</li>
-    <li class="dropdown-header">Multiple linear regression</li>
-    <li class="dropdown-header">Model fit</li>
-    <li class="dropdown-header">Ploting regression models, marginal effects</li>
-    <li>
-      <a href="06_assumptions.html">Assumptions of linear models</a>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Slides</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_slides_intro.html">Purpose and goals of regression analysis</a>
+        </li>
+        <li>
+          <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+        </li>
+        <li class="dropdown-header">Multiple linear regression</li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li class="dropdown-header">Assumptions of linear models</li>
+        <li class="dropdown-header">Regression diagnostics</li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
     </li>
-    <li>
-      <a href="06_diagnostics.html">Regression diagnostics</a>
-    </li>
-    <li class="dropdown-header">Linearity and normality</li>
-    <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
+</li>
+<li>
+  <a href="completion_requirements.html">Completion Requirements</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Lecture Slides
+    Data and literature
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_slides_intro.html">Purpose and goals of regression analysis</a>
+      <a href="course_data.html">Course data</a>
     </li>
     <li>
-      <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+      <a href="literature.html">Literature</a>
     </li>
-    <li class="dropdown-header">Multiple linear regression</li>
-    <li class="dropdown-header">Model fit</li>
-    <li class="dropdown-header">Ploting regression models, marginal effects</li>
-    <li class="dropdown-header">Assumptions of linear models</li>
-    <li class="dropdown-header">Regression diagnostics</li>
-    <li class="dropdown-header">Linearity and normality</li>
-    <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
-</li>
-<li class="dropdown-header">Completion Requirements</li>
-<li>
-  <a href="literature.html">Literature</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -386,7 +422,7 @@ $(document).ready(function () {
 <div id="causal-inference-modeling" class="section level2">
 <h2>Causal inference modeling</h2>
 <p>Causal inference modeling (a.k.a. explanatory modeling) is extremely ambitious endeavor. It aims to make causal claims. This is a big challenge. Just like with sample-to-population inference, the arguments for causal inference can never be found directly in the data. Instead, they are derived from theory, from information about the data collection process and they usually rely on several assumptions (they are conditional rather then definitive). Even in a relatively straightforward design of a basic randomized controlled trial, the causal argument relies on theory (counterfactual theory of causation <span class="citation">(Lewis, 1973)</span> coupled with the law of large numbers). This theory is very compelling and almost universally accepted as sufficient for making strong causal inference.</p>
-<p>However, Shmueli <span class="citation">(2010)</span> argues that most causal arguments in social sciences rely on other designs and use observational, rather than experimental data. Here, strong theoretical arguments are key to make a persuasive causal inference. We will not go into much detail about the research strategies which enable making causal arguments, because they are more related to design of a respective study than running and interpreting the model, which is the content of this course. To some very limited extent, we will touch on this issue in the <a href="https://sociology-fa-cu.github.io/appliedregressioninr/06_assumptions.html">lecture on assumptions</a> when we discuss the assumption of validity. For those interested in topic of causal inference in bigger breadth, we think Mastering metrics [@angrist2014] and Counterfactuals and Causal Inference <span class="citation">(Morgan &amp; Winship, 2014)</span> are good books to start with. You may also want to read texts by Judea Pearl, a very influential scholar on causal inference these days (we recommend starting with his overview paper <span class="citation">(Pearl, 2009)</span>].</p>
+<p>However, Shmueli <span class="citation">(2010)</span> argues that most causal arguments in social sciences rely on other designs and use observational, rather than experimental data. Here, strong theoretical arguments are key to make a persuasive causal inference. We will not go into much detail about the research strategies which enable making causal arguments, because they are more related to design of a respective study than running and interpreting the model, which is the content of this course. To some very limited extent, we will touch on this issue in the <a href="https://sociology-fa-cu.github.io/appliedregressioninr/06_assumptions.html">lecture on assumptions</a> when we discuss the assumption of validity. For those interested in topic of causal inference in bigger breadth, we think Mastering metrics <span class="citation">(Angrist &amp; Pischke, 2014)</span> and Counterfactuals and Causal Inference <span class="citation">(Morgan &amp; Winship, 2014)</span> are good books to start with. You may also want to read texts by Judea Pearl, a very influential scholar on causal inference these days (we recommend starting with his overview paper <span class="citation">(Pearl, 2009)</span>].</p>
 <p>Regarding this course, rather than opening a variety of methodological questions related to causal inference, we just want to stress the goals of causal inference modeling, contrast them to goals of other modeling strategies, especially predictive modeling, and underscore the notion that the procedure of conducting regression analysis is different regarding its emphasis and reporting based on our goals.\</p>
 <p>The ultimate goal of causal modeling is to understand the underlying causal process, i.e., the true model which generates the reality around us. The worst fear of causal modeling is bias, i.e. being systematically wrong (rather than being wrong non-systematically due to random chance). There are two ways we use regression for causal inference: (1) we use it for estimating the causal relationship (think of the experimental design), and (2) we use it for adjusting for background variables (also known as conditioning for other variables).</p>
 <p>Examples of questions suitable for causal inference modeling strategies are: “Does exposure to political advertising increase citizens’ willingness to vote?” or “Does vegetarian diet in childhood affect height?”</p>
@@ -415,6 +451,9 @@ $(document).ready(function () {
 <div id="references" class="section level2 unnumbered">
 <h2 class="unnumbered">References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="ref-angrist2014" class="csl-entry">
+Angrist, J. D., &amp; Pischke, J.-S. (2014). <em>Mastering ’metrics: The path from cause to effect</em> (with French flaps edition). Princeton University Press.
+</div>
 <div id="ref-gelman2020" class="csl-entry">
 Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
 </div>
