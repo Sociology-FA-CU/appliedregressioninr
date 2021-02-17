@@ -1,0 +1,97 @@
+---
+title: "Linearity and normality"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r data-and-packages}
+library(tidyverse)
+library(splines)
+library(lspline)
+library(ggeffects)
+
+vote = read.csv("data/parl_vote_2017.csv")
+```
+
+In this chapter, we will look into ways of modeling nonlinear relationship, as well solving the problem of nonconstant variance.
+
+# Modeling nonlinearity
+
+There are many ways one could go around modeling nonlinear relationship through regression models.
+We will present three basic, which are common and easy to implement: a) categorization b ) polynomial functions and c) splines, also called piecewise polynomials.
+
+For demonstration, we will use data from the eight round of the European Social Survey.
+More specificaly, data on voter turnouver per age group in the last pairlamentary elections in the Czech republic.
+Just by ploting the data, we can notice a nonlinear relationship between voter turnout and age:
+
+```{r age-vs-vote, fig.cap="Age vs voter turnout"}
+ggplot(data = vote, aes(x = agea, y = vote)) +
+  geom_point() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(x = "Age", y = "% of respondents who attended the elections")
+```
+
+We can reach the same conclusion by fitting a linear model and checking the residual plot:
+
+```{r linear-mod-example, include=TRUE}
+mod_linear = lm(vote ~ agea, data = vote)
+
+plot(mod_linear, which = 1)
+```
+
+While the sample size is relatively small, the residual plot suggests that simple linear regression may not give us the full picture on the relationship between age and voter turnout.
+
+## Categorization
+
+THe easiest and by far the most popular way to model nonlinear relationship between variables is to simply categorize the independent variable.
+The categorization can be done in multiple ways and choice is mostly arbitrary.
+The `ggplot2` is particulary helpful, as it offers three categorization function: `cut_interval()`, `cut_number()` and `cut_width()`.
+
+The function `cut_interval()` discretize a metric variable into `n` group of equal range.
+For example, to categorize age into three groups with equal range and plot the model:
+
+```{r cut-interval-example, include=TRUE}
+vote$agea_interval = cut_interval(vote$agea, n = 3)
+
+mod_interval = lm(vote ~ agea_interval, data = vote)
+
+plot(ggeffect(mod_interval))
+```
+
+As we can see, the age variable was cut into three groups, each with range of 24.65.
+Alternatively we can use the `cut_number()` function to categorize age into `n` groups with (aproximately) the same number of observations:
+
+```{r cut-number-example, include=TRUE}
+vote$agea_number = cut_number(vote$agea, n = 3)
+
+mod_number = lm(vote ~ agea_number, data = vote)
+
+plot(ggeffect(mod_number))
+```
+
+The third option is to discretize the metric variable into categories of equal `width`. This can be done using the `cut_width()` function:
+
+```{r cut-width-example, include=TRUE}
+vote$agea_width = cut_width(vote$agea, width  = 30)
+
+mod_width = lm(vote ~ agea_width, data = vote)
+
+plot(ggeffect(mod_width))
+```
+
+The last option is to base the categorization of our data not on the properties of our sample, such as range or quantiles, but determine our the categories according to a theory.
+For example, in the context of political behaviour, people are often categorized into three cohort: a) age 25 and younger b) 26 to 55 years and c) 56 or more.
+
+```{r cut-theory-example, include=TRUE}
+vote$agea_theory = case_when(
+                             vote$agea <= 25 ~ "25 or less",
+                             vote$agea <= 55 ~ "26 to 55",
+                             vote$agea > 55 ~ "55 or more")
+
+mod_theory = lm(vote ~ agea_theory, data = vote)
+
+plot(ggeffect(mod_theory))
+```
