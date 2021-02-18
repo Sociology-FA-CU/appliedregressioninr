@@ -82,6 +82,10 @@ knitr::include_graphics(here("images", "lyzar3.jpg"))
 ```
 </div>
 
+```{r, fig.cap="Aleš Vomáčka (the less presentable of the two)"}
+knitr::include_graphics(here("images", "ales_spatnym_prikladem_s.jpg"))
+```
+
 # Introduction to linear regression
 
 ## Goals for today
