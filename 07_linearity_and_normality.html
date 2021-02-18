@@ -13,7 +13,7 @@
 
 <title>Linearity and normality</title>
 
-<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
@@ -23,6 +23,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -77,7 +79,6 @@ h6 {
   text-align: left;
 }
 </style>
-
 
 
 
@@ -319,7 +320,7 @@ $(document).ready(function () {
       <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Slides</a>
       <ul class="dropdown-menu" role="menu">
         <li>
-          <a href="01_slides_intro.html">Purpose and goals of regression analysis</a>
+          <a href="01_slides_intro.html">Introduction - goals of regression analysis</a>
         </li>
         <li>
           <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
@@ -377,8 +378,9 @@ $(document).ready(function () {
 
 <pre class="r"><code>library(tidyverse)
 library(splines)
-library(lspline)
-library(ggeffects)
+library(lspline)</code></pre>
+<pre><code>## Warning: package &#39;lspline&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>library(ggeffects)
 
 vote = read.csv(&quot;data/parl_vote_2017.csv&quot;)</code></pre>
 <p>In this chapter, we will look into ways of modeling nonlinear relationship, as well solving the problem of nonconstant variance.</p>
@@ -411,12 +413,7 @@ plot(mod_linear, which = 1)</code></pre>
 mod_interval = lm(vote ~ agea_interval, data = vote)
 
 plot(ggeffect(mod_interval))</code></pre>
-<pre><code>## Registered S3 methods overwritten by &#39;lme4&#39;:
-##   method                          from
-##   cooks.distance.influence.merMod car 
-##   influence.merMod                car 
-##   dfbeta.influence.merMod         car 
-##   dfbetas.influence.merMod        car</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_interval</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-interval-example-1.png" width="672" /></p>
 <p>As we can see, the age variable was cut into three groups, each with range of 24.65. Alternatively we can use the <code>cut_number()</code> function to categorize age into <code>n</code> groups with (aproximately) the same number of observations:</p>
@@ -425,6 +422,7 @@ plot(ggeffect(mod_interval))</code></pre>
 mod_number = lm(vote ~ agea_number, data = vote)
 
 plot(ggeffect(mod_number))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_number</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-number-example-1.png" width="672" /></p>
 <p>The third option is to discretize the metric variable into categories of equal <code>width</code>. This can be done using the <code>cut_width()</code> function:</p>
@@ -433,6 +431,7 @@ plot(ggeffect(mod_number))</code></pre>
 mod_width = lm(vote ~ agea_width, data = vote)
 
 plot(ggeffect(mod_width))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_width</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-width-example-1.png" width="672" /></p>
 <p>The last option is to base the categorization of our data not on the properties of our sample, such as range or quantiles, but determine our the categories according to a theory. For example, in the context of political behaviour, people are often categorized into three cohort: a) age 25 and younger b) 26 to 55 years and c) 56 or more.</p>
@@ -444,6 +443,7 @@ plot(ggeffect(mod_width))</code></pre>
 mod_theory = lm(vote ~ agea_theory, data = vote)
 
 plot(ggeffect(mod_theory))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_theory</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-theory-example-1.png" width="672" /></p>
 </div>

@@ -26,7 +26,7 @@ navbar:
             - text: "Missing values imputations"
         - text: "Lecture Slides"
           menu:
-            - text: "Purpose and goals of regression analysis"
+            - text: "Introduction - goals of regression analysis"
               href: 01_slides_intro.html
             - text: "Simple linear regression"
               href: 02_slides_simple_linear_regression.html

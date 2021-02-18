@@ -3,7 +3,7 @@ title: "Data used in the course"
 output: html_document
 ---
 
-In this course, we employ several datasets
+In this course, appart from simulating own data for some examples, we employ several datasets.
 
 # Countries dataset
 
