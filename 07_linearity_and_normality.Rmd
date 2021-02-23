@@ -1,6 +1,10 @@
 ---
 title: "Linearity and normality"
 output: html_document
+editor_options: 
+  markdown: 
+    wrap: sentence
+bibliography: references_lecture_07.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -72,7 +76,8 @@ mod_number = lm(vote ~ agea_number, data = vote)
 plot(ggeffect(mod_number))
 ```
 
-The third option is to discretize the metric variable into categories of equal `width`. This can be done using the `cut_width()` function:
+The third option is to discretise the metric variable into categories of equal `width`.
+This can be done using the `cut_width()` function:
 
 ```{r cut-width-example, include=TRUE}
 vote$agea_width = cut_width(vote$agea, width  = 30)
@@ -83,7 +88,7 @@ plot(ggeffect(mod_width))
 ```
 
 The last option is to base the categorization of our data not on the properties of our sample, such as range or quantiles, but determine our the categories according to a theory.
-For example, in the context of political behaviour, people are often categorized into three cohort: a) age 25 and younger b) 26 to 55 years and c) 56 or more.
+For example, in the context of political behavior, people are often categorized into three cohort: a) age 25 and younger b) 26 to 55 years and c) 56 or more.
 
 ```{r cut-theory-example, include=TRUE}
 vote$agea_theory = case_when(
@@ -95,3 +100,19 @@ mod_theory = lm(vote ~ agea_theory, data = vote)
 
 plot(ggeffect(mod_theory))
 ```
+
+While modeling nonlinear relationships using categorization of metric variables is conveniently easy, it also suffer from a number of problems.
+@harrellRegressionModelingStrategies2001 provides a list of major problems, among others:
+
+-   Estimated values will have reduced precision, and associated tests will have reduced power
+
+-   Categorization assumes that the relationship between the predictor and the response is flat within intervals
+
+-   Categorization assumes that there is a discontinuity in response as interval boundaries are crossed.
+
+-   Cutpoints are arbitrary and manipulatable; cutpoints can be found that can result\
+    in both positive and negative associations
+
+For these and more reasons described by Harrel, the categorization of interval variables should be in most cases avoided.
+
+## Polynomials
