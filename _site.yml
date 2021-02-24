@@ -12,6 +12,7 @@ navbar:
             - text: "Introduction - goals of regression analysis"
               href: 01_intro.html
             - text: "Simple linear regression"
+              href: 02_simple_linear_regression.html
             - text: "Multiple linear regression"
             - text: "Model fit"
             - text: "Ploting regression models, marginal effects"

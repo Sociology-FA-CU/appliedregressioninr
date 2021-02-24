@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Simple linear regression</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Notes</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_intro.html">Introduction - goals of regression analysis</a>
+        </li>
+        <li>
+          <a href="02_simple_linear_regression.html">Simple linear regression</a>
+        </li>
+        <li class="dropdown-header">Multiple linear regression</li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li>
+          <a href="06_assumptions.html">Assumptions of linear models</a>
+        </li>
+        <li>
+          <a href="06_diagnostics.html">Regression diagnostics</a>
+        </li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Slides</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_slides_intro.html">Introduction - goals of regression analysis</a>
+        </li>
+        <li>
+          <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+        </li>
+        <li class="dropdown-header">Multiple linear regression</li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li class="dropdown-header">Assumptions of linear models</li>
+        <li class="dropdown-header">Regression diagnostics</li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="completion_requirements.html">Completion Requirements</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Data and literature
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="course_data.html">Course data</a>
+    </li>
+    <li>
+      <a href="literature.html">Literature</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://ksoc.ff.cuni.cz/">Department website</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Simple linear regression</h1>
+
+</div>
+
+
+<p>There are two goals for this lecture. First, we will do a quick recap of some basic concepts from statistics. Second, we will introduce basic building blocks for regression analysis (kind of regression blue print or basic plan) and we will try building and interpreting simple linear regression in R.</p>
+<div id="quick-recap-on-selected-concepts-in-statistics" class="section level1">
+<h1>1 Quick recap on selected concepts in statistics</h1>
+<p>You should already be familiar with the concepts introduced in this section (remember that the course prerequisities are Statistics I and Statistics II), so at this place, we will be very brief about them.</p>
+<div id="variable-its-distribution-variability-and-mean" class="section level2">
+<h2>Variable, its distribution, variability and mean</h2>
+<p>A variable is an attribute, which can take different value. E.g. height is a variable as different people can have different height. So is an opinion of something.</p>
+<p>For a variable with known values, we can construct its distribution. Probability distribution gives probabilities of occurrence of different possible values. We can also show distribution using frequencies, i.e., actual counts, rather than probability distribution.</p>
+<p>Below, there are some commonly used plot types which help understand distribution of a variable visually.</p>
+<p><img src="02_simple_linear_regression_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Variability within a variable can either be expressed visually as distribution (plots above), or it can be expressed with a numeric value, typically variance.</p>
+<p>Variance of the variable z is the expected value of the squared deviation from its mean, we use the following formula:</p>
+<p><span class="math display">\[
+var(z) = E[(z_i-\mu_z)^2] = \frac{\sum (z_i - \bar{z})}{n}
+\]</span></p>
+<p>We typically work with the standard deviation (transformed variance) rather than the variance because standard deviation is on the original scale of the variable distribution. The formula is as follows:</p>
+<p><span class="math display">\[
+\sigma_z = \sqrt{var{(z)}}
+\]</span></p>
+<p>We also use point estimates to simplify a variable. A typical example is arithmetic mean.</p>
+<p>We refer to the arithmetic mean of variable z as E(z) generally, or μ<sub>z</sub> to refer specifically to population mean or <span class="math inline">\(\overline{x}\)</span> to refer to sample mean.</p>
+</div>
+<div id="sampling-distribution" class="section level2">
+<h2>Sampling distribution</h2>
+<p>Imagine you collect a survey sample from population. It is only one of many and many theoretical samples you could have collected (e.g, there are many ways you can sample 1000 people from the Czech population). It follows that when you use the sample to calculate some values from the variables in the sample (mean, variance, … regression coefficient), these are not the only possible values. In fact, each of these values is just one data point from a theoretical distribution of all the different estimates you could calculate from all the possible samples. This theoretical distribution is called sampling distribution.</p>
+<blockquote>
+<p>“The sampling distribution is the set of possible datasets that could have been observed if the data collection process had been re-done, …” <span class="citation">(Gelman et al., 2020, p. 50)</span></p>
+</blockquote>
+<p>Standard deviation of the sampling distribution (i.e., of the distribution of a given estimate) is called standard error and it equals <span class="math inline">\(\frac{\sigma}{\sqrt n}\)</span>.</p>
+<p>Confidence intervals are extension of standard errors. If the distribution is normal, 95 % confidence intervals are constructed by subtracting and adding 2 standard errors to the point estimate, see picture below (beta-hat is the estimate of the regression coefficient beta from the data).</p>
+<p><img src="images/sampling_distribution.PNG" width="50%" style="display: block; margin: auto;" /></p>
+<center>
+<p><font size="1">Source: <span class="citation">(Gelman et al., 2020, p. 51)</span></font></p>
+</center>
+<p>Note that the sampling distribution is not technically normal. It is Student’s t-distribution (or just t-distribution) which will only converge to normal when the number ob observations is large enough, ca 30 and more.</p>
+</div>
+<div id="statistical-significance-and-hypothesis-testing" class="section level2">
+<h2>Statistical significance and hypothesis testing</h2>
+<p>Conventional wisdom: statistical significance is p-value less than 0.05, relative to some null hypothesis (hypothesis of no difference / no effect). Fair enough, but remember that the 0.05 value is arbitrary.</p>
+<blockquote>
+<p>“[p-value is] the probability under a specified statistical model that a statistical summary of the data (e.g., the sample mean difference between two compared groups) would be equal to or more extreme than its observed value” <span class="citation">(Wasserstein &amp; Lazar, 2016)</span></p>
+</blockquote>
+<p>Intuition behind statistical significance: an estimate is said to be NOT statistically significant if the observed value could reasonably be explained by chance.</p>
+<p>This thinking arises from a still dominant yet heavily criticized approach of so called null-hypothesis testing (NHT): - null hypothesis: estimate = 0 - alternative hypothesis: estimate != 0</p>
+</div>
+<div id="critique-of-nht" class="section level2">
+<h2>Critique of NHT</h2>
+<ul>
+<li>NH is unrealistic in social sciences (only a matter of sample size, with enough data, everything is statistically significant)</li>
+<li>NH is theoretically uninteresting (effect size and variations of effect sizes in different groups is what really matters)</li>
+<li>NH is a very low threshold for any analysis, because non-rejection tells us that there is not even enough information in the data to move beyond the banal null hypothesis of no difference.</li>
+<li>Even statistically non-significant data can carry important information (not just for meta-analysis).</li>
+</ul>
+</div>
+<div id="critique-of-malpractice-in-using-p-value" class="section level2">
+<h2>Critique of malpractice in using p-value</h2>
+<ul>
+<li>p-value is often used as a license for making a claim of a scientific finding (or implied truth) while neglecting many other important considerations (“design of a study, the quality of the measurements, the external evidence for the phenomenon under study, and the validity of assumptions that underlie the data analysis.” <span class="citation">(Wasserstein &amp; Lazar, 2016)</span></li>
+<li>p-value is often used incorrectly (significance chasing a.k.a. p-hacking): (1) multiple statistical tests, (2) choice of data to be presented based on statistical-significance result.</li>
+<li>p-value is often interpreted incorrectly (such as when non-significant p-value is considered evidence for no difference).</li>
+<li>There is (usually almost) no difference between 5.1% and 4.9% significance level.</li>
+</ul>
+</div>
+<div id="examining-relationship-between-variables" class="section level2">
+<h2>Examining relationship between variables</h2>
+<p>In social sciences, we often want to know how two variables are associated, i.e., how they vary together (co-vary).</p>
+<p>A basic measure of association is called covariance. Many measures of association draw on it one way or another. It is very closely related to variance. Inspect the the formulas below to see for yourself:</p>
+<p><span class="math display">\[
+var(x) = E[(x_i - \mu_x)^2] = E[(x_i - \mu_x)*(x_i - \mu_x)] = \\ \frac{\sum[(x_i - \mu_x)*(x_z-\mu_x)]}{n}
+\]</span></p>
+<p><br></p>
+<p><span class="math display">\[
+cov(x) =E[(x_i - \mu_x)*(y_i - \mu_y)] = \\ \frac{\sum[(x_i - \mu_x)*(y_i-\mu_y)]}{n}
+\]</span></p>
+<p>The value of covariance is rarely useful as the end product. Just like we prefer standard deviation as a scaled form of variance, we prefer correlation as scaled form of covariance. While standard deviation is scaled to the scale of the original variable, correlation is scaled to take a value between -1 and 1. In this sense, correlation is standardized covariance and measures strength of association.</p>
+<p>If you square Pearson correlation coefficient between two variables, you get the proportion of variance in one variable explained by knowledge of the value for the other variable. This relationship is symmetrical (if x explains 20% of variation in y, then y explains 20% of variation in x). When you think about it, this means that we should not understand correlation coefficient as linear in the sense that increase of correlation coefficient by 0.1 always represent the same increase in the strength of association. If the coefficient is 0.2, we explain only 0.04, i.e., 4% of variance in x by knowing the value of y. If the coefficient is 0.3, it is 9%. If the coefficient is 0.4, it is 16%. So moving from 0.2 to 0.3 means 5 percentage point decrease of unexplained variance, whereas moving from 0.3 to 0.4 means 7 percentage point decrease of unexplained variance.</p>
+<p>Visual representation of different values of Pearson correlation coefficient puts things into perspective:</p>
+<p><img src="02_simple_linear_regression_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><font size="1"> Code by whuber from: <a href="https://stats.stackexchange.com/questions/15011/generate-a-random-variable-with-a-defined-correlation-to-an-existing-variables" class="uri">https://stats.stackexchange.com/questions/15011/generate-a-random-variable-with-a-defined-correlation-to-an-existing-variables</a></font></p>
+<p>Correlation coefficient and regression coefficient are conceptually a different thing. While correlation coefficient shows the strength of association, regression coefficient shows how, on average, the value of y changes when the value of x changes by one unit. The fact that the regression lines in the set of plots above get steeper and steeper as the correlation gets stronger results from the data generation process. But it is no necessity. There can be steeper regression lines between less correlated variables and vice versa. See another set of simulated data below which demonstrate it.</p>
+<p><img src="02_simple_linear_regression_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Finally, the four plots below show that the message sent out by visualization can differ based on the tools we use. The plots below all visualize association between the same two continuous variables. Plotting just the regression line or just the points can send out a fairly different message about the association. Combination of the two seems more appropriate in this particular situation. Also notice that using straight line is not the only way to model association between two variables.</p>
+<p><img src="02_simple_linear_regression_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+</div>
+<div id="linear-regression-basic-building-blocks" class="section level1">
+<h1>2 Linear regression: basic building blocks</h1>
+<p>The simple (i.e., bivariate) regression line has the following formula:</p>
+<p><span class="math display">\[
+y = \alpha + \beta*x
+\]</span></p>
+<p>It can also be generalized as follows:</p>
+<p><span class="math display">\[
+y = \beta_0 + \beta_1*x
+\]</span></p>
+<p><span class="math inline">\(\alpha\)</span> or <span class="math inline">\(\beta_0\)</span> in the generalized version is the intercept, i.e. the value of Y when X = 0.</p>
+<p><span class="math inline">\(\beta\)</span> or <span class="math inline">\(\beta_1\)</span> in the generalized version is the slope, i.e. rate of change in Y when X changes by 1 unit.</p>
+<p>As on the figure below, the actual observations usually do not fall exactly on the line. The difference between the blue regression line and each actual observation is called the error term or residual (more about the difference between the two below) and is shown as red line the figure.</p>
+<p><img src="images/linear-regression.png" width="50%" style="display: block; margin: auto;" /></p>
+<center>
+<p><font size="1">Image source: <a href="http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/" class="uri">http://www.sthda.com/english/articles/40-regression-analysis/167-simple-linear-regression-in-r/</a></font></p>
+</center>
+<p>Hence the full simple regression model has the following formula where epsilon represents the error term for the <em>i-th</em> observation.</p>
+<p><span class="math display">\[
+y = \alpha + \beta*x + \epsilon_i
+\]</span></p>
+<p>We use “error term” to refer to the (theoretical) difference between the real value of Y and the real average value of Y for given X. We use “residual” for the difference between our observed value of Y (can be distorted by measurement error) and our regression model (can be wrong for a variety of reasons). This means that error term is a theoretical concept while the residual is the value available in our data when we do statistical modeling.</p>
+<p>In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean. Residuals are the deviations of the actual observations we have from the sample conditional mean. Residuals are observable estimates of the unobservable random errors.</p>
+<p>As this distinction is theoretical, we often see the terms used interchangeably in practice.</p>
+<div id="ordinary-least-square" class="section level2">
+<h2>Ordinary least square</h2>
+<p>The algorithm used to estimate the regression line works so as to minimize the sum of squares of residuals (Residual Sum of Squares, RSS). Hence linear regression is sometimes also referred to as ordinary least square regression or OLS. For details on how OLS is calculated, see Fox <span class="citation">(2015, p. 83)</span>.</p>
+<p><img src="02_simple_linear_regression_files/figure-html/unnamed-chunk-7-1.png" width="480" /></p>
+<p><span class="math display">\[
+\small Sum\:of\:squares=-2^2+1.1^2+2.8^2+(-4)^2+1.6^2+1.8^2+(-0.3^2)+(-0.2^2)+(-0.1^2)+(-0.7^2)=35.3
+\]</span> <span class="math display">\[
+\small Sum\:of\:residuals=-2+1.1+2.8-4+1.6+1.8-0.3-0.2-0.1-0.7=0
+\]</span></p>
+</div>
+<div id="regression-and-t-test" class="section level2">
+<h2>Regression and t-test</h2>
+<p>The line in the linear regression model can be perceived as conditional mean (as in the picture below). That is reminiscent of t-test. In fact, simple regression with one binary predictor is equivalent to t-test. The regression coefficient of one binary predictor coded as 0 and 1 represents the difference of means of the two groups.</p>
+<p><img src="02_simple_linear_regression_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="centering-predictors-for-better-interpretation" class="section level2">
+<h2>Centering predictors for better interpretation</h2>
+<p>There are two commonly used types of centering. Centering by subtracting the mean results in intercept interpreted as the values of y when predictor x is set to its mean. Alternatively, we can use conventional centering point such such as 100 for IQ. Then the intercept is interpreted as value of y when the IQ is 100.</p>
+<p>The only reason for centering in OLS is for interpretation purposes.</p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="ref-fox2015" class="csl-entry">
+Fox, J. (2015). <em>Applied regression analysis and generalized linear models</em> (Third edition). SAGE Publications, Inc.
+</div>
+<div id="ref-gelman2020" class="csl-entry">
+Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
+</div>
+<div id="ref-wasserstein2016" class="csl-entry">
+Wasserstein, R. L., &amp; Lazar, N. A. (2016). The ASA statement on p-values: Context, process, and purpose. <em>The American Statistician</em>, <em>70</em>(2), 129–133. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

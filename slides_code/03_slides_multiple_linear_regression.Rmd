@@ -146,5 +146,15 @@ One things to keep in mind:
 
 - Linear regression is an additive model - sensible interpretation of the effect of any given predictor variables needs to take into account both the main effect and all interactions. 
 
+## Beta-standardized coefficients
+
+-   Used to determine relative weight of independent variables: Effect of an increase in X by one standard deviation on Y, also measured in standard deviations.
+
+    -   Simple: standardize all variables (z-scores).
+
+-   Sometimes better: standardizing by subtracting the mean and dividing by 2 standard deviations (not 1)
+
+    -   Direct comparability with untransformed binary predictors [@gelman2008]
+
 
 ## References

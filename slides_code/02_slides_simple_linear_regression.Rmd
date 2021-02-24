@@ -168,23 +168,27 @@ $$
 
 p1 <- countries %>% ggplot(aes(x=uni_prc, y=life_exp))+
   geom_point()+
+  scale_y_continuous (limits = c(76,83))+
   labs(x="",
        y="life expectancy")
 
 p2 <- countries %>% ggplot(aes(x=uni_prc, y=life_exp))+
   geom_smooth(method = "lm", se=FALSE)+
+    scale_y_continuous (limits = c(76,83))+
   labs(x="",
        y="")
 
 p3 <- countries %>% ggplot(aes(x=uni_prc, y=life_exp))+
   geom_point()+
   geom_smooth(method = "lm", se=FALSE)+
+    scale_y_continuous (limits = c(76,83))+
   labs(x="percentage of people with university degree",
        y="life expectancy")
 
 p4 <- countries %>% ggplot(aes(x=uni_prc, y=life_exp))+
   geom_point()+
   geom_smooth()+
+    scale_y_continuous (limits = c(76,83))+
   labs(x="percentage of people with university degree",
        y="")
 
@@ -372,14 +376,5 @@ countries %>% mutate(postsoviet = as.numeric(postsoviet=="yes")) %>%
 -   Centering by subtracting the mean: intercept interpreted y when predictor x is set to its mean
 -   Using conventional centering point (such as subtracting 100 in IQ)
 
-## Beta-standardized coefficients
-
--   Used to determine relative weight of independent variables: Effect of an increase in X by one standard deviation on Y, also measured in standard deviations.
-
-    -   Simple: standardize all variables (z-scores).
-
--   Sometimes better: standardizing by subtracting the mean and dividing by 2 standard deviations (not 1)
-
-    -   Direct comparability with untransformed binary predictors [@gelman2008]
 
 ## References
