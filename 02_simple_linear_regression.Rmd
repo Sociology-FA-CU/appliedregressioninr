@@ -51,7 +51,7 @@ knitr::include_graphics(here("images","linear-regression.png"))
 
 </center>
 
-Hence the full simple regression model has the following formula where $\epsilon_i$ represents the error term for the *i-th* observation.
+Hence the full simple regression formula has the following form where $\epsilon_i$ represents the error term for the *i-th* observation.
 
 $$
 y = \alpha + \beta*x + \epsilon_i
