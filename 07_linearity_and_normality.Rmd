@@ -18,6 +18,7 @@ library(lspline)
 library(ggeffects)
 
 vote = read.csv("data/parl_vote_2017.csv")
+un = read.table("data/UnitedNations.txt")
 ```
 
 In this chapter, we will look into ways of modeling nonlinear relationship, as well solving the problem of nonconstant variance.
@@ -116,3 +117,74 @@ While modeling nonlinear relationships using categorization of metric variables 
 For these and more reasons described by Harrel, the categorization of interval variables should be in most cases avoided.
 
 ## Polynomials
+
+Another option for modeling nonlinearity is to use polynomial functions.
+Polynomials functions are ones which include an exponent of a variable.
+An example of a regression model with polynomial function would be
+
+$$
+vote = \beta_0 + \beta_1*age + \beta_2*age^2
+$$
+
+with $age$ being taken to the power of two.
+This effectively replaces the assumption that the relation between vote and age is a straight line with the assumption that the relationship has a shape of a parabola.
+We could also use higher order exponents to model increasingly flexible relationships.
+
+There are two types of polynomials - raw polynomials and orthogonal ones.
+The raw polynomial is simple the variable taken to the power of *k*.
+To use second order raw polynomial in a regression model we can write:
+
+```{r raw-poly-example1, eval=FALSE}
+lm(vote ~ poly(agea, 2, raw = TRUE), data = vote)
+```
+
+or alternatively:
+
+```{r raw-poly-example2, eval=FALSE}
+lm(vote ~ agea + I(agea^2), data = vote)
+```
+
+Note that both give the same result.
+
+On the other hand, orthogonal polynomials are computed in such a way that the variable $x^k$ is uncorrelated, i.e. orthogonal, to the original variable $x$.
+To compute a second order orthogonal polynomial:
+
+```{r orth-poly-example, eval=TRUE}
+lm(lm(vote ~ poly(agea, 2), data = vote))
+```
+
+Which of these two types of polynomials should we choose?
+Both types of polynomials lead to the same model in the terms of fit and predictions.
+The advantage of raw polynomials is that the regression coefficients have the traditional interpretation of *change in* $y$, when $x$ is changed by one and $x^k$ is fixed at zero.
+However, the interpretation of variables transformed in such way is difficult no matter what.
+The major advantage of the orthogonal polynomials is that we can compute the proportion variance explained by each variable and therefore assess its contribution to the predictive power.
+If our goal is to interpret the relationship between variables visually through the marginal effects plots, or if only include the variable as a control, the choice of polynomial type does not matter.
+
+Since we nonlinear relationship are best interpreted visually, we prefer orthogonal polynomials.
+We can visualize a polynomial regression model using the `ggeffects` package:
+
+```{r poly-example}
+mod_poly = lm(vote ~ poly(agea, 2), data = vote)
+
+plot(ggeffect(mod_poly))
+```
+
+While polynomials are often a better option than the categorization approach, they are not without problems.
+The main problem is that polynomial functions are non local [@fox2015: @harrellRegressionModelingStrategies2001], which means that data in one region can strongly influence predicted values in other regions, especially those with small number of observations.
+This means that the polynomial regression curves often get "wiggly" and overly curved at the ends.
+Therefore, polynomial regression tend to provide a good fit only in the regions with most data and are often bad at extrapolation.
+Polynomials are also bad at modeling relationships that are nonlinear only in certain regions and linear in other.
+For example, a second order polynomial leads by definition to the shape of a parabola and the regression has to predict a curve along the entire range of data.
+This means that polynomials are bad at modeling relationship that tend to level of at same point.
+These problems are especially pronounced with higher degrees polynomials.
+
+In the graph below, we can see, how polynomials can be particularly bad at modeling relationships, that are nonlinear in some regions and linear in others.
+The blue line is for second order polynomial, the blue one for third order one.
+
+```{r poly-wiggle, fig.cap="Problem with fitting polynomials to asymptotic data", warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(un, mapping = aes(x = GDPperCapita, y = infantMortality)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ poly(x,2)) +
+  geom_smooth(method = "lm", se = F, formula = y ~ poly(x,3), color = "tomato") +
+  labs(caption = "Blue line = 2nd order polynomial model, red = 3rd order polynomial model")
+```

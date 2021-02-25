@@ -13,7 +13,7 @@
 
 <title>Linearity and normality</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
@@ -23,8 +23,6 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -77,6 +75,29 @@ h6 {
 }
 .table th:not([align]) {
   text-align: left;
+}
+</style>
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
 }
 </style>
 
@@ -378,13 +399,21 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>library(tidyverse)
-library(splines)
-library(lspline)</code></pre>
-<pre><code>## Warning: package &#39;lspline&#39; was built under R version 4.0.3</code></pre>
-<pre class="r"><code>library(ggeffects)
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## &lt;U+221A&gt; ggplot2 3.3.3     &lt;U+221A&gt; purrr   0.3.4
+## &lt;U+221A&gt; tibble  3.0.6     &lt;U+221A&gt; dplyr   1.0.4
+## &lt;U+221A&gt; tidyr   1.1.2     &lt;U+221A&gt; stringr 1.4.0
+## &lt;U+221A&gt; readr   1.4.0     &lt;U+221A&gt; forcats 0.5.1</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(splines)
+library(lspline)
+library(ggeffects)
 
-vote = read.csv(&quot;data/parl_vote_2017.csv&quot;)</code></pre>
+vote = read.csv(&quot;data/parl_vote_2017.csv&quot;)
+un = read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
 <p>In this chapter, we will look into ways of modeling nonlinear relationship, as well solving the problem of nonconstant variance.</p>
 <div id="modeling-nonlinearity" class="section level1">
 <h1>Modeling nonlinearity</h1>
@@ -415,7 +444,6 @@ plot(mod_linear, which = 1)</code></pre>
 mod_interval = lm(vote ~ agea_interval, data = vote)
 
 plot(ggeffect(mod_interval))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_interval</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-interval-example-1.png" width="672" /></p>
 <p>As we can see, the age variable was cut into three groups, each with range of 24.65. Alternatively we can use the <code>cut_number()</code> function to categorize age into <code>n</code> groups with (aproximately) the same number of observations:</p>
@@ -424,7 +452,6 @@ plot(ggeffect(mod_interval))</code></pre>
 mod_number = lm(vote ~ agea_number, data = vote)
 
 plot(ggeffect(mod_number))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_number</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-number-example-1.png" width="672" /></p>
 <p>The third option is to discretise the metric variable into categories of equal <code>width</code>. This can be done using the <code>cut_width()</code> function:</p>
@@ -433,7 +460,6 @@ plot(ggeffect(mod_number))</code></pre>
 mod_width = lm(vote ~ agea_width, data = vote)
 
 plot(ggeffect(mod_width))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_width</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-width-example-1.png" width="672" /></p>
 <p>The last option is to base the categorization of our data not on the properties of our sample, such as range or quantiles, but determine our the categories according to a theory. For example, in the context of political behavior, people are often categorized into three cohort: a) age 25 and younger b) 26 to 55 years and c) 56 or more.</p>
@@ -445,7 +471,6 @@ plot(ggeffect(mod_width))</code></pre>
 mod_theory = lm(vote ~ agea_theory, data = vote)
 
 plot(ggeffect(mod_theory))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_theory</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-theory-example-1.png" width="672" /></p>
 <p>While modeling nonlinear relationships using categorization of metric variables is conveniently easy, it also suffer from a number of problems. <span class="citation">Harrell (2001)</span> provides a list of major problems, among others:</p>
@@ -458,9 +483,46 @@ in both positive and negative associations</p></li>
 </ul>
 <p>For these and more reasons described by Harrel, the categorization of interval variables should be in most cases avoided.</p>
 </div>
-<div id="polynomials" class="section level2 unnumbered">
-<h2 class="unnumbered">Polynomials</h2>
+<div id="polynomials" class="section level2">
+<h2>Polynomials</h2>
+<p>Another option for modeling nonlinearity is to use polynomial functions. Polynomials functions are ones which include an exponent of a variable. An example of a regression model with polynomial function would be</p>
+<p><span class="math display">\[
+vote = \beta_0 + \beta_1*age + \beta_2*age^2
+\]</span></p>
+<p>with <span class="math inline">\(age\)</span> being taken to the power of two. This effectively replaces the assumption that the relation between vote and age is a straight line with the assumption that the relationship has a shape of a parabola. We could also use higher order exponents to model increasingly flexible relationships.</p>
+<p>There are two types of polynomials - raw polynomials and orthogonal ones. The raw polynomial is simple the variable taken to the power of <em>k</em>. To use second order raw polynomial in a regression model we can write:</p>
+<pre class="r"><code>lm(vote ~ poly(agea, 2, raw = TRUE), data = vote)</code></pre>
+<p>or alternatively:</p>
+<pre class="r"><code>lm(vote ~ agea + I(agea^2), data = vote)</code></pre>
+<p>Note that both give the same result.</p>
+<p>On the other hand, orthogonal polynomials are computed in such a way that the variable <span class="math inline">\(x^k\)</span> is uncorrelated, i.e. orthogonal, to the original variable <span class="math inline">\(x\)</span>. To compute a second order orthogonal polynomial:</p>
+<pre class="r"><code>lm(lm(vote ~ poly(agea, 2), data = vote))</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = lm(vote ~ poly(agea, 2), data = vote))
+## 
+## Coefficients:
+##    (Intercept)  poly(agea, 2)1  poly(agea, 2)2  
+##         0.5769          1.0395         -0.4469</code></pre>
+<p>Which of these two types of polynomials should we choose? Both types of polynomials lead to the same model in the terms of fit and predictions. The advantage of raw polynomials is that the regression coefficients have the traditional interpretation of <em>change in</em> <span class="math inline">\(y\)</span>, when <span class="math inline">\(x\)</span> is changed by one and <span class="math inline">\(x^k\)</span> is fixed at zero. However, the interpretation of variables transformed in such way is difficult no matter what. The major advantage of the orthogonal polynomials is that we can compute the proportion variance explained by each variable and therefore assess its contribution to the predictive power. If our goal is to interpret the relationship between variables visually through the marginal effects plots, or if only include the variable as a control, the choice of polynomial type does not matter.</p>
+<p>Since we nonlinear relationship are best interpreted visually, we prefer orthogonal polynomials. We can visualize a polynomial regression model using the <code>ggeffects</code> package:</p>
+<pre class="r"><code>mod_poly = lm(vote ~ poly(agea, 2), data = vote)
+
+plot(ggeffect(mod_poly))</code></pre>
+<pre><code>## $agea</code></pre>
+<p><img src="07_linearity_and_normality_files/figure-html/poly-example-1.png" width="672" /></p>
+<p>While polynomials are often a better option than the categorization approach, they are not without problems. The main problem is that polynomial functions are non local <span class="citation">Harrell (2001)</span>, which means that data in one region can strongly influence predicted values in other regions, especially those with small number of observations. This means that the polynomial regression curves often get “wiggly” and overly curved at the ends. Therefore, polynomial regression tend to provide a good fit only in the regions with most data and are often bad at extrapolation. Polynomials are also bad at modeling relationships that are nonlinear only in certain regions and linear in other. For example, a second order polynomial leads by definition to the shape of a parabola and the regression has to predict a curve along the entire range of data. This means that polynomials are bad at modeling relationship that tend to level of at same point. These problems are especially pronounced with higher degrees polynomials.</p>
+<p>In the graph below, we can see, how polynomials can be particularly bad at modeling relationships, that are nonlinear in some regions and linear in others. The blue line is for second order polynomial, the blue one for third order one.</p>
+<div class="figure">
+<img src="07_linearity_and_normality_files/figure-html/poly-wiggle-1.png" alt="Problem with fitting polynomials to asymptotic data" width="672" />
+<p class="caption">
+Problem with fitting polynomials to asymptotic data
+</p>
+</div>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-fox2015" class="csl-entry">
+Fox, John. 2015. <em>Applied Regression Analysis and Generalized Linear Models</em>. Third edition. Los Angeles: SAGE Publications, Inc.
+</div>
 <div id="ref-harrellRegressionModelingStrategies2001" class="csl-entry">
 Harrell, Frank. 2001. <em>Regression Modeling Strategies: With Applications to Linear Models, Logistic Regression, and Survival Analysis</em>. Springer Series in Statistics. New York: Springer-Verlag. <a href="https://doi.org/10.1007/978-1-4757-3462-1">https://doi.org/10.1007/978-1-4757-3462-1</a>.
 </div>
