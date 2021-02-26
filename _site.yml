@@ -21,6 +21,7 @@ navbar:
             - text: "Regression diagnostics"
               href: 06_diagnostics.html
             - text: "Linearity and normality"
+              href: 07_linearity_and_normality.html
             - text: "Homoscedasticity"
             - text: "Exporting results and multiple models"
             - text: "Prediction and regularization"

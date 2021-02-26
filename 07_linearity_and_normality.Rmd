@@ -5,6 +5,7 @@ editor_options:
   markdown: 
     wrap: sentence
 bibliography: references_lecture_07.bib
+csl: apa.csl
 ---
 
 ```{r setup, include=FALSE}
@@ -188,3 +189,216 @@ ggplot(un, mapping = aes(x = GDPperCapita, y = infantMortality)) +
   geom_smooth(method = "lm", se = F, formula = y ~ poly(x,3), color = "tomato") +
   labs(caption = "Blue line = 2nd order polynomial model, red = 3rd order polynomial model")
 ```
+
+## Splines
+
+Last of the popular options for modeling nonlinearity are splines, also known as piecewise regression.
+The idea behind regression splines is fairly straightforward.
+Instead of trying to fit a single curve through the entire range of data, we can divide the data into smaller bins and fit separate regression lines through each of them.
+
+```{r splines-example, fig.cap="Example of spline function, dividing data into 4 bins"}
+ggplot(aes(x = agea, y = vote), data = vote) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ lspline(x, c(25,50,75))) +
+  geom_vline(xintercept = 25, linetype = "dashed") +
+  geom_vline(xintercept = 50, linetype = "dashed") +
+  geom_vline(xintercept = 75, linetype = "dashed")
+```
+
+All splines are defined by the number of knots, i.e the number of dividing lines.
+In the graph above, we see a visualization of regression model with a linear spline and three knots, which divide the range of data into four bins.
+Formally:
+
+$$
+vote = \beta_0 + \beta_1*age_{<25} + \beta_2*age_{25-50} + \beta_3*age_{50-75} + \beta_3*age_{>75}
+$$
+
+For details on how are spline terms computed, see @harrellRegressionModelingStrategies2001 [pp. 22]
+
+### Linear splines
+
+The most basic type of splines are the linear splines.
+These splines fit a straight line through the individual bins.
+In R, we can use use `lspline()` function from the `lspline` package to fit linear splines, with the argument `knots` specifying the positions of knots/dividing lines.
+For example:
+
+```{r ls-example}
+mod_ls = lm(vote ~ lspline(agea, knots = c(25,50,75)), data = vote )
+```
+
+Linear splines coefficients are interpreted in the same way as any other coefficients, for example looking at the summary of our model:
+
+```{r ls-summary}
+summary(mod_ls)
+```
+
+The first of the regression coefficients after the intercept, called `lspline(agea, knots = c(25, 50, 75))1` tells us the slope of the regression line in the first bin, i.e. for the age of 25 or lower.
+In other words, for people who are 25 years old or younger, we we would expect on average for people one year older to have 0.044 points higher probability of attending elections.
+Analogously, the next regression terms refers to the slope in the second bin, i.e. between 25 and 50 year.
+This coefficient is approximately 0.007 percentage points, showing that the difference in voter turnout based on age are much bigger for the voters below 25 years, than for the middle aged group of people between 25 and 50 years.
+
+As always, we visualize the model using a marginal effects plot.
+However, the `ggeffect` package has some trouble correctly picking values of the independent to evaluate the model at, so we recommend specifying that all values of the independent variable should be evaluated:
+
+```{r ls-marginal-plot}
+plot(ggeffect(mod_ls, terms = "agea [all]"))
+```
+
+In the example above, each of the regression coefficients represents the slope of regression line in a given bin.
+
+There is however another way how linear splines can be specified.
+Instead of the slope itself, the regression coefficients may represent the difference between slopes of two neighboring bins.
+This can be done by setting argument `marginal` to `TRUE`:
+
+```{r ls-marginal, echo=TRUE}
+mod_ls_marg = lm(vote ~ lspline(agea, knots = c(25,50,75), marginal = TRUE), data = vote )
+
+summary(mod_ls_marg)
+```
+
+The first spline coefficient is the same as in the previous model (`0.043930`).
+On the other hand, all the following coefficients changed.
+The second coefficient is now `-0.036903`, which represents the difference in slopes between the first and the second bin.
+To compute the slope in the second bin, we can simply add the two coefficients together, `0.043930 + (-0.036903) = 0.007027`.
+Notice that this is the same number we got in the previous model for the second spline coefficient.
+Analogously, we could compute the slope for the third bin by adding the the first, second and third spline coefficient, et cetera.
+
+Computing linear splines this way is particularly useful if you want to test a hypothesis that the relationship between depended and independent variables changes across certain thresholds.
+For example, if your goal is to test whether the differences in voter turnout based on age differ for people born before and after the fall of the Eastern block, the splines coefficient and its p value can provide this information.
+
+### Natural cubic splines
+
+While linear splines provide an easily interpretable way to model nonlinear relationship, they suffer from the same problem as the simple categorization, namely that the results are heavily dependent on the position of the knots (i.e. how is the data split into bins) and that the placement of the knots is often largely arbitrary.
+
+This problem can be solved by using an useful generalization of linear splines, called natural cubic splines or restricted cubic splines.
+Natural cubic splines are similar to polynomial functions in that we are using a polynomial, more specifically cubic, function to model relationships in our data.
+There are however two distinctions, which make natural cubic splines a better options:
+
+1)  Natural cubic splines divide the data into bins just as linear splines. This solves the problem of non locality, i.e. the fit in one region will not be overly dependent on the fit in other regions.
+2)  The polynomial function is only used in the "inner" bins. In the "outer" bins (i.e. in the first and the last one), a simple linear function is fitted. This reduces the "wiggliness" of the regression line typical for polynomial functions, improves fit at the ends and usually leads to better extrapolation results.
+
+The following graph illustrates how natural cubic splines are fitted.
+The data in the very first and very last bin will always be fitted using straight line, while in the inside bins curves are used.
+
+```{r ns-example-bins, fig.cap= "Natural splines fit polynomials in the inner bins and lines in the outer ones", echo=FALSE}
+ggplot(aes(x = agea, y = vote), data = vote) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ ns(x,2)) +
+  geom_vline(xintercept = quantile(vote$agea, probs = 0.1), linetype = "dashed") +
+  geom_vline(xintercept = quantile(vote$agea, probs = 0.5), linetype = "dashed") +
+  geom_vline(xintercept = quantile(vote$agea, probs = 0.9), linetype = "dashed") +
+  annotate(geom = "text", x = 17, y = 0.9, label = "Linear fit", color = "grey50") +
+  annotate(geom = "text", x = 89, y = 0.9, label = "Linear fit", color = "grey50") +
+  annotate(geom = "text", x = 35, y = 0.9, label = "Cubic fit", color = "grey50") +
+  annotate(geom = "text", x = 65, y = 0.9, label = "Cubic fit", color = "grey50")
+```
+
+The location of the knots can be specified based on theory, however for the natural cubic splines it is customary to put them on quantiles in such a way that the knots are evenly spaced along the entire range of the data.
+The location of the knots for natural cubic splines should also be symmetric around the median.
+The most common locations of the knots, based on their number are [@harrellRegressionModelingStrategies2001, pp. 27]:
+
+| knots |       |        | Quantiles |      |        |        |       |
+|-------|-------|--------|-----------|------|--------|--------|-------|
+| 3     |       | 0.1    | 0.5       | 0.9  |        |        |       |
+| 4     |       | 0.05   | 0.35      | 0.65 | 0.95   |        |       |
+| 5     |       | 0.05   | 0.275     | 0.5  | 0.725  | 0.95   |       |
+| 6     | 0.05  | 0.23   | 0.41      | 0.59 | 0.77   | 0.95   |       |
+| 7     | 0.025 | 0.1833 | 0.33417   | 0.5  | 0.6583 | 0.8167 | 0.975 |
+
+For example, if we decide to use three knots (which would divide the data into four bins), we would place the first knots at the 10th quantile, the second at the 50th quantile and the last one at the 90th quantile.
+More than seven knots are rarely need (in fact three knots are most often satisfactory), but if more are needed, the logic stays the same.
+
+To fit a natural cubic splines in R, we can use the `ns()` function from the `splines` package.
+The number of knots can be specified in two ways.
+First, we can select position of the knots manualy through the `knots` and `Boundary.knots` arguments.
+The `knots` argument is a vector representing the position of the inner knots, while `Boundary.knots` is a vector representing the position of the "boundary knots, i.e. the very first and the very last one.
+
+To place three knots manually according to Harrel's recommendation:
+
+```{r ns-example-manual, eval=FALSE}
+quantile(vote$agea, probs = 0.5) #value of 53
+quantile(vote$agea, probs = c(0.1, 0.9)) #values of 25.8 and 80.2
+
+mod_ns_manual = lm(vote ~ ns(agea, knots = 53, Boundary.knots = c(25.8, 80.2)), data = vote)
+```
+
+The code above a single inner knot at the 50th quantile and two boundary knots, at 10th and 90th quantile.
+Unfortunately, the `ggeffects` package does not seem to play nice with the output of the quantile() function and so it is better to specify the `knots` and the `Boundary.knots` arguments manually.
+
+Alternative approach is to specify the knots through the degrees of freedom.
+The `df` argument places `df - 1` inner knots, plus two boundary knots at the sides.
+Therefore, to place three knots in total, we would specify `df = 2` (a single inner knot + two boundary knots).
+Again, it is better for `ggeffects` to compute marginal effects for all values of the independent variable:
+
+```{r ns-example-df}
+mod_ns_df = lm(vote ~ ns(agea, df = 3), data = vote)
+
+plot(ggeffect(mod_ns_df, terms = "agea [all]"))
+```
+
+It is worth mentioning that the `splines` package places knots by default at slightly different positions that is recommended by @harrellRegressionModelingStrategies2001.
+For example, the boundary knots are placed at the maximum and the minimum of the data, when specified by the `df` argument.
+However, the differences in the final model are generally speaking minimal.
+This can be seen in the graph below, where the differences between the models fitted according to the recommendation by Harrel and the default of the splines package are minimal :
+
+```{r ns-harrel-vs-splines, fig.cap="Natural cubic splines fitted according to Harrel's adviace (blue) and the default splines package setting (red)"}
+ggplot(aes(x = agea, y = vote), data = vote) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ ns(x, knots = 53, Boundary.knots = c(25.8, 80.2)), alpha = 0.5) +
+  geom_smooth(method = "lm", se = F, formula = y ~ ns(x, df = 2), color = "red", alpha = 0.5)
+```
+
+This illustrates the advantage of the natural cubic splines, namely that they are relatively to the arbitrary decisions such as the placements of the knots.
+As long as the number of the knots is identical and they are placed evenly and symmetrically along the range of the data, the results will be mostly the same.
+
+### Selecting the position and the number of knots
+
+While splines represent a very flexible option to plotting nonlinear relationship, the researcher must still select the total number of the knots, as well as where to place them, which introduces some subjectivity to the analysis.
+
+Linear splines are very sensitive to both the number of knots and their position.
+Both should therefore be based on theory and substantive understanding of the domain, as empirically selected placements generally do not reproduce across studies [@harrellRegressionModelingStrategies2001, pp. 19].
+
+Natural/restricted cubic splines are more robust to the exact positions and so the number of knots becomes the main question.
+As a rule of thumb, @harrellRegressionModelingStrategies2001 [pp. 28] recommends three knots for small samples (n \< 30), four knots for medium datasets (30 \< n \< 100) and five knots for large datasets (n \> 100).
+A more empirical way of selection the number of knots is to fit several models, each with different number of knots.
+Since each knot represent additional regression coefficient, we could simply compare models with different number of knots and select the one which has the best fit, after adjusting for the different number of parameters (using e.g. adjusted R Squared or Akaike's Information Criterion).
+
+## Which approach we should use?
+
+We went over three approaches to model nonlinearity: categorization, polynomials and splines.
+Which one should be used when?
+
+Categorization is the most problematic of the approaches, given its sensitivity to cutpoints placements, often unreasonable assumptions of the flat relationships between the variables inside a bin, loss of precision and statistical power, as well as other problems described by Harrel.
+On the other hand, the one big strength of categorization is its simplicity, as most people are able to understand simple means.
+Therefore, categorization should be used when we present our results to lay audience, unfamiliar with interpretation of quantitative data.
+
+Linear splines can be seen as a more flexible version of the categorization approach.
+They still suffer from the arbitrariness of the knots/cutpoints placement, but they do not assume the flat relationship inside bins and, if the knots are properly placed, do not suffer from the loss of statistical power.
+At the same time, the regression coefficient are still easily interpreted without the needs for marginal effect plots.
+Linear splines are therefore ideal when we want to present our model in a table form to professional arguments (which is common at conferences, technical reports and academic papers).
+
+Polynomials in theory represents a simple way to model nonlinear relationship without a need of categorization.
+However, the fact that polynomial functions are non local and by definition have to follow a polynomial function greatly limits their usefulness, as it makes them both unstable and unable to model certain types of non linear relationships.
+This is not helped by the fact that the regression coefficient of polynomial functions are hard to interpret substantially.
+
+Natural/restricted cubic splines are the most flexible way to model nonlinearity presented here.
+They are able to represent relationships of most shapes and do not suffer from the loss of statistical power in the same way as categorization.
+Unlike linear splines, they are also relatively robust to the placement of the knots.
+Their most significant disadvantage is the inability to interpret regression coefficient in a substantive manner, a shortcoming which they share with simple polynomials.
+However, unlike simple polynomials, they can model wide range of relationships, including ones which are nonlinear in some regions and linear in other.
+This is demonstrated in the graph below, which shows the natural splines fit (blue) and the simple polynomial fit (red).
+Despite both models consuming the same number of degrees of freedom (i.e. they both have the same demands in term of sample size), the natural splines model is significantly less "wiggly" and represents the data better than the simply polynomial.
+
+```{r ns-vs-poly-example, fig.cap="Natural cubic splines vs Simple polynomial", warning=FALSE, message=FALSE}
+ggplot(un, mapping = aes(x = GDPperCapita, y = infantMortality)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ ns(x, df = 6)) +
+  geom_smooth(method = "lm", se = F, formula = y ~ poly(x, 5), color = "red")
+```
+
+To summarize: Use categorization when presenting your analysis to lay audience.
+Use linear splines if you present to professionals, but still want interpretable regression coefficients.
+Use natural/restricted cubic splines if you are analyzing potentially complex relationships and are comfortable with using marginal effect plots.
+Avoid simple polynomials altogether.
+
+# References
