@@ -9,9 +9,9 @@ In this course, appart from simulating own data for some examples, we employ sev
 
 Data on European countries, primarily from Eurostat. It can be downloaded in several formats
 
-- **Comma separated values format** is available [here](https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/countries.csv) (right click and choose *Save link as...*).
+- **Comma separated values format** is available [here](https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/countries.csv) (right click and choose *Save link as...*).
 
-- **RDS format** [here](https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/countries.rds).
+- **RDS format** [here](https://github.com/Sociology-FA-CU/appliedregressioninr/raw/main/data/countries.rds).
 
 The data contains the following variables:
 
@@ -37,6 +37,12 @@ The data contains the following variables:
 
 Data on the voter turnout in the Czech 2017 parliamentary elections from the 8th round of the European Social Survey. 
 
-**Comma seperated values format** is available [here](https://github.com/Sociology-FA-CU/appliedregressioninr/blob/main/data/parl_vote_2017.csv) (right click and choose *Save link as...*).
+**Comma seperated values format** is available [here](https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/parl_vote_2017.csv) (right click and choose *Save link as...*).
 
 We recommend to download the data and save them ina folder called `data` together with other materials for the course.
+
+# United Nations data from John Fox
+
+This is United Nations country level data from 1998, originally used by John Fox in his book [Applied Regression Analysis and Generalized Linear Models](https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/index.html)
+
+The data can be downloaded in .txt format [here](https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/UnitedNations.txt) (right click and choose *Save link as...*). The description of the data [here](https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/UnitedNations.pdf).
