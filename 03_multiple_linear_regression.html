@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Multiple linear regression</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Notes</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_intro.html">Introduction - goals of regression analysis</a>
+        </li>
+        <li>
+          <a href="02_simple_linear_regression.html">Simple linear regression</a>
+        </li>
+        <li class="dropdown-header">Multiple linear regression</li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li>
+          <a href="06_assumptions.html">Assumptions of linear models</a>
+        </li>
+        <li>
+          <a href="06_diagnostics.html">Regression diagnostics</a>
+        </li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Slides</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_slides_intro.html">Introduction - goals of regression analysis</a>
+        </li>
+        <li>
+          <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+        </li>
+        <li class="dropdown-header">Multiple linear regression</li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li class="dropdown-header">Assumptions of linear models</li>
+        <li class="dropdown-header">Regression diagnostics</li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="completion_requirements.html">Completion Requirements</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Data and literature
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="course_data.html">Course data</a>
+    </li>
+    <li>
+      <a href="literature.html">Literature</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://ksoc.ff.cuni.cz/">Department website</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Multiple linear regression</h1>
+
+</div>
+
+
+<pre class="r"><code>library(tidyverse)
+library(patchwork)
+library(here)
+
+
+countries &lt;- read.csv(here(&quot;data&quot;, &quot;countries.csv&quot;))</code></pre>
+<p>The goals for this lecture are (1) understanding the concept of multiple linear regression with emphasis on interpretation of its coefficients, and (2) building and interpreting multiple regression models in R. We will also discuss coding categorical predictors as dummy variables and using interaction.</p>
+<div id="introduction-to-multiple-linear-regression" class="section level1">
+<h1>Introduction to multiple linear regression</h1>
+<p>Multiple linear regression (MLR) is defined by having more than one predictor term. Remember the general formula for simple linear regression:</p>
+<p><span class="math display">\[
+y = \alpha + \beta*x + \epsilon_i
+\]</span> The formula for MLR is its fairly straightforward extension. Notice that intercept in MLR is usually called <span class="math inline">\(\beta_0\)</span> rather than <span class="math inline">\(\alpha\)</span>. The other regression coefficients are numbered betas. The numbered x-es stand for predictor terms. <span class="math display">\[
+y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i
+\]</span> Note that having more predictor terms does not necessarily imply using more predictor variables. For example, the blue line in the following figure represents linear model estimated using three predictor terms: democratic index, democratic index to the power of two (quadratic term), and democratic index to the power of three (cubic term). While the model only uses one predictor variable, there are three predictor terms which makes the model a case of MLR. For this model, four betas would be estimated (one of them the intercept).</p>
+<p><img src="03_multiple_linear_regression_files/figure-html/multiple1-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>One of the (many?) common misconceptions about linear regression is that it can only estimate a straight line. That is only true for simple linear regression. From the picture above, it should be clear that in MLR, it is possible to “bend” the line. And not only that.</p>
+<p>Another example of a MLR model is visualized on the figure below. It uses two predictor terms (in this case, they are two distinct independent variables): again, the democratic index, and, in addition, a binary variable whether the country is post-soviet or not. Due to the fact that one of the independent variables is binary, it is possible to visualize the whole model in one two-dimensional figure as two lines. However, more complicated MLR models cannot be meaningfully visualized on top of the raw data like this. What we can do is visualize their results (apart from displaying them as numbers in a table). We will discuss later how it is done, but we should first make clear how the beta coefficients are interpreted in MLR.</p>
+<p><img src="03_multiple_linear_regression_files/figure-html/multiple2-1.png" width="576" style="display: block; margin: auto;" /></p>
+<div id="interpreting-coefficients-in-mlr" class="section level2">
+<h2>Interpreting coefficients in MLR</h2>
+<p>First, let’s run a model where life expectancy is explained with democratic index and percentage of people with university education in 15-64 age category (that is how the variable is defined).</p>
+<pre class="r"><code>fit1 &lt;- lm(life_exp ~ dem_index + uni_prc, data = countries)
+summary (fit1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = life_exp ~ dem_index + uni_prc, data = countries)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.1640 -0.9798 -0.0910  1.4256  3.1522 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   66.300      2.210  30.003  &lt; 2e-16 ***
+## dem_index      1.786      0.415   4.303 0.000149 ***
+## uni_prc       -1.460      6.548  -0.223 0.824979    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.949 on 32 degrees of freedom
+##   (3 observations deleted due to missingness)
+## Multiple R-squared:  0.5517, Adjusted R-squared:  0.5237 
+## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
+<p>The output in the frame with white background above is the raw summary output which appears in R console as response to running the two lines of code. The beta coefficients are in the column called “Estimate.” Specifically, the coefficient for democratic index is 1.786, and the coefficient for university education is -1.460.</p>
+<p>Interpreting coefficients in MLR can be surprisingly tricky as they are, “in part, contingent on the other variables in the model” <span class="citation">(Gelman et al., 2020, p. 131)</span>. This means that they will change when other variables are added to the model or dropped from the model.</p>
+<p>The coefficient <span class="math inline">\(\beta_k\)</span> is the average or expected difference in outcome $\y_k$ , comparing two people who differ by one unit in the predictor xk while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in xk with all the other predictors held constant.</p>
+<p>The best way to interpret coefficients in MLT is as additional effect. This means that each coefficient represents additional effect of adding the variable (more precisely, predictor term) in the model. In other words, individual coefficients show the conditional effect given all the other variables in the model are already accounted for. Another useful way to put this is to say that individual coefficients show the effect of given predictor term when all the other variables are held constant.</p>
+<p>This implies that coefficients in MLR will change when other variables are added to the model or dropped from the model. To demonstrate it,</p>
+<p>The coefficient βk is the average or expected difference in outcome yk , comparing two people who differ by one unit in the predictor xk while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in xk with all the other predictors held constant.</p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="ref-gelman2020" class="csl-entry">
+Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
+</div>
+</div>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

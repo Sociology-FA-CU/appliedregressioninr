@@ -1,0 +1,143 @@
+---
+title: "Multiple linear regression"
+output: html_document
+csl: apa.csl
+bibliography: references.bib
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+```
+
+```{r data-and-packages}
+library(tidyverse)
+library(patchwork)
+library(here)
+
+
+countries <- read.csv(here("data", "countries.csv"))
+```
+
+The goals for this lecture are (1) understanding the concept of multiple
+linear regression with emphasis on interpretation of its coefficients,
+and (2) building and interpreting multiple regression models in R. We
+will also discuss coding categorical predictors as dummy variables and
+using interaction.
+
+# Introduction to multiple linear regression
+
+Multiple linear regression (MLR) is defined by having more than one
+predictor term. Remember the general formula for simple linear
+regression:
+
+$$
+y = \alpha + \beta*x + \epsilon_i
+$$ 
+
+The formula for MLR is its fairly straightforward extension. Notice
+that intercept in MLR is usually called $\beta_0$ rather than $\alpha$.
+The other regression coefficients are numbered betas. The numbered x-es
+stand for predictor terms. 
+
+$$
+y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i
+$$ 
+
+Note that having more predictor terms does not necessarily imply
+using more predictor variables. For example, the blue line in the
+following figure represents linear model estimated using three predictor
+terms: democratic index, democratic index to the power of two (quadratic
+term), and democratic index to the power of three (cubic term). While
+the model only uses one predictor variable, there are three predictor
+terms which makes the model a case of MLR. For this model, four betas
+would be estimated (one of them the intercept).
+
+```{r multiple1, message=FALSE, warning=FALSE, fig.width=5, fig.align="center", echo=FALSE}
+
+countries %>%
+  ggplot(aes(x= dem_index, y = life_exp)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ poly(x,3)) +
+  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
+       y = "response variable on y axis\nhere: life expectancy",
+       caption = "life expectancy = democratic_index + democratic_index^2 + democratic_index^3")
+```
+
+One of the (many?) common misconceptions about linear regression is that
+it can only estimate a straight line. That is only true for simple
+linear regression. From the picture above, it should be clear that in
+MLR, it is possible to "bend" the line. And not only that.
+
+Another example of a MLR model is visualized on the figure below. It
+uses two predictor terms (in this case, they are two distinct
+independent variables): again, the democratic index, and, in addition, a
+binary variable whether the country is post-soviet or not. Due to the
+fact that one of the independent variables is binary, it is possible to
+visualize the whole model in one two-dimensional figure as two lines.
+However, more complicated MLR models cannot be meaningfully visualized
+on top of the raw data like this. What we can do is visualize their
+results (apart from displaying them as numbers in a table). We will
+discuss later how it is done, but we should first make clear how the
+beta coefficients are interpreted in MLR.
+
+```{r multiple2, message=FALSE, warning=FALSE, fig.width=6, fig.align="center", echo=FALSE}
+
+countries %>%
+  ggplot(aes(x= dem_index, y = life_exp, color = postsoviet)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE, formula = y ~ x) +
+  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
+       y = "response variable on y axis\nhere: life expectancy",
+       caption = "life expectancy = democratic index + postsoviet")
+
+```
+
+# Interpreting coefficients in MLR
+
+First, let's run a model where life expectancy is explained with
+democratic index and percentage of people with university education in
+15-64 age category (that is how the variable is defined).
+
+```{r model, include=TRUE}
+
+fit1 <- lm(life_exp ~ dem_index + uni_prc, data = countries)
+summary (fit1)
+```
+
+The output in the frame with white background above is the raw summary
+output which appears in R console as response to running the two lines
+of code. The beta coefficients are in the column called "Estimate".
+Specifically, the coefficient for democratic index is 1.786, and the
+coefficient for university education is -1.460.
+
+Interpreting coefficients in MLR can be surprisingly tricky as they are,
+"in part, contingent on the other variables in the model" [@gelman2020,
+pp. 131]. This means that they will change when other variables are
+added to the model or dropped from the model.
+
+We will cite @gelman2020 on how best to interpret them:  "The coefficient $\beta_k$ is the average or expected difference in outcome $y_k$, comparing two people who differ by one unit in the
+predictor $x_k$ while being equal in all the other predictors. This is
+sometimes stated in shorthand as comparing two people (or, more
+generally, two observational units) that differ in $x_k$ with all the other
+predictors held constant" (p. 131). We also call this conditional effect. 
+
+Within descriptive modeling strategies, we use MLR to see the effects of individual variables net of the effects of all the other variables in the model. Within predictive modeling, we use MLR to improve our predictions over simple linear model (predictions based on just one predictor term often tend to be weak in social sciences). Within explanatory modeling, we use MLR for adjusting for background variables, hence discovering potentially spurious relationships.
+
+## Difference-based vs. change-based interpretations 
+
+There two conceptually slightly different interpretations of MLR coefficients. The difference-based interpretation is well described as "how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors" [@gelman2020, pp. 134]. The change-based interpretation is well described by saying that "the coefficient is the expected change in y caused by adding 1 to the relevant predictor, while leaving all the other predictors in the model unchanged" [@gelman2020, pp. 134]. 
+
+In others words, the difference-based interpretation uses the idea of difference between individuals, whereas the change-based interpretation uses the idea of change within individual. To be on the save side, we recommend interpreting regression coefficients as comparisons between units, not (potential) changes within units, unless one specifically claims causality. The difference-based interpretation is simply more general, hence carries less risk of being used in a misleading way. 
+
+Note that [@gelman2020] use the term "predictive interpretation" instead of difference-based interpretation and "counterfactual" interpretation instead of change-based interpretation.       
+
+
+
+# Main effects and interactions
+
+
+# References

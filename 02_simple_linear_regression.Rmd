@@ -121,6 +121,15 @@ Sometimes, we center the independent variables. The only reason for centering in
 
 There are two commonly used types of centering. Most frequent is centering by subtracting the mean. This results in intercept interpreted as the values of y when predictor x is set to its mean. Alternatively, we can use conventional centering point such such as 100 for IQ. (In this case, the intercept would be interpreted as value of y when the IQ is 100). 
 
+## Dummy variables
+
+Linear regression assumes that both the dependent variable and the independent variable(s) are measured in a metric scale (interval or ratio). If the dependent variable is categorical (or a factor to use the language used in R), we generally need a different model (such as logistic regression). If, however, one or more of the independent variables is categorical, we can still use them in linear regression after transforming them into binaries as binaries are, in a sense, metric variables. 
+
+When we have binary factors, we simply recode them as 0s and 1s and enter in the regression model. With multivariate factors, we have to transform each such factor into a set of binary dummy variables. Then we select one of them which we do not enter in the model (so called reference category) and the rest enters the model (e.g., for a factor with five distinct categories, four dummy variables will enter the model). Regression coefficients for the dummy variables than identify differences in group means compared to the one reference group.   
+
+
+The good news is that we don't have to do the recoding ourselves. We can just enter a factor variable in the model and R will transform it into a set of dummies and leave one out for us.
+
 
 # SECTION 2 Quick recap on selected concepts in statistics
 
