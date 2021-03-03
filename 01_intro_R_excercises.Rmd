@@ -1,0 +1,51 @@
+---
+title: "Purposes of regression analysis - Excercises "
+output:
+  html_document:
+    code_foldin: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = F)
+```
+
+We know of four types of models, based on the the purpose of our analysis:
+
+- Descriptive models
+- Inferential models
+- Causal/explanative models
+- Predictive models
+
+What type of model we would use to answer the following questions? To see the correct answer click the `CODE` button.
+
+
+
+1) What is the effect of raising the minimum wage on the unemployment rate?
+
+```{r question-1}
+"Causal/explanative model"
+```
+
+2) How much revenue can we expect the upcoming advertisement campaign to generate?
+
+```{r question-2}
+"Predictive model"
+```
+
+3) Are women on parental leave in the Czech Republic more likely to be at the risk of poverty than men?
+  
+```{r question-3}
+"Inferential model"
+```
+
+4) Do regions in the Czech Republic with high unemployment rate also have high children mortality?
+
+```{r question-4}
+"Descriptive model"
+```
+
+5) Is there a relationship between education and pro-environmental attitudes in the population of Czech adults?
+
+```{r question-5}
+"Inferential model"
+```
