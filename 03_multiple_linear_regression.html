@@ -13,18 +13,25 @@
 
 <title>Multiple linear regression</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -36,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -53,30 +55,27 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
-h1 {
-  font-size: 34px;
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
 }
-h1.title {
-  font-size: 38px;
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
 }
-h2 {
-  font-size: 30px;
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
 }
-h3 {
-  font-size: 24px;
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
 }
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
+div.csl-indent {
+  margin-left: 2em;
 }
 </style>
 
@@ -88,10 +87,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -108,40 +103,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -169,7 +137,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -181,7 +149,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -192,10 +160,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -207,7 +188,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -302,7 +282,9 @@ $(document).ready(function () {
         <li>
           <a href="02_simple_linear_regression.html">Simple linear regression</a>
         </li>
-        <li class="dropdown-header">Multiple linear regression</li>
+        <li>
+          <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
+        </li>
         <li class="dropdown-header">Model fit</li>
         <li class="dropdown-header">Ploting regression models, marginal effects</li>
         <li>
@@ -311,7 +293,9 @@ $(document).ready(function () {
         <li>
           <a href="06_diagnostics.html">Regression diagnostics</a>
         </li>
-        <li class="dropdown-header">Linearity and normality</li>
+        <li>
+          <a href="07_linearity_and_normality.html">Linearity and normality</a>
+        </li>
         <li class="dropdown-header">Homoscedasticity</li>
         <li class="dropdown-header">Exporting results and multiple models</li>
         <li class="dropdown-header">Prediction and regularization</li>
@@ -327,7 +311,9 @@ $(document).ready(function () {
         <li>
           <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
         </li>
-        <li class="dropdown-header">Multiple linear regression</li>
+        <li>
+          <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
+        </li>
         <li class="dropdown-header">Model fit</li>
         <li class="dropdown-header">Ploting regression models, marginal effects</li>
         <li class="dropdown-header">Assumptions of linear models</li>
@@ -369,7 +355,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -390,15 +376,19 @@ countries &lt;- read.csv(here(&quot;data&quot;, &quot;countries.csv&quot;))</cod
 <p>Multiple linear regression (MLR) is defined by having more than one predictor term. Remember the general formula for simple linear regression:</p>
 <p><span class="math display">\[
 y = \alpha + \beta*x + \epsilon_i
-\]</span> The formula for MLR is its fairly straightforward extension. Notice that intercept in MLR is usually called <span class="math inline">\(\beta_0\)</span> rather than <span class="math inline">\(\alpha\)</span>. The other regression coefficients are numbered betas. The numbered x-es stand for predictor terms. <span class="math display">\[
+\]</span></p>
+<p>The formula for MLR is its fairly straightforward extension. Notice that intercept in MLR is usually called <span class="math inline">\(\beta_0\)</span> rather than <span class="math inline">\(\alpha\)</span>. The other regression coefficients are numbered betas. The numbered x-es stand for predictor terms.</p>
+<p><span class="math display">\[
 y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i
-\]</span> Note that having more predictor terms does not necessarily imply using more predictor variables. For example, the blue line in the following figure represents linear model estimated using three predictor terms: democratic index, democratic index to the power of two (quadratic term), and democratic index to the power of three (cubic term). While the model only uses one predictor variable, there are three predictor terms which makes the model a case of MLR. For this model, four betas would be estimated (one of them the intercept).</p>
+\]</span></p>
+<p>Note that having more predictor terms does not necessarily imply using more predictor variables. For example, the blue line in the following figure represents linear model estimated using three predictor terms: democratic index, democratic index to the power of two (quadratic term), and democratic index to the power of three (cubic term). While the model only uses one predictor variable, there are three predictor terms which makes the model a case of MLR. For this model, four betas would be estimated (one of them the intercept).</p>
 <p><img src="03_multiple_linear_regression_files/figure-html/multiple1-1.png" width="480" style="display: block; margin: auto;" /></p>
 <p>One of the (many?) common misconceptions about linear regression is that it can only estimate a straight line. That is only true for simple linear regression. From the picture above, it should be clear that in MLR, it is possible to “bend” the line. And not only that.</p>
 <p>Another example of a MLR model is visualized on the figure below. It uses two predictor terms (in this case, they are two distinct independent variables): again, the democratic index, and, in addition, a binary variable whether the country is post-soviet or not. Due to the fact that one of the independent variables is binary, it is possible to visualize the whole model in one two-dimensional figure as two lines. However, more complicated MLR models cannot be meaningfully visualized on top of the raw data like this. What we can do is visualize their results (apart from displaying them as numbers in a table). We will discuss later how it is done, but we should first make clear how the beta coefficients are interpreted in MLR.</p>
 <p><img src="03_multiple_linear_regression_files/figure-html/multiple2-1.png" width="576" style="display: block; margin: auto;" /></p>
-<div id="interpreting-coefficients-in-mlr" class="section level2">
-<h2>Interpreting coefficients in MLR</h2>
+</div>
+<div id="interpreting-coefficients-in-mlr" class="section level1">
+<h1>Interpreting coefficients in MLR</h1>
 <p>First, let’s run a model where life expectancy is explained with democratic index and percentage of people with university education in 15-64 age category (that is how the variable is defined).</p>
 <pre class="r"><code>fit1 &lt;- lm(life_exp ~ dem_index + uni_prc, data = countries)
 summary (fit1)</code></pre>
@@ -424,11 +414,17 @@ summary (fit1)</code></pre>
 ## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
 <p>The output in the frame with white background above is the raw summary output which appears in R console as response to running the two lines of code. The beta coefficients are in the column called “Estimate.” Specifically, the coefficient for democratic index is 1.786, and the coefficient for university education is -1.460.</p>
 <p>Interpreting coefficients in MLR can be surprisingly tricky as they are, “in part, contingent on the other variables in the model” <span class="citation">(Gelman et al., 2020, p. 131)</span>. This means that they will change when other variables are added to the model or dropped from the model.</p>
-<p>The coefficient <span class="math inline">\(\beta_k\)</span> is the average or expected difference in outcome $\y_k$ , comparing two people who differ by one unit in the predictor xk while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in xk with all the other predictors held constant.</p>
-<p>The best way to interpret coefficients in MLT is as additional effect. This means that each coefficient represents additional effect of adding the variable (more precisely, predictor term) in the model. In other words, individual coefficients show the conditional effect given all the other variables in the model are already accounted for. Another useful way to put this is to say that individual coefficients show the effect of given predictor term when all the other variables are held constant.</p>
-<p>This implies that coefficients in MLR will change when other variables are added to the model or dropped from the model. To demonstrate it,</p>
-<p>The coefficient βk is the average or expected difference in outcome yk , comparing two people who differ by one unit in the predictor xk while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in xk with all the other predictors held constant.</p>
+<p>We will cite <span class="citation">Gelman et al. (2020)</span> on how best to interpret them: “The coefficient <span class="math inline">\(\beta_k\)</span> is the average or expected difference in outcome <span class="math inline">\(y_k\)</span>, comparing two people who differ by one unit in the predictor <span class="math inline">\(x_k\)</span> while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in <span class="math inline">\(x_k\)</span> with all the other predictors held constant” (p. 131). We also call this conditional effect.</p>
+<p>Within descriptive modeling strategies, we use MLR to see the effects of individual variables net of the effects of all the other variables in the model. Within predictive modeling, we use MLR to improve our predictions over simple linear model (predictions based on just one predictor term often tend to be weak in social sciences). Within explanatory modeling, we use MLR for adjusting for background variables, hence discovering potentially spurious relationships.</p>
+<div id="difference-based-vs.-change-based-interpretations" class="section level2">
+<h2>Difference-based vs. change-based interpretations</h2>
+<p>There two conceptually slightly different interpretations of MLR coefficients. The difference-based interpretation is well described as “how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors” <span class="citation">(Gelman et al., 2020, p. 134)</span>. The change-based interpretation is well described by saying that “the coefficient is the expected change in y caused by adding 1 to the relevant predictor, while leaving all the other predictors in the model unchanged” <span class="citation">(Gelman et al., 2020, p. 134)</span>.</p>
+<p>In others words, the difference-based interpretation uses the idea of difference between individuals, whereas the change-based interpretation uses the idea of change within individual. To be on the save side, we recommend interpreting regression coefficients as comparisons between units, not (potential) changes within units, unless one specifically claims causality. The difference-based interpretation is simply more general, hence carries less risk of being used in a misleading way.</p>
+<p>Note that <span class="citation">(Gelman et al., 2020)</span> use the term “predictive interpretation” instead of difference-based interpretation and “counterfactual” interpretation instead of change-based interpretation.</p>
 </div>
+</div>
+<div id="main-effects-and-interactions" class="section level1">
+<h1>Main effects and interactions</h1>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
@@ -466,7 +462,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
