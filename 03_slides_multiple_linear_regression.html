@@ -150,130 +150,75 @@ slide:not(.current) .plotly.html-widget{
 <li>Modeling for causal inference: adjusting for background variables, discovering potentially spurious relationships</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Interpreting coefficients in multivariate regression</h2></hgroup><article  id="interpreting-coefficients-in-multivariate-regression">
+</article></slide><slide class=""><hgroup><h2>Interpreting coefficients in multivariate regression 1/2</h2></hgroup><article  id="interpreting-coefficients-in-multivariate-regression-12">
 
 <ul>
-<li>Additional effect: each coefficient represents additional effect of adding the variable in the model</li>
-<li>In other words: individual coefficients show the conditional effect given all the other variables in the model are already accounted for</li>
-<li>This implies that coefficients will change when other variables are added to the model (or dropped from the model)</li>
+<li>&ldquo;The coefficient \(\beta_k\) is the average or expected difference in outcome \(y_k\), comparing two people who differ by one unit in the predictor \(x_k\) while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in \(x_k\) with all the other predictors held constant&rdquo; <span class="cite">(Gelman et al., 2020, p. 131)</span></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Counterfactual and predictive interpretations</h2></hgroup><article  id="counterfactual-and-predictive-interpretations">
+</article></slide><slide class=""><hgroup><h2>Interpreting coefficients in multivariate regression 2/2</h2></hgroup><article  id="interpreting-coefficients-in-multivariate-regression-22">
 
 <ul>
-<li>predictive interpretation: &quot; how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors&quot;</li>
-<li>counterfactual interpretation (causal): &quot; the coefficient is the expected change in y caused by adding 1 to the relevant predictor&quot; (i.e. changes within individuals, rather than comparisons between individuals)</li>
+<li>Conditional effect: contingent on the other variables in the model</li>
+<li>Additional effect: each coefficient represents additional effect of adding the variable in the model (all the other variables in the model are already accounted for)</li>
 </ul>
 
-<p><font size="1">Source: <span class="cite">(Gelman et al., 2020, p. 134)</span></font></p>
+</article></slide><slide class=""><hgroup><h2>Difference-based vs. change-based interpretations</h2></hgroup><article  id="difference-based-vs.-change-based-interpretations">
 
-</article></slide><slide class=""><hgroup><h2>Conservative (careful) interpretation: comparisons</h2></hgroup><article  id="conservative-careful-interpretation-comparisons">
+<ul>
+<li>Difference-based: &ldquo;how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors&rdquo;</li>
+<li>Change-based: &ldquo;the coefficient is the expected change in y caused by adding 1 to the relevant predictor&rdquo; (i.e. changes within individuals, rather than comparisons between individuals)</li>
+<li>Note, <span class="cite">Gelman et al. (2020)</span>, pp. 134 use the &ldquo;predictive interpretation&rdquo; for difference-based and &ldquo;counterfactual&rdquo; for change-based interpretation.</li>
+</ul>
+
+</article></slide><slide class=""><hgroup><h2>Difference-based interpretation is more cautious</h2></hgroup><article  id="difference-based-interpretation-is-more-cautious">
 
 <p>To be on the save side, interpret regression coefficients as comparisons between units, not about changes within units, unless you specifically claim causality.</p>
 
-<p>&ldquo;When comparing two children whose mothers have the same level of education, the child whose mother is x IQ points higher is predicted to have a test score that is 6x higher, on average.&rdquo;</p>
-
-<p><font size="1">Source: <span class="cite">(Gelman et al., 2020, p. 134)</span></font></p>
-
-</article></slide><slide class=""><hgroup><h2>Dummy variables</h2></hgroup><article  id="dummy-variables">
-
-<p>Categorical variables among regressors (predictors) are usually treated as dummies:</p>
+</article></slide><slide class=""><hgroup><h2>Beta-standardized coefficients</h2></hgroup><article  id="beta-standardized-coefficients">
 
 <ul>
-<li>Binary factors: transformed to one dummy variable</li>
-<li>Multivariate factors: transformed into set of binary dummy variables (n-1)</li>
-<li>Regression coefficients identify differences in group means compared to one reference group</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Sets of binary dummy variables</h2></hgroup><article  id="sets-of-binary-dummy-variables">
-
-<table class = 'rmdtable'>
-<tr class="header">
-<th align="left">di_cat</th>
-<th align="right">di_cat_Flawed democracy</th>
-<th align="right">di_cat_Full democracy</th>
-<th align="right">di_cat_Hybrid regime</th>
-</tr>
-<tr class="odd">
-<td align="left">Hybrid regime</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">1</td>
-</tr>
-<tr class="even">
-<td align="left">Full democracy</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">Full democracy</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">Flawed democracy</td>
-<td align="right">1</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">Full democracy</td>
-<td align="right">0</td>
-<td align="right">1</td>
-<td align="right">0</td>
-</tr>
-</table>
-
-<ul>
-<li>Next, decide for reference category and do not include it in the model</li>
-<li>The conditional mean for the reference category will be captured by the intercept</li>
-<li>The coefficients of the dummies = distances of their conditional mean from the reference category</li>
+<li>Used to determine relative weight of independent variables: Effect of an increase in X by one standard deviation on Y, also measured in standard deviations.</li>
+<li>Standardize all variables to z-scores</li>
+<li>Sometimes better: standardizing by subtracting the mean and dividing by 2 standard deviations (not 1) - direct comparability with untransformed binary predictors <span class="cite">(<strong>gelman2008?</strong>)</span></li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Main effects and interactions</h2></hgroup><article  id="main-effects-and-interactions">
 
 <ul>
-<li><p>There are two kinds of main effects</p>
+<li><p>Two kinds of main effects</p>
 
 <ul>
-<li><ol>
-<li>bivariate association between independent and dependent variable (simple regression) or</li>
-</ol></li>
-<li><ol>
-<li>additional effects of multiple independent variables (multiple regression)</li>
-</ol></li>
+<li>bivariate association (simple regression) or</li>
+<li>conditional/additional effects (multiple regression)</li>
+<li>main effects in equation: \(... + \beta_i*x_i +...\)</li>
 </ul></li>
-<li><p>Main effects in equation: \(... + \beta_i*x_i +...\)</p></li>
 <li><p>Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable</p>
 
 <ul>
 <li>e.g. interaction between smoking and inhaling asbestos in their effect on lung cancer risk</li>
+<li>interactions in equation: \(... + \beta_1*x_1 + \beta_2*x_2 + \beta_3*x_1*x2 + ...\)</li>
 </ul></li>
-<li><p>Interactions in equation: \(... + \beta_1*x_1 + \beta_2*x_2 + \beta_3*x_1*x2 + ...\)</p></li>
 </ul>
+
+</article></slide><slide class=""><hgroup><h2>Model with interactions vs. two separate models</h2></hgroup><article  id="model-with-interactions-vs.-two-separate-models">
+
+<p>For an interaction of continuous variable with a binary variable, we could also run two separate models. So why not? - one model with interaction term = one fit - one model with interaction term = statistical significance test of the difference of slopes</p>
 
 </article></slide><slide class=""><hgroup><h2>Interaction effects as &ldquo;it depends effects&rdquo;</h2></hgroup><article  id="interaction-effects-as-it-depends-effects">
 
-<p>What is the effect of X on Y? If the answer is &ldquo;it depends,&rdquo; there is interaction. For example, do you like your food more with ketchup added? It depends, yes, if the food is french fries, no, if the food is sundae.</p>
+<p>What is the effect of X on Y? If the answer is &ldquo;it depends,&rdquo; there is interaction.</p>
 
 <p><font size="1">Source: Jim Frost &ldquo;Statistics by Jim&rdquo; <a href='https://cutt.ly/HkXcMY4' title=''>https://cutt.ly/HkXcMY4</a></font></p>
 
 </article></slide><slide class=""><hgroup><h2>Interpreting interaction coefficients</h2></hgroup><article  id="interpreting-interaction-coefficients">
 
-<p>This can be tricky, we will go through it in the lab part of this session. Also see <span class="cite">(Gelman et al., 2020, pp. 134–136)</span>.</p>
+<p>This can be tricky, we will go through it in the lab part of this session. Also see <span class="cite">(Gelman et al., 2020, pp. 134–136)</span> for general comments and <span class="cite">(Gelman et al., 2020, pp. 185–187)</span> for the effect of centering variables in models with interactions.</p>
 
-<p>One things to keep in mind:</p>
+</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references" class="unnumbered">
 
-<ul>
-<li>Linear regression is an additive model - sensible interpretation of the effect of any given predictor variables needs to take into account both the main effect and all interactions.</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  class="unnumbered" id="references">
-
-<div line-spacing="2" id="refs" class="references csl-bib-body hanging-indent">
-<div class="csl-entry" id="ref-gelman2020">
+<div id="refs" line-spacing="2" class="references csl-bib-body hanging-indent">
+<div id="ref-gelman2020" class="csl-entry">
 <p>Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href='https://doi.org/10.1017/9781139161879' title=''>https://doi.org/10.1017/9781139161879</a></p></div></div></article></slide>
 
 

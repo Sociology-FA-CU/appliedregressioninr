@@ -131,6 +131,27 @@ countries %>% mutate(postsoviet = as.numeric(postsoviet=="yes")) %>%
 -   Centering by subtracting the mean: intercept interpreted y when predictor x is set to its mean
 -   Using conventional centering point (such as subtracting 100 in IQ)
 
+## Dummy variables
+
+Categorical variables among predictors are usually treated as dummies:
+
+-   Binary factors: transformed to one dummy variable
+-   Multivariate factors: transformed into set of binary dummy variables (n-1)
+-   Regression coefficients identify differences in group means compared to one reference group
+
+## Sets of binary dummy variables
+
+```{r}
+set.seed(41)
+dummies <- countries %>% select(di_cat) %>% sample_n(5)
+dummies <- fastDummies::dummy_cols(dummies)
+knitr::kable(dummies)
+```
+
+-   Decide for reference category and do not include it in the model
+-   The mean for the reference category will be captured by the intercept
+-   The coefficients of the dummies = distances of their conditional mean from the reference category
+
 # Let's see this in R
 
 # Recap on selected concepts in statistics

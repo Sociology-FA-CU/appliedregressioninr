@@ -3,6 +3,9 @@
 browseURL("http://www.stat.columbia.edu/~gelman/standardize/")
 
 
+# simulation --------------------------------------------------------------
+
+
 
 # gender
 women <- rep("woman", 1000)
@@ -68,7 +71,7 @@ fit5 <- lm(income ~ yoe + gender_w + yoe*gender_w, data=fake)
 summary(fit5)
 
 
-# visualizing interactions
+# visualizing interactions - next session
 
 # interaction
 

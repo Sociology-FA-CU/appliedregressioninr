@@ -283,6 +283,11 @@ between men and women.
 [TBD - TABLE AND FIGURE TO ILUSTRATE THIS, EXAMPLE OF EQUATION FOR
 SELECTED INDIVIDUALS]
 
+## Model with interaction VS. two separate models
+
+If we are interested in an interaction between two continuous variables, we have no other option than running a model with interaction. However, when we are interested in an interation between one continuous and one binary variable, we could also be tempted to run two separate models, one for men and one for women. This would not be a horrible solution. The estimated effected sizes would be the same. However, we would not be able to calculate the overall fit of the model (we will talk about model fit in one of the next sessions), and we would not have the estimate of standard error of the difference of slopes between men and women. So unlike in the model with interaction, we would not be able to say if the didference in slope between the two genders is statistically significant. 
+
+
 ## Centering variables in models with interaction
 
 We saw above that some of the interpretations of main effects can be difficult or not very useful when models contain interactions. Indeed, they are estimated with the other independent variables fixed at 0. And the 0 can be very unrealistic such as in case of years of education above. 
