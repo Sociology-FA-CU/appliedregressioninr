@@ -5,7 +5,7 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Lecture materials"
+    - text: "Lectures"
       menu:
         - text: "Lecture Notes"
           menu:
@@ -44,9 +44,27 @@ navbar:
             - text: "Exporting results and multiple models"
             - text: "Prediction and regularization"
             - text: "Missing values imputations"
+    - text: "Homework"
+      menu:
+            - text: "Introduction - goals of regression analysis"
+              href: 01_intro_R_excercises.html
+            - text: "Simple linear regression"
+              href: 02_simple_linear_regression_excercises.html
+            - text: "Multiple linear regression"
+              href: 03_multiple_linear_regression_excercises.html
+            - text: "Interactions"
+            - text: "Model fit"
+            - text: "Ploting regression models, marginal effects"
+            - text: "Assumptions of linear models"
+            - text: "Regression diagnostics"
+            - text: "Linearity and normality"
+            - text: "Homoscedasticity"
+            - text: "Exporting results and multiple models"
+            - text: "Prediction and regularization"
+            - text: "Missing values imputations"
     - text: "Completion Requirements"
       href: completion_requirements.html
-    - text: "Data and literature"
+    - text: "Materials"
       menu:
         - text: "Course data"
           href: course_data.html
