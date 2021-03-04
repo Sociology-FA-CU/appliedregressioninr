@@ -36,25 +36,25 @@ regression:
 
 $$
 y = \alpha + \beta*x + \epsilon_i
-$$ 
+$$
 
-The formula for MLR is its fairly straightforward extension. Notice
-that intercept in MLR is usually called $\beta_0$ rather than $\alpha$.
-The other regression coefficients are numbered betas. The numbered x-es
-stand for predictor terms. 
+The formula for MLR is its fairly straightforward extension. Notice that
+intercept in MLR is usually called $\beta_0$ rather than $\alpha$. The
+other regression coefficients are numbered betas. The numbered x-es
+stand for predictor terms.
 
 $$
 y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i
-$$ 
+$$
 
-Note that having more predictor terms does not necessarily imply
-using more predictor variables. For example, the blue line in the
-following figure represents linear model estimated using three predictor
-terms: democratic index, democratic index to the power of two (quadratic
-term), and democratic index to the power of three (cubic term). While
-the model only uses one predictor variable, there are three predictor
-terms which makes the model a case of MLR. For this model, four betas
-would be estimated (one of them the intercept).
+Note that having more predictor terms does not necessarily imply using
+more predictor variables. For example, the blue line in the following
+figure represents linear model estimated using three predictor terms:
+democratic index, democratic index to the power of two (quadratic term),
+and democratic index to the power of three (cubic term). While the model
+only uses one predictor variable, there are three predictor terms which
+makes the model a case of MLR. For this model, four betas would be
+estimated (one of them the intercept).
 
 ```{r multiple1, message=FALSE, warning=FALSE, fig.width=5, fig.align="center", echo=FALSE}
 
@@ -102,7 +102,7 @@ First, let's run a model where life expectancy is explained with
 democratic index and percentage of people with university education in
 15-64 age category (that is how the variable is defined).
 
-```{r model, include=TRUE}
+```{r model2, include=TRUE}
 
 fit1 <- lm(life_exp ~ dem_index + uni_prc, data = countries)
 summary (fit1)
@@ -119,25 +119,144 @@ Interpreting coefficients in MLR can be surprisingly tricky as they are,
 pp. 131]. This means that they will change when other variables are
 added to the model or dropped from the model.
 
-We will cite @gelman2020 on how best to interpret them:  "The coefficient $\beta_k$ is the average or expected difference in outcome $y_k$, comparing two people who differ by one unit in the
-predictor $x_k$ while being equal in all the other predictors. This is
-sometimes stated in shorthand as comparing two people (or, more
-generally, two observational units) that differ in $x_k$ with all the other
-predictors held constant" (p. 131). We also call this conditional effect. 
+We will cite @gelman2020 on how best to interpret them: "The coefficient
+$\beta_k$ is the average or expected difference in outcome $y_k$,
+comparing two people who differ by one unit in the predictor $x_k$ while
+being equal in all the other predictors. This is sometimes stated in
+shorthand as comparing two people (or, more generally, two observational
+units) that differ in $x_k$ with all the other predictors held constant"
+(p. 131). We also call this conditional effect.
 
-Within descriptive modeling strategies, we use MLR to see the effects of individual variables net of the effects of all the other variables in the model. Within predictive modeling, we use MLR to improve our predictions over simple linear model (predictions based on just one predictor term often tend to be weak in social sciences). Within explanatory modeling, we use MLR for adjusting for background variables, hence discovering potentially spurious relationships.
+For the example above, we could say that if one country has democratic
+index higher by one point than another country, and they both have the
+same percentage of university educated people, the first country will
+have life expectancy higher by 1.8 years (i.e., rounding 1.786), on
+average.
 
-## Difference-based vs. change-based interpretations 
+Since the coefficient for percentage of university educated people has
+very broad confidence interval, we could also say that we find no
+evidence in the data, that two countries with the same level democratic
+index should be expected to differ in life expectancy conditional on
+their proportion of university educated people. That is if we believe
+the sample of countries justifies some generalization to some concrete
+or at least abstract population of countries. Someone could be tempted
+to make a purely descriptive interpretation with no ambition to make
+sample-to-population inference. He or she could try to say something
+along the lines that for our particular sample of countries and data
+from given years, we find that for two countries with the same level
+democratic index the life expectancy goes down by 1.5 years, on average,
+as the proportion of university educated increases from 0 to 100% (the
+variable is measured on scale from 0 to 1). This seems to us a
+meaningless statement and we would discourage from it, even if
+technically true. The really large standard errors should warn us
+against making interpretation even in purely descriptive situations.
+Saying that controlling for democratic index, there does not seem to be
+any association between life expectancy and proportion of university
+educated in our sample of countries seems much more sensible.\
+Within descriptive modeling strategies, we use MLR to see the effects of
+individual variables net of the effects of all the other variables in
+the model. Within predictive modeling, we use MLR to improve our
+predictions over simple linear model (predictions based on just one
+predictor term often tend to be weak in social sciences). Within
+explanatory modeling, we use MLR for adjusting for background variables,
+hence discovering potentially spurious relationships.
 
-There two conceptually slightly different interpretations of MLR coefficients. The difference-based interpretation is well described as "how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors" [@gelman2020, pp. 134]. The change-based interpretation is well described by saying that "the coefficient is the expected change in y caused by adding 1 to the relevant predictor, while leaving all the other predictors in the model unchanged" [@gelman2020, pp. 134]. 
+## Difference-based vs. change-based interpretations
 
-In others words, the difference-based interpretation uses the idea of difference between individuals, whereas the change-based interpretation uses the idea of change within individual. To be on the save side, we recommend interpreting regression coefficients as comparisons between units, not (potential) changes within units, unless one specifically claims causality. The difference-based interpretation is simply more general, hence carries less risk of being used in a misleading way. 
+There two conceptually slightly different interpretations of MLR
+coefficients. The difference-based interpretation is well described as
+"how the outcome variable differs, on average, when comparing two groups
+of items that differ by 1 in the relevant predictor while being
+identical in all the other predictors" [@gelman2020, pp. 134]. The
+change-based interpretation is well described by saying that "the
+coefficient is the expected change in y caused by adding 1 to the
+relevant predictor, while leaving all the other predictors in the model
+unchanged" [@gelman2020, pp. 134].
 
-Note that [@gelman2020] use the term "predictive interpretation" instead of difference-based interpretation and "counterfactual" interpretation instead of change-based interpretation.       
+In others words, the difference-based interpretation uses the idea of
+difference between individuals, whereas the change-based interpretation
+uses the idea of change within individual. To be on the save side, we
+recommend interpreting regression coefficients as comparisons between
+units, not (potential) changes within units, unless one specifically
+claims causality. The difference-based interpretation is simply more
+general, hence carries less risk of being used in a misleading way.
 
+Note that [@gelman2020] use the term "predictive interpretation" instead
+of difference-based interpretation and "counterfactual" interpretation
+instead of change-based interpretation.
 
+## Comparing beta coefficients of different predictors
+
+It can be sometimes useful to compare coefficients of different
+independent variables in the model. As we saw in the model above, it
+cannot be done in a straightforward way. While values of 1.786 and 1.460
+are not very far from each other, it makes no sense to compare them. The
+first shows change when two countries differ in democratic index
+(measured on the scale from 0 to 10) by one (a realistic situation),
+whereas the latter shows change when one country has no university
+educated people and the other has only university educated people (a
+very unrealistic situation). Indeed, the coefficient value depends on
+the unit we use for measuring the independent variable.
+
+To deal with this issues of no comparability, we can use so called
+standardized betas. Those can be used to determine relative weight of
+independent variables as they show the effect of an increase in X by one
+standard deviation on Y, also measured in standard deviations. The way
+to calculate standardized betas is to first standardize (compute
+z-scores) all variables used in the model and then run a regression on
+the z-scores.
+
+A way to do this using the scale function is shown in the code below.
+
+```{r model, include=TRUE}
+
+fit2 <- lm(scale(life_exp) ~ scale(dem_index) + scale(uni_prc), data = countries)
+summary (fit2)
+```
+
+Now we can compare the relative strengths of our predictors. The
+democratic index (with standardized beta of 0.82) is a way stronger
+predictor of life expectancy than the proportion of university educated
+(0.04 in absolute value as the sign is irrelevant for this comparison).
+Notice that the values of t-tests for the significance of coefficients
+did not change. It should come as no surprise, we did not substantively
+change the data by standardizing it.
+
+@gelman2008 suggests to use slightly different transformation if we
+also want include binary predictors (dummy variables) in the model. He
+shows that standardizing by subtracting the mean and dividing by 2
+standard deviations (rather than just 1) enables to directly compare
+this kind of standardized betas with coefficients for non-standardized
+binaries.
 
 # Main effects and interactions
 
+All the beta coefficients in the examples above were so called main effects. We use this term to distinguish them from interactions which we will introduce in this section. First about the main effects. There are two types of main effects. First, in simple linear regression (with one predictor term), the main effect indicates the bivariate linear association between independent and dependent variable. Second, in MLR, the main effect is the conditional effect described above (i.e., the effect of independent variable on a dependent variable conditional on all other variables in the model being held constant). 
+
+Using only the main effects in MLR relies on the assumption that the effect of a given independent variable on the dependent variable is the same across all levels of other independent variables in the model, or more precisely, that rather than looking at different effects of our independent variable of interest for different levels of other independent variables, it is an acceptable simplification to take the average effect. 
+
+This is easier explained with an example. Imagine you model the effect of years of education on earnings and you also enter gender into the model (we assume it only takes two values, "man" or "woman". The equation would like like this: $ earnings = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender$. The coefficient $\beta_1$ shows the conditional effect of years of education on income for some hypothetical average gender. This can be an acceptable simplification if the effect is similar for both men and women. But imagine there is strong positive effect of years of education on income for one gender and similarly strong negative effect for the other gender. These effects will cancel out (provided there is about the same number of men an women in the sample) and the $\beta_1$ will be close to zero. This would be a problematic simplification of the reality - we would lose a potentially important piece of information. To prevent this, we can use interactions.
+
+An interaction enables to show how the effect of one independent variable on the dependent variable varies across levels of another independent variable. In the example above, the equation would look like this: $income = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender + \beta_3*yearsOfEducation*gender$. 
+
+
+
+
+
+However, 
+
+
+- There are two kinds of main effects 
+
+    - bivariate association between independent and dependent variable (simple regression) or 
+    - additional effects of multiple independent variables (multiple regression)
+    
+- Main effects in equation: $... +  \beta_i*x_i +...$
+
+- Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable
+
+    - e.g. interaction between smoking and inhaling asbestos in their effect on lung cancer risk
+
+- Interactions in equation: $... +  \beta_1*x_1 + \beta_2*x_2 + \beta_3*x_1*x2 + ...$
 
 # References

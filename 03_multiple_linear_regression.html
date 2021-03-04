@@ -311,7 +311,9 @@ $(document).ready(function () {
         <li>
           <a href="06_diagnostics.html">Regression diagnostics</a>
         </li>
-        <li class="dropdown-header">Linearity and normality</li>
+        <li>
+          <a href="07_linearity_and_normality.html">Linearity and normality</a>
+        </li>
         <li class="dropdown-header">Homoscedasticity</li>
         <li class="dropdown-header">Exporting results and multiple models</li>
         <li class="dropdown-header">Prediction and regularization</li>
@@ -390,15 +392,19 @@ countries &lt;- read.csv(here(&quot;data&quot;, &quot;countries.csv&quot;))</cod
 <p>Multiple linear regression (MLR) is defined by having more than one predictor term. Remember the general formula for simple linear regression:</p>
 <p><span class="math display">\[
 y = \alpha + \beta*x + \epsilon_i
-\]</span> The formula for MLR is its fairly straightforward extension. Notice that intercept in MLR is usually called <span class="math inline">\(\beta_0\)</span> rather than <span class="math inline">\(\alpha\)</span>. The other regression coefficients are numbered betas. The numbered x-es stand for predictor terms. <span class="math display">\[
+\]</span></p>
+<p>The formula for MLR is its fairly straightforward extension. Notice that intercept in MLR is usually called <span class="math inline">\(\beta_0\)</span> rather than <span class="math inline">\(\alpha\)</span>. The other regression coefficients are numbered betas. The numbered x-es stand for predictor terms.</p>
+<p><span class="math display">\[
 y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i
-\]</span> Note that having more predictor terms does not necessarily imply using more predictor variables. For example, the blue line in the following figure represents linear model estimated using three predictor terms: democratic index, democratic index to the power of two (quadratic term), and democratic index to the power of three (cubic term). While the model only uses one predictor variable, there are three predictor terms which makes the model a case of MLR. For this model, four betas would be estimated (one of them the intercept).</p>
+\]</span></p>
+<p>Note that having more predictor terms does not necessarily imply using more predictor variables. For example, the blue line in the following figure represents linear model estimated using three predictor terms: democratic index, democratic index to the power of two (quadratic term), and democratic index to the power of three (cubic term). While the model only uses one predictor variable, there are three predictor terms which makes the model a case of MLR. For this model, four betas would be estimated (one of them the intercept).</p>
 <p><img src="03_multiple_linear_regression_files/figure-html/multiple1-1.png" width="480" style="display: block; margin: auto;" /></p>
 <p>One of the (many?) common misconceptions about linear regression is that it can only estimate a straight line. That is only true for simple linear regression. From the picture above, it should be clear that in MLR, it is possible to “bend” the line. And not only that.</p>
 <p>Another example of a MLR model is visualized on the figure below. It uses two predictor terms (in this case, they are two distinct independent variables): again, the democratic index, and, in addition, a binary variable whether the country is post-soviet or not. Due to the fact that one of the independent variables is binary, it is possible to visualize the whole model in one two-dimensional figure as two lines. However, more complicated MLR models cannot be meaningfully visualized on top of the raw data like this. What we can do is visualize their results (apart from displaying them as numbers in a table). We will discuss later how it is done, but we should first make clear how the beta coefficients are interpreted in MLR.</p>
 <p><img src="03_multiple_linear_regression_files/figure-html/multiple2-1.png" width="576" style="display: block; margin: auto;" /></p>
-<div id="interpreting-coefficients-in-mlr" class="section level2">
-<h2>Interpreting coefficients in MLR</h2>
+</div>
+<div id="interpreting-coefficients-in-mlr" class="section level1">
+<h1>Interpreting coefficients in MLR</h1>
 <p>First, let’s run a model where life expectancy is explained with democratic index and percentage of people with university education in 15-64 age category (that is how the variable is defined).</p>
 <pre class="r"><code>fit1 &lt;- lm(life_exp ~ dem_index + uni_prc, data = countries)
 summary (fit1)</code></pre>
@@ -424,15 +430,57 @@ summary (fit1)</code></pre>
 ## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
 <p>The output in the frame with white background above is the raw summary output which appears in R console as response to running the two lines of code. The beta coefficients are in the column called “Estimate.” Specifically, the coefficient for democratic index is 1.786, and the coefficient for university education is -1.460.</p>
 <p>Interpreting coefficients in MLR can be surprisingly tricky as they are, “in part, contingent on the other variables in the model” <span class="citation">(Gelman et al., 2020, p. 131)</span>. This means that they will change when other variables are added to the model or dropped from the model.</p>
-<p>The coefficient <span class="math inline">\(\beta_k\)</span> is the average or expected difference in outcome $\y_k$ , comparing two people who differ by one unit in the predictor xk while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in xk with all the other predictors held constant.</p>
-<p>The best way to interpret coefficients in MLT is as additional effect. This means that each coefficient represents additional effect of adding the variable (more precisely, predictor term) in the model. In other words, individual coefficients show the conditional effect given all the other variables in the model are already accounted for. Another useful way to put this is to say that individual coefficients show the effect of given predictor term when all the other variables are held constant.</p>
-<p>This implies that coefficients in MLR will change when other variables are added to the model or dropped from the model. To demonstrate it,</p>
-<p>The coefficient βk is the average or expected difference in outcome yk , comparing two people who differ by one unit in the predictor xk while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in xk with all the other predictors held constant.</p>
+<p>We will cite <span class="citation">Gelman et al. (2020)</span> on how best to interpret them: “The coefficient <span class="math inline">\(\beta_k\)</span> is the average or expected difference in outcome <span class="math inline">\(y_k\)</span>, comparing two people who differ by one unit in the predictor <span class="math inline">\(x_k\)</span> while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in <span class="math inline">\(x_k\)</span> with all the other predictors held constant” (p. 131). We also call this conditional effect.</p>
+<p>For the example above, we could say that if one country has democratic index higher by one point than another country, and they both have the same percentage of university educated people, the first country will have life expectancy higher by 1.8 years (i.e., rounding 1.786), on average.</p>
+<p>Since the coefficient for percentage of university educated people has very broad confidence interval, we could also say that we find no evidence in the data, that two countries with the same level democratic index should be expected to differ in life expectancy conditional on their proportion of university educated people. That is if we believe the sample of countries justifies some generalization to some concrete or at least abstract population of countries. Someone could be tempted to make a purely descriptive interpretation with no ambition to make sample-to-population inference. He or she could try to say something along the lines that for our particular sample of countries and data from given years, we find that for two countries with the same level democratic index the life expectancy goes down by 1.5 years, on average, as the proportion of university educated increases from 0 to 100% (the variable is measured on scale from 0 to 1). This seems to us a meaningless statement and we would discourage from it, even if technically true. The really large standard errors should warn us against making interpretation even in purely descriptive situations. Saying that controlling for democratic index, there does not seem to be any association between life expectancy and proportion of university educated in our sample of countries seems much more sensible.<br />
+Within descriptive modeling strategies, we use MLR to see the effects of individual variables net of the effects of all the other variables in the model. Within predictive modeling, we use MLR to improve our predictions over simple linear model (predictions based on just one predictor term often tend to be weak in social sciences). Within explanatory modeling, we use MLR for adjusting for background variables, hence discovering potentially spurious relationships.</p>
+<div id="difference-based-vs.-change-based-interpretations" class="section level2">
+<h2>Difference-based vs. change-based interpretations</h2>
+<p>There two conceptually slightly different interpretations of MLR coefficients. The difference-based interpretation is well described as “how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors” <span class="citation">(Gelman et al., 2020, p. 134)</span>. The change-based interpretation is well described by saying that “the coefficient is the expected change in y caused by adding 1 to the relevant predictor, while leaving all the other predictors in the model unchanged” <span class="citation">(Gelman et al., 2020, p. 134)</span>.</p>
+<p>In others words, the difference-based interpretation uses the idea of difference between individuals, whereas the change-based interpretation uses the idea of change within individual. To be on the save side, we recommend interpreting regression coefficients as comparisons between units, not (potential) changes within units, unless one specifically claims causality. The difference-based interpretation is simply more general, hence carries less risk of being used in a misleading way.</p>
+<p>Note that <span class="citation">(Gelman et al., 2020)</span> use the term “predictive interpretation” instead of difference-based interpretation and “counterfactual” interpretation instead of change-based interpretation.</p>
 </div>
+<div id="comparing-beta-coefficients-of-different-predictors" class="section level2">
+<h2>Comparing beta coefficients of different predictors</h2>
+<p>It can be sometimes useful to compare coefficients of different independent variables in the model. As we saw in the model above, it cannot be done in a straightforward way. While values of 1.786 and 1.460 are not very far from each other, it makes no sense to compare them. The first shows change when two countries differ in democratic index (measured on the scale from 0 to 10) by one (a realistic situation), whereas the latter shows change when one country has no university educated people and the other has only university educated people (a very unrealistic situation). Indeed, the coefficient value depends on the unit we use for measuring the independent variable.</p>
+<p>To deal with this issues of no comparability, we can use so called standardized betas. Those can be used to determine relative weight of independent variables as they show the effect of an increase in X by one standard deviation on Y, also measured in standard deviations. The way to calculate standardized betas is to first standardize (compute z-scores) all variables used in the model and then run a regression on the z-scores.</p>
+<p>A way to do this using the scale function is shown in the code below.</p>
+<pre class="r"><code>fit2 &lt;- lm(scale(life_exp) ~ scale(dem_index) + scale(uni_prc), data = countries)
+summary (fit2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = scale(life_exp) ~ scale(dem_index) + scale(uni_prc), 
+##     data = countries)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.47433 -0.34693 -0.03223  0.50475  1.11609 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      -0.02280    0.11802  -0.193 0.848054    
+## scale(dem_index)  0.82340    0.19138   4.303 0.000149 ***
+## scale(uni_prc)   -0.04001    0.17945  -0.223 0.824979    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.6899 on 32 degrees of freedom
+##   (3 observations deleted due to missingness)
+## Multiple R-squared:  0.5517, Adjusted R-squared:  0.5237 
+## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
+<p>Now we can compare the relative strengths of our predictors. The democratic index (with standardized beta of 0.82) is a way stronger predictor of life expectancy than the proportion of university educated (0.04 in absolute value as the sign is irrelevant for this comparison). Notice that the values of t-tests for the significance of coefficients did not change. It should come as no surprise, we did not substantively change the data by standardizing it.</p>
+<p><span class="citation">Gelman (2008)</span> suggests to use slightly different transformation if we also want include binary predictors (dummy variables) in the model. He shows that standardizing by subtracting the mean and dividing by 2 standard deviations (rather than just 1) enables to directly compare this kind of standardized betas with coefficients for non-standardized binaries.</p>
+</div>
+</div>
+<div id="main-effects-and-interactions" class="section level1">
+<h1>Main effects and interactions</h1>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="ref-gelman2008" class="csl-entry">
+Gelman, A. (2008). Scaling regression inputs by dividing by two standard deviations. <em>Statistics in Medicine</em>, <em>27</em>(15), 2865–2873. https://doi.org/<a href="https://doi.org/10.1002/sim.3107">https://doi.org/10.1002/sim.3107</a>
+</div>
 <div id="ref-gelman2020" class="csl-entry">
 Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
 </div>
