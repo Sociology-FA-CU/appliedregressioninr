@@ -11,7 +11,7 @@
 
 
 
-<title>Completion requirements</title>
+<title>Purposes of regression analysis - Excercises</title>
 
 <script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -30,6 +30,7 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 
@@ -215,6 +216,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -335,22 +339,49 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Completion requirements</h1>
+
+<h1 class="title toc-ignore">Purposes of regression analysis - Excercises</h1>
 
 </div>
 
 
-<p>To succesfuly complete this course, students are required to do the following:</p>
+<p>We know of four types of models, based on the the purpose of our analysis:</p>
+<ul>
+<li>Descriptive models</li>
+<li>Inferential models</li>
+<li>Causal/explanative models</li>
+<li>Predictive models</li>
+</ul>
+<p>What type of model we would use to answer the following questions? To see the correct answer click the <code>CODE</code> button.</p>
 <ol style="list-style-type: decimal">
-<li>Pick a dataset featured on the <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday project</a> (any year).</li>
-<li>Formulate a research problem related to the data. This research problem can be either predictive or inferential in nature (e.g. Can we predict the popularity of a song on Spotify based on its characteristics? Does the gender wage gap in the US depend on the proportion of women in the field? Are more expensive video games rated better?).</li>
-<li>Analyze the data using a linear regression model and write a report on your findings. This report should include clear definition of your research problems, description of your data (including descriptive statistics), description of your regression model (both tables and graphs where appropriate), diagnostics of your regression model and overall conclusion. You can transform and filter data as necessary, but clearly describe all data transformations.</li>
-<li>Prepare two documents for submission: (1) a script which must be fully operational: it has to run without error from start (including downloading data from TidyTuesday website) to finish without any need for outside interference and produce all analytic outputs (models, charts) used for the assignment, (2) final report (e.g. Word or Pdf) as described above.</li>
-<li>Send both document to <a href="mailto:alesvomacka@seznam.cz" class="email">alesvomacka@seznam.cz</a></li>
+<li>What is the effect of raising the minimum wage on the unemployment rate?</li>
 </ol>
-<p>The due date for the report is 5th September so that we can grade it till 20th September (the last day when SIS is open for entries for the summer semester). We recommend that you try to submit (much) earlier. If you get stuck don’t be afraid to ask for a consultation.</p>
+<pre class="r"><code>&quot;Causal/explanative model&quot;</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>How much revenue can we expect the upcoming advertisement campaign to generate?</li>
+</ol>
+<pre class="r"><code>&quot;Predictive model&quot;</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Are women on parental leave in the Czech Republic more likely to be at the risk of poverty than men?</li>
+</ol>
+<pre class="r"><code>&quot;Inferential model&quot;</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Do regions in the Czech Republic with high unemployment rate also have high children mortality?</li>
+</ol>
+<pre class="r"><code>&quot;Descriptive model&quot;</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Is there a relationship between education and pro-environmental attitudes in the population of Czech adults?</li>
+</ol>
+<pre class="r"><code>&quot;Inferential model&quot;</code></pre>
 
 
 
@@ -385,6 +416,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

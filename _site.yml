@@ -14,6 +14,7 @@ navbar:
             - text: "Simple linear regression"
               href: 02_simple_linear_regression.html
             - text: "Multiple linear regression"
+              href: 03_multiple_linear_regression.html
             - text: "Model fit"
             - text: "Ploting regression models, marginal effects"
             - text: "Assumptions of linear models"
@@ -33,6 +34,7 @@ navbar:
             - text: "Simple linear regression"
               href: 02_slides_simple_linear_regression.html
             - text: "Multiple linear regression"
+              href: 03_slides_multiple_linear_regression.html
             - text: "Model fit"
             - text: "Ploting regression models, marginal effects"
             - text: "Assumptions of linear models"

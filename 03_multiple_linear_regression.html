@@ -13,18 +13,25 @@
 
 <title>Multiple linear regression</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -36,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -53,30 +55,27 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
-h1 {
-  font-size: 34px;
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
 }
-h1.title {
-  font-size: 38px;
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
 }
-h2 {
-  font-size: 30px;
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
 }
-h3 {
-  font-size: 24px;
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
 }
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
+div.csl-indent {
+  margin-left: 2em;
 }
 </style>
 
@@ -88,10 +87,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -108,40 +103,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -169,7 +137,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -181,7 +149,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -192,10 +160,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -207,7 +188,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -302,7 +282,9 @@ $(document).ready(function () {
         <li>
           <a href="02_simple_linear_regression.html">Simple linear regression</a>
         </li>
-        <li class="dropdown-header">Multiple linear regression</li>
+        <li>
+          <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
+        </li>
         <li class="dropdown-header">Model fit</li>
         <li class="dropdown-header">Ploting regression models, marginal effects</li>
         <li>
@@ -329,7 +311,9 @@ $(document).ready(function () {
         <li>
           <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
         </li>
-        <li class="dropdown-header">Multiple linear regression</li>
+        <li>
+          <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
+        </li>
         <li class="dropdown-header">Model fit</li>
         <li class="dropdown-header">Ploting regression models, marginal effects</li>
         <li class="dropdown-header">Assumptions of linear models</li>
@@ -371,7 +355,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -431,15 +415,20 @@ summary (fit1)</code></pre>
 <p>The output in the frame with white background above is the raw summary output which appears in R console as response to running the two lines of code. The beta coefficients are in the column called “Estimate.” Specifically, the coefficient for democratic index is 1.786, and the coefficient for university education is -1.460.</p>
 <p>Interpreting coefficients in MLR can be surprisingly tricky as they are, “in part, contingent on the other variables in the model” <span class="citation">(Gelman et al., 2020, p. 131)</span>. This means that they will change when other variables are added to the model or dropped from the model.</p>
 <p>We will cite <span class="citation">Gelman et al. (2020)</span> on how best to interpret them: “The coefficient <span class="math inline">\(\beta_k\)</span> is the average or expected difference in outcome <span class="math inline">\(y_k\)</span>, comparing two people who differ by one unit in the predictor <span class="math inline">\(x_k\)</span> while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in <span class="math inline">\(x_k\)</span> with all the other predictors held constant” (p. 131). We also call this conditional effect.</p>
+<<<<<<< HEAD
 <p>For the example above, we could say that if one country has democratic index higher by one point than another country, and they both have the same percentage of university educated people, the first country will have life expectancy higher by 1.8 years (i.e., rounding 1.786), on average.</p>
 <p>Since the coefficient for percentage of university educated people has very broad confidence interval, we could also say that we find no evidence in the data, that two countries with the same level democratic index should be expected to differ in life expectancy conditional on their proportion of university educated people. That is if we believe the sample of countries justifies some generalization to some concrete or at least abstract population of countries. Someone could be tempted to make a purely descriptive interpretation with no ambition to make sample-to-population inference. He or she could try to say something along the lines that for our particular sample of countries and data from given years, we find that for two countries with the same level democratic index the life expectancy goes down by 1.5 years, on average, as the proportion of university educated increases from 0 to 100% (the variable is measured on scale from 0 to 1). This seems to us a meaningless statement and we would discourage from it, even if technically true. The really large standard errors should warn us against making interpretation even in purely descriptive situations. Saying that controlling for democratic index, there does not seem to be any association between life expectancy and proportion of university educated in our sample of countries seems much more sensible.<br />
 Within descriptive modeling strategies, we use MLR to see the effects of individual variables net of the effects of all the other variables in the model. Within predictive modeling, we use MLR to improve our predictions over simple linear model (predictions based on just one predictor term often tend to be weak in social sciences). Within explanatory modeling, we use MLR for adjusting for background variables, hence discovering potentially spurious relationships.</p>
+=======
+<p>Within descriptive modeling strategies, we use MLR to see the effects of individual variables net of the effects of all the other variables in the model. Within predictive modeling, we use MLR to improve our predictions over simple linear model (predictions based on just one predictor term often tend to be weak in social sciences). Within explanatory modeling, we use MLR for adjusting for background variables, hence discovering potentially spurious relationships.</p>
+>>>>>>> e7ee92b4861b239ff60b092ab918fd65f83c5d88
 <div id="difference-based-vs.-change-based-interpretations" class="section level2">
 <h2>Difference-based vs. change-based interpretations</h2>
 <p>There two conceptually slightly different interpretations of MLR coefficients. The difference-based interpretation is well described as “how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors” <span class="citation">(Gelman et al., 2020, p. 134)</span>. The change-based interpretation is well described by saying that “the coefficient is the expected change in y caused by adding 1 to the relevant predictor, while leaving all the other predictors in the model unchanged” <span class="citation">(Gelman et al., 2020, p. 134)</span>.</p>
 <p>In others words, the difference-based interpretation uses the idea of difference between individuals, whereas the change-based interpretation uses the idea of change within individual. To be on the save side, we recommend interpreting regression coefficients as comparisons between units, not (potential) changes within units, unless one specifically claims causality. The difference-based interpretation is simply more general, hence carries less risk of being used in a misleading way.</p>
 <p>Note that <span class="citation">(Gelman et al., 2020)</span> use the term “predictive interpretation” instead of difference-based interpretation and “counterfactual” interpretation instead of change-based interpretation.</p>
 </div>
+<<<<<<< HEAD
 <div id="comparing-beta-coefficients-of-different-predictors" class="section level2">
 <h2>Comparing beta coefficients of different predictors</h2>
 <p>It can be sometimes useful to compare coefficients of different independent variables in the model. As we saw in the model above, it cannot be done in a straightforward way. While values of 1.786 and 1.460 are not very far from each other, it makes no sense to compare them. The first shows change when two countries differ in democratic index (measured on the scale from 0 to 10) by one (a realistic situation), whereas the latter shows change when one country has no university educated people and the other has only university educated people (a very unrealistic situation). Indeed, the coefficient value depends on the unit we use for measuring the independent variable.</p>
@@ -470,7 +459,11 @@ summary (fit2)</code></pre>
 ## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
 <p>Now we can compare the relative strengths of our predictors. The democratic index (with standardized beta of 0.82) is a way stronger predictor of life expectancy than the proportion of university educated (0.04 in absolute value as the sign is irrelevant for this comparison). Notice that the values of t-tests for the significance of coefficients did not change. It should come as no surprise, we did not substantively change the data by standardizing it.</p>
 <p><span class="citation">Gelman (2008)</span> suggests to use slightly different transformation if we also want include binary predictors (dummy variables) in the model. He shows that standardizing by subtracting the mean and dividing by 2 standard deviations (rather than just 1) enables to directly compare this kind of standardized betas with coefficients for non-standardized binaries.</p>
+=======
+>>>>>>> e7ee92b4861b239ff60b092ab918fd65f83c5d88
 </div>
+<div id="main-effects-and-interactions" class="section level1">
+<h1>Main effects and interactions</h1>
 </div>
 <div id="main-effects-and-interactions" class="section level1">
 <h1>Main effects and interactions</h1>
@@ -514,7 +507,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>
