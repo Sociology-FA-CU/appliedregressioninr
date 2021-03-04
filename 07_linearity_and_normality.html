@@ -13,25 +13,18 @@
 
 <title>Linearity and normality</title>
 
-<script src="site_libs/header-attrs-2.7/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -43,6 +36,11 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -55,27 +53,30 @@ if (window.hljs) {
 
 
 
-
 <style type="text/css">
-/* for pandoc --citeproc since 2.11 */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
+h1 {
+  font-size: 34px;
 }
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
+h1.title {
+  font-size: 38px;
 }
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
+h2 {
+  font-size: 30px;
 }
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
+h3 {
+  font-size: 24px;
 }
-div.csl-indent {
-  margin-left: 2em;
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
 }
 </style>
 
@@ -87,6 +88,10 @@ div.csl-indent {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -103,13 +108,40 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
-pre code {
-  padding: 0;
-}
 </style>
 
 
 <style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
 .dropdown-submenu {
   position: relative;
 }
@@ -137,7 +169,7 @@ pre code {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #adb5bd;
+  border-left-color: #ffffff;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -149,7 +181,7 @@ pre code {
 }
 </style>
 
-<script type="text/javascript">
+<script>
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -160,23 +192,10 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.tab('show');
+  menuAnchor.parent().addClass('active');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
-
-  // Navbar adjustments
-  var navHeight = $(".navbar").first().height() + 15;
-  var style = document.createElement('style');
-  var pt = "padding-top: " + navHeight + "px; ";
-  var mt = "margin-top: -" + navHeight + "px; ";
-  var css = "";
-  // offset scroll position for anchor links (for fixed navbar)
-  for (var i = 1; i <= 6; i++) {
-    css += ".section h" + i + "{ " + pt + mt + "}\n";
-  }
-  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
-  document.head.appendChild(style);
 });
 </script>
 
@@ -188,6 +207,7 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
+  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -355,7 +375,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div id="header">
+<div class="fluid-row" id="header">
 
 
 
@@ -366,8 +386,9 @@ $(document).ready(function () {
 
 <pre class="r"><code>library(tidyverse)
 library(splines)
-library(lspline)
-library(ggeffects)
+library(lspline)</code></pre>
+<pre><code>## Warning: package &#39;lspline&#39; was built under R version 4.0.3</code></pre>
+<pre class="r"><code>library(ggeffects)
 
 vote = read.csv(&quot;data/parl_vote_2017.csv&quot;)
 un = read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
@@ -401,12 +422,7 @@ plot(mod_linear, which = 1)</code></pre>
 mod_interval = lm(vote ~ agea_interval, data = vote)
 
 plot(ggeffect(mod_interval))</code></pre>
-<pre><code>## Registered S3 methods overwritten by &#39;lme4&#39;:
-##   method                          from
-##   cooks.distance.influence.merMod car 
-##   influence.merMod                car 
-##   dfbeta.influence.merMod         car 
-##   dfbetas.influence.merMod        car</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_interval</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-interval-example-1.png" width="672" /></p>
 <p>As we can see, the age variable was cut into three groups, each with range of 24.65. Alternatively we can use the <code>cut_number()</code> function to categorize age into <code>n</code> groups with (aproximately) the same number of observations:</p>
@@ -415,6 +431,7 @@ plot(ggeffect(mod_interval))</code></pre>
 mod_number = lm(vote ~ agea_number, data = vote)
 
 plot(ggeffect(mod_number))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_number</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-number-example-1.png" width="672" /></p>
 <p>The third option is to discretise the metric variable into categories of equal <code>width</code>. This can be done using the <code>cut_width()</code> function:</p>
@@ -423,6 +440,7 @@ plot(ggeffect(mod_number))</code></pre>
 mod_width = lm(vote ~ agea_width, data = vote)
 
 plot(ggeffect(mod_width))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_width</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-width-example-1.png" width="672" /></p>
 <p>The last option is to base the categorization of our data not on the properties of our sample, such as range or quantiles, but determine our the categories according to a theory. For example, in the context of political behavior, people are often categorized into three cohort: a) age 25 and younger b) 26 to 55 years and c) 56 or more.</p>
@@ -434,6 +452,7 @@ plot(ggeffect(mod_width))</code></pre>
 mod_theory = lm(vote ~ agea_theory, data = vote)
 
 plot(ggeffect(mod_theory))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_theory</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-theory-example-1.png" width="672" /></p>
 <p>While modeling nonlinear relationships using categorization of metric variables is conveniently easy, it also suffer from a number of problems. <span class="citation">Harrell (2001)</span> provides a list of major problems, among others:</p>
@@ -472,6 +491,7 @@ vote = \beta_0 + \beta_1*age + \beta_2*age^2
 <pre class="r"><code>mod_poly = lm(vote ~ poly(agea, 2), data = vote)
 
 plot(ggeffect(mod_poly))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/poly-example-1.png" width="672" /></p>
 <p>While polynomials are often a better option than the categorization approach, they are not without problems. The main problem is that polynomial functions are non local <span class="citation">Harrell (2001)</span>, which means that data in one region can strongly influence predicted values in other regions, especially those with small number of observations. This means that the polynomial regression curves often get “wiggly” and overly curved at the ends. Therefore, polynomial regression tend to provide a good fit only in the regions with most data and are often bad at extrapolation. Polynomials are also bad at modeling relationships that are nonlinear only in certain regions and linear in other. For example, a second order polynomial leads by definition to the shape of a parabola and the regression has to predict a curve along the entire range of data. This means that polynomials are bad at modeling relationship that tend to level of at same point. These problems are especially pronounced with higher degrees polynomials.</p>
@@ -539,6 +559,7 @@ vote = \beta_0 + \beta_1*age_{&lt;25} + \beta_2*age_{25-50} + \beta_3*age_{50-75
 <p>The first of the regression coefficients after the intercept, called <code>lspline(agea, knots = c(25, 50, 75))1</code> tells us the slope of the regression line in the first bin, i.e. for the age of 25 or lower. In other words, for people who are 25 years old or younger, we we would expect on average for people one year older to have 0.044 points higher probability of attending elections. Analogously, the next regression terms refers to the slope in the second bin, i.e. between 25 and 50 year. This coefficient is approximately 0.007 percentage points, showing that the difference in voter turnout based on age are much bigger for the voters below 25 years, than for the middle aged group of people between 25 and 50 years.</p>
 <p>As always, we visualize the model using a marginal effects plot. However, the <code>ggeffect</code> package has some trouble correctly picking values of the independent to evaluate the model at, so we recommend specifying that all values of the independent variable should be evaluated:</p>
 <pre class="r"><code>plot(ggeffect(mod_ls, terms = &quot;agea [all]&quot;))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/ls-marginal-plot-1.png" width="672" /></p>
 <p>In the example above, each of the regression coefficients represents the slope of regression line in a given bin.</p>
 <p>There is however another way how linear splines can be specified. Instead of the slope itself, the regression coefficients may represent the difference between slopes of two neighboring bins. This can be done by setting argument <code>marginal</code> to <code>TRUE</code>:</p>
@@ -670,6 +691,7 @@ mod_ns_manual = lm(vote ~ ns(agea, knots = 53, Boundary.knots = c(25.8, 80.2)), 
 <pre class="r"><code>mod_ns_df = lm(vote ~ ns(agea, df = 3), data = vote)
 
 plot(ggeffect(mod_ns_df, terms = &quot;agea [all]&quot;))</code></pre>
+<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/ns-example-df-1.png" width="672" /></p>
 <p>It is worth mentioning that the <code>splines</code> package places knots by default at slightly different positions that is recommended by <span class="citation">Harrell (2001)</span>. For example, the boundary knots are placed at the maximum and the minimum of the data, when specified by the <code>df</code> argument. However, the differences in the final model are generally speaking minimal. This can be seen in the graph below, where the differences between the models fitted according to the recommendation by Harrel and the default of the splines package are minimal :</p>
 <pre class="r"><code>ggplot(aes(x = agea, y = vote), data = vote) +
@@ -750,7 +772,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open');
+    $(this).parent().toggleClass('nav-tabs-open')
   });
 });
 </script>

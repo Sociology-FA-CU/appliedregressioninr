@@ -3,10 +3,6 @@
 browseURL("http://www.stat.columbia.edu/~gelman/standardize/")
 
 
-# interaction
-
-browseURL("https://cran.r-project.org/web/packages/interactions/vignettes/interactions.html")
-
 
 # gender
 women <- rep("woman", 1000)
@@ -26,14 +22,14 @@ yoe <- c(yoe_women, yoe_men)
 # income for women
 intercept_w <- 10000
 beta_yoe_w <- 1000
-sigma_w <- 200
+sigma_w <- 500
 
 income_w <- intercept_w + beta_yoe_w*yoe_women + sigma_w*rnorm(n/2)
 
 # income for men
 intercept_m <- 40000
 beta_yoe_m <- -1000
-sigma_m <- 200
+sigma_m <- 500
 
 income_m <- intercept_m + beta_yoe_m*yoe_men + sigma_m*rnorm(n/2)
 
@@ -59,3 +55,24 @@ summary(fit3)
 
 fit4 <- lm(income ~ yoe, data=fake[1001:2000,])
 summary(fit4)
+
+# centering variables for models with interactions
+
+fake = 
+  fake %>% mutate(yoe = yoe - mean(yoe),
+                  gender_w = ifelse(gender == "woman", 1,0 ),
+                  gender_w = gender_w - mean(gender_w))
+
+
+fit5 <- lm(income ~ yoe + gender_w + yoe*gender_w, data=fake)
+summary(fit5)
+
+
+# visualizing interactions
+
+# interaction
+
+browseURL("https://cran.r-project.org/web/packages/interactions/vignettes/interactions.html")
+
+
+

@@ -222,41 +222,106 @@ Notice that the values of t-tests for the significance of coefficients
 did not change. It should come as no surprise, we did not substantively
 change the data by standardizing it.
 
-@gelman2008 suggests to use slightly different transformation if we
-also want include binary predictors (dummy variables) in the model. He
-shows that standardizing by subtracting the mean and dividing by 2
-standard deviations (rather than just 1) enables to directly compare
-this kind of standardized betas with coefficients for non-standardized
-binaries.
+@gelman2008 suggests to use slightly different transformation if we also
+want include binary predictors (dummy variables) in the model. He shows
+that standardizing by subtracting the mean and dividing by 2 standard
+deviations (rather than just 1) enables to directly compare this kind of
+standardized betas with coefficients for non-standardized binaries.
 
 # Main effects and interactions
 
-All the beta coefficients in the examples above were so called main effects. We use this term to distinguish them from interactions which we will introduce in this section. First about the main effects. There are two types of main effects. First, in simple linear regression (with one predictor term), the main effect indicates the bivariate linear association between independent and dependent variable. Second, in MLR, the main effect is the conditional effect described above (i.e., the effect of independent variable on a dependent variable conditional on all other variables in the model being held constant). 
+All the beta coefficients in the examples above were so called main
+effects. We use this term to distinguish them from interactions which we
+will introduce in this section. First about the main effects. There are
+two types of main effects. First, in simple linear regression (with one
+predictor term), the main effect indicates the bivariate linear
+association between independent and dependent variable. Second, in MLR,
+the main effect is the conditional effect described above (i.e., the
+effect of independent variable on a dependent variable conditional on
+all other variables in the model being held constant).
 
-Using only the main effects in MLR relies on the assumption that the effect of a given independent variable on the dependent variable is the same across all levels of other independent variables in the model, or more precisely, that rather than looking at different effects of our independent variable of interest for different levels of other independent variables, it is an acceptable simplification to take the average effect. 
+Using only the main effects in MLR relies on the assumption that the
+effect of a given independent variable on the dependent variable is the
+same across all levels of other independent variables in the model, or
+more precisely, that rather than looking at different effects of our
+independent variable of interest for different levels of other
+independent variables, it is an acceptable simplification to take the
+average effect.
 
-This is easier explained with an example. Imagine you model the effect of years of education on earnings and you also enter gender into the model (we assume it only takes two values, "man" or "woman". The equation would like like this: $ earnings = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender$. The coefficient $\beta_1$ shows the conditional effect of years of education on income for some hypothetical average gender. This can be an acceptable simplification if the effect is similar for both men and women. But imagine there is strong positive effect of years of education on income for one gender and similarly strong negative effect for the other gender. These effects will cancel out (provided there is about the same number of men an women in the sample) and the $\beta_1$ will be close to zero. This would be a problematic simplification of the reality - we would lose a potentially important piece of information. To prevent this, we can use interactions.
+This is easier explained with an example. Imagine you model the effect
+of years of education on earnings and you also enter gender into the
+model (we assume it only takes two values, "man" or "woman". The
+equation would like like this: \$ earnings = \beta\_0 +
+\beta\_1\*yearsOfEducation + \beta\_2\*gender\$. The coefficient
+$\beta_1$ shows the conditional effect of years of education on income
+for some hypothetical average gender. This can be an acceptable
+simplification if the effect is similar for both men and women. But
+imagine there is strong positive effect of years of education on income
+for one gender and similarly strong negative effect for the other
+gender. These effects will cancel out (provided there is about the same
+number of men an women in the sample) and the $\beta_1$ will be close to
+zero. This would be a problematic simplification of the reality - we
+would lose a potentially important piece of information. To prevent
+this, we can use interactions.
 
-An interaction enables to show how the effect of one independent variable on the dependent variable varies across levels of another independent variable. In the example above, the equation would look like this: $income = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender + \beta_3*yearsOfEducation*gender$. 
+An interaction enables to show how the effect of one independent
+variable on the dependent variable varies across levels of another
+independent variable. In the example above, the equation would look like
+this:
+$income = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender + \beta_3*yearsOfEducation*gender$.
+The interpretation of coefficients is prone to errors, caution is
+advised. The intercept is the value of income for the reference category
+of gender (say man as R would code them as 0s because, alphabetically,
+they come before women) with 0 years of education. The coefficient for
+gender would show the difference for between the predicted income for
+men in women with no years of education. The coefficient for years of
+education can be thought of as the comparison of average income for men
+who differ by one year of education. Finally, the interaction
+coefficient represents the difference in slope for years of education
+between men and women.
 
+[TBD - TABLE AND FIGURE TO ILUSTRATE THIS, EXAMPLE OF EQUATION FOR
+SELECTED INDIVIDUALS]
 
+## Centering variables in models with interaction
 
+We saw above that some of the interpretations of main effects can be difficult or not very useful when models contain interactions. Indeed, they are estimated with the other independent variables fixed at 0. And the 0 can be very unrealistic such as in case of years of education above. 
 
+However, we can use centering for better interpretability of main effects. After doing so, the main effect corresponds to a predictive difference with the other input fixed at its average value. Intercept in the example above would be the average income for a person with mean number of years of education and of "average gender". Coefficient for years of education would be the average slope for all levels of gender. The interaction would keep the ame interpretation as above (difference of slope between genders).         
 
-However, 
+[TBD - TABLE AND FIGURE TO ILUSTRATE THIS]
 
+## Interaction as "it depends effects"
 
-- There are two kinds of main effects 
+Jim Frost offers in his [blog](https://cutt.ly/HkXcMY4) a helpful way to
+think about interactions as of "it depends effects". If the answer to
+the question 'What is the effect of X on Y?' is 'It depends', we are
+dealing with interactions. For example, do you like your food more with
+ketchup added? It depends, yes, if the food is french fries, no, if the
+food is ice-cream sundae.
 
-    - bivariate association between independent and dependent variable (simple regression) or 
-    - additional effects of multiple independent variables (multiple regression)
-    
-- Main effects in equation: $... +  \beta_i*x_i +...$
+## Interactions require big samples
 
-- Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable
+Adding interactions sometimes makes good sense theoretically, and
+sometimes it also helps achieve good model specification with good fit
+to the data. However, estimating interactions requires much bigger
+samples to identify the same effect size as for main effect. And since
+we can mostly assume that the effect size of interactions will be
+smaller than that of main effects, we will mostly require MUCH bigger
+samples. In his
+[blog](https://statmodeling.stat.columbia.edu/2018/03/15/need-16-times-sample-size-estimate-interaction-estimate-main-effect/),
+Andrew Gelman shows that we will need 16 times the sample size to
+estimate an interaction which is half the size of the main effect if we
+want to have the same statistical power. This does not mean that
+interactions are beyond reach, we can still meaningfully estimate them
+when their effect size is large enough. But when their effect size is
+only small, they can be out of reach in common sociological samples.
+When we look for interactions in explorative analysis, we "typically
+look for them is with predictors that have large coefficients when not
+interacted. For a familiar example, smoking is strongly associated
+with cancer. In epidemiological studies of other carcinogens, it is crucial to adjust for smoking both as
+an uninteracted predictor and as an interaction, because the strength of association between other risk
+factors and cancer can depend on whether the individual is a smoker." [@gelman2020, pp. 136].
 
-    - e.g. interaction between smoking and inhaling asbestos in their effect on lung cancer risk
-
-- Interactions in equation: $... +  \beta_1*x_1 + \beta_2*x_2 + \beta_3*x_1*x2 + ...$
 
 # References
