@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Model fit</title>
+
+<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lectures
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Notes</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_intro.html">Introduction - goals of regression analysis</a>
+        </li>
+        <li>
+          <a href="02_simple_linear_regression.html">Simple linear regression</a>
+        </li>
+        <li>
+          <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
+        </li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li>
+          <a href="06_assumptions.html">Assumptions of linear models</a>
+        </li>
+        <li>
+          <a href="06_diagnostics.html">Regression diagnostics</a>
+        </li>
+        <li>
+          <a href="07_linearity_and_normality.html">Linearity and normality</a>
+        </li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
+    </li>
+    <li class="dropdown-submenu">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lecture Slides</a>
+      <ul class="dropdown-menu" role="menu">
+        <li>
+          <a href="01_slides_intro.html">Introduction - goals of regression analysis</a>
+        </li>
+        <li>
+          <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+        </li>
+        <li>
+          <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
+        </li>
+        <li class="dropdown-header">Model fit</li>
+        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li class="dropdown-header">Assumptions of linear models</li>
+        <li class="dropdown-header">Regression diagnostics</li>
+        <li class="dropdown-header">Linearity and normality</li>
+        <li class="dropdown-header">Homoscedasticity</li>
+        <li class="dropdown-header">Exporting results and multiple models</li>
+        <li class="dropdown-header">Prediction and regularization</li>
+        <li class="dropdown-header">Missing values imputations</li>
+      </ul>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Homework
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_intro_R_excercises.html">Introduction - goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression_excercises.html">Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression_excercises.html">Multiple linear regression</a>
+    </li>
+    <li class="dropdown-header">Interactions</li>
+    <li class="dropdown-header">Model fit</li>
+    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+    <li class="dropdown-header">Exporting results and multiple models</li>
+    <li class="dropdown-header">Prediction and regularization</li>
+    <li class="dropdown-header">Missing values imputations</li>
+  </ul>
+</li>
+<li>
+  <a href="completion_requirements.html">Completion Requirements</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="course_data.html">Course data</a>
+    </li>
+    <li>
+      <a href="literature.html">Literature</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://ksoc.ff.cuni.cz/">Department website</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Model fit</h1>
+
+</div>
+
+
+<p>So far, we have paid attention to individual coefficients. In this lecture, we will focus on the model as a whole by assessing its model fit.</p>
+<div id="coefficient-of-determination" class="section level1">
+<h1>Coefficient of determination</h1>
+<p>The coefficient of determination, also pronounced as ‘R squared,’ is one of the most frequently used measures of model fit. It is the proportion of variance in the dependent variable explained by the model.</p>
+<p>Recall, variance is the average square deviation from the variable mean, for variable <span class="math inline">\(z\)</span>, the variance is:</p>
+<p><span class="math display">\[
+var(z) = E[(z_i-\mu_z)^2] = \frac{\sum (z_i - \bar{z})^2}{n}
+\]</span></p>
+<p>And we often use standard deviation which is simply square root of the variance. <span class="math display">\[
+\sigma_z = \sqrt{var{(z)}}
+\]</span> Also recall that we said regression can be conceptualized as conditional mean. Deviation from this conditional mean is caught in the parameter <span class="math inline">\(\sigma_{residual}\)</span> which is called ‘residual standard error’ in the regression output in R.</p>
+<p><span class="math inline">\(R^2\)</span> can be computed directly from these parameters as follows:</p>
+<p><span class="math display">\[
+R^2 = 1 - (\sigma_{residual}^2 / \sigma_z^2)
+\]</span> It is pretty straightforward metric. If <span class="math inline">\(\sigma_{residual}\)</span> is big (meaning large uncertainty), the fraction in the brackets gets bigger, which means that <span class="math inline">\(R^2\)</span> gets smaller.</p>
+<div id="properties-of-r2" class="section level2">
+<h2>Properties of <span class="math inline">\(R^2\)</span></h2>
+<p>Unsurprisingly, <span class="math inline">\(R^2\)</span> does not change if we rescale any of the variables in the model in a linear way. In other words, centering variables, standardizing variables to z-scores, rescaling from centimeters to inches, from GDP in thousands of EUR to GDP in CZK, etc. will not change the <span class="math inline">\(R^2\)</span> of the model.</p>
+<p>In simple OLS (one predictor), <span class="math inline">\(R^2\)</span> equals to the square of the correlation between x and y.</p>
+</div>
+<div id="sometimes-small-r2-is-actually-a-good-thing" class="section level2">
+<h2>Sometimes, small <span class="math inline">\(R^2\)</span> is actually a good thing</h2>
+<p>The closer <span class="math inline">\(R^2\)</span> is to 1, the better the fit of the model. But it does not mean that we should always be happy with high <span class="math inline">\(R^2\)</span>, substantively speaking. Imagine that you model dependence of students’ score in their university admission test (e.g. their percentile in SCIO test) on their parents’ education. If parents’ education strongly predicts students’ score, we will see a high <span class="math inline">\(R^2\)</span>. But maybe we should be happier if students’ success was less rather than more dependent on their parents’ education.</p>
+</div>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

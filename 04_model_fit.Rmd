@@ -1,0 +1,64 @@
+---
+title: "Model fit"
+output: html_document
+csl: apa.csl
+bibliography: references.bib
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+```
+
+```{r data-and-packages, echo = FALSE}
+library(tidyverse)
+library(patchwork)
+library(here)
+
+
+countries <- read.csv(here("data", "countries.csv"))
+```
+
+So far, we have paid attention to individual coefficients. In this lecture, we will focus on the model as a whole by assessing its model fit. 
+
+# Coefficient of determination
+
+The coefficient of determination, also pronounced as 'R squared', is one of the most frequently used measures of model fit. It is the proportion of variance in the dependent variable explained by the model. 
+
+Recall, variance is the average square deviation from the variable mean, for variable $z$, the variance is:
+
+$$
+var(z) = E[(z_i-\mu_z)^2] = \frac{\sum (z_i - \bar{z})^2}{n}
+$$
+
+And we often use standard deviation which is simply square root of the variance. 
+$$
+\sigma_z = \sqrt{var{(z)}}
+$$
+Also recall that we said regression can be conceptualized as conditional mean. Deviation from this conditional mean is caught in the parameter $\sigma_{residual}$ which is called 'residual standard error' in the regression output in R. 
+
+$R^2$ can be computed directly from these parameters as follows:
+
+$$
+R^2 = 1 - (\sigma_{residual}^2 / \sigma_z^2)
+$$
+It is pretty straightforward metric. As $\sigma_{residual}$ gets bigger (meaning large uncertainty), the fraction in the brackets gets bigger, which means that $R^2$ gets smaller (worse fit).   
+
+## Properties of $R^2$
+
+Unsurprisingly, $R^2$ does not change if we rescale any of the variables in the model in a linear way. In other words, centering variables, standardizing variables to z-scores, rescaling from centimeters to inches, from GDP in thousands of EUR to GDP in CZK, etc. will not change the $R^2$ of the model. 
+
+In simple OLS (one predictor), $R^2$ equals to the square of the correlation between x and y. 
+
+## Interpreting $R^2$
+
+ 
+
+## Sometimes, small $R^2$ is actually a good thing
+
+The closer $R^2$ is to 1, the better the fit of the model. But it does not mean that we should always be happy with high $R^2$, substantively speaking. Imagine that you model dependence of students' score in their university admission test (e.g. their percentile in SCIO test) on their parents' education. If parents' education strongly predicts students' score, we will see a high $R^2$. But maybe we should be happier if students' success was less rather than more dependent on their parents' education.  
+
+# References
