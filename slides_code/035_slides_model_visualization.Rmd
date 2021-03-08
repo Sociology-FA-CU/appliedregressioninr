@@ -1,0 +1,151 @@
+---
+title: "Visualizing regression models"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in March 2021"
+output:
+  ioslides_presentation:
+    widescreen: true
+    incremental: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(here)
+library(ggeffects)
+library(broom)
+
+countries <- read.csv(here("data", "countries.csv"))
+```
+
+## Goals for today
+
+- Understanding what marginal effects are
+- Learning how to use them for model visualization
+- Learning about point plots
+
+## Some models are easy to interpret...
+
+- Relationship between life expectancy and democratic index, assuming linear relationship
+
+```{r linear-simple, echo=TRUE}
+mod1 = lm(life_exp ~ dem_index, data = countries)
+coef(mod1)
+```
+
+- A country with additional point of democratic index has on average 1.6 years higher life expectancy
+
+## ... others not so much
+
+- Relationship between life expectancy and democratic index, but the relationship can be parabolic and also can differ based on whether the country has a post soviet history or not.
+
+```{r linear-not-simple, echo=TRUE}
+
+mod2 = lm(life_exp ~ poly(dem_index, 2) * postsoviet,
+          data = countries[!is.na(countries$dem_index),])
+coef(mod2)
+```
+
+- The countries whose squared democratic index is higher by 1, while their base democratic index is 0 and if they are post soviet, have on average 5.1 years higher life expectancy (???).
+
+## Marginal effects
+
+- Once variables are transformed, interpreting relationships between them becomes difficult
+- A solution is to interpret models visually, instead of relying on regression coefficients tables
+- This can be done by utilizing marginal effects
+
+## Marginal effects
+
+- Marginal effect = expected value of the dependent variable for given values of an independent variable, while other independent variables are held constant
+- In R, can be computed using `ggeffects` package (which in turn partialy depends on `effects`, and `emeans`)
+
+```{r marg-eff-table, echo=TRUE}
+ggpredict(mod2, terms = c("dem_index [4,6,8]", "postsoviet [yes]"))
+```
+
+## Marginal effects
+
+- The plot contains the exact same information as the table of regression coefficients, but is actually interpretable
+
+```{r marg-eff-plot}
+plot(ggpredict(mod2, terms = c("dem_index [all]", "postsoviet")))
+```
+
+
+## Marginal effects
+
+- We can also plot just one variable one, while holding the others constant
+- The following plot shows the difference in expected life expectancy for countries with **average** democratic index (especially useful for non linear relationship)
+
+```{r marg-eff-plot-solo, fig.height=3.5}
+plot(ggpredict(mod2, terms = c("postsoviet")))
+```
+
+## `ggeffects` package
+
+- `ggeffects` package computes marginal effects and returns `ggplot2` friendly data frames
+
+- The `ggeffects` offers three basic functions:
+
+  - `ggpredict` - based on the base `predict()` function, works on almost any model
+  - `ggeffects` - based on the `effects` package, similar to ggpredict, but handles categorical variables differently
+  - `ggemeans` - based on the `emeans` package, mostly for contrasts
+
+## `ggeffects` package
+
+- by default, numerical variables, for which we don't compute marginal effects, are set to their mean
+- `ggpredict` sets factor variables to their reference category and characters to their mode
+- `ggeffects` and `ggemeans` computes an "average" for categorical variables
+  - e.g. 42% of countries in the sample are post soviet -> post soviet variable is set to 0.42
+
+## `ggeffects` package
+
+- The package offers many options for computing marginal effects (we will show them in R)
+- The package works for a variety of models not covered in this course
+  - generalized linear models
+  - (generalized) mixed models
+  - bayesian models
+  - survival models
+  - and many more
+  
+# R Intermezzo!
+
+## Point plots
+
+- Some authors prefer to display coefficients as point plots
+- Basically a "bar plot" but with points instead of bars
+- The easiest, and tidiest, way to extract coefficients and their standard errors is through `broom` package
+
+```{r forest-example, fig.height=3.5}
+mod3 = lm(life_exp ~ hdi + dem_index + poverty_risk, data = countries)
+
+tidy(mod3) %>% 
+  ggplot(aes(x = estimate, y = term, xmin = estimate - 1.96*std.error, xmax = estimate + 1.96*std.error)) +
+  geom_pointrange()
+```
+
+## Point plots
+
+- More useful when the variables are standardized
+  - (e.g. using z transformation)
+
+```{r forest-example-z, fig.height=3.5}
+
+mod4 = lm(scale(life_exp) ~ scale(hdi) + scale(dem_index) + scale(poverty_risk), data = countries)
+
+tidy(mod4) %>% 
+  ggplot(aes(x = estimate, y = term, xmin = estimate - 1.96*std.error, xmax = estimate + 1.96*std.error)) +
+  geom_pointrange()
+```
+
+
+## Point plots
+
+- Best used for large number of predictor, especially for dummy variables
+- In R, the easiest and tidiest way to extract regression coefficients and their standard errors is through the `broom` package
+  - We will deal with this package more in later lectures
+  - For now, a small tidbit
+
+# R Intermezzo!
