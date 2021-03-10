@@ -1,3 +1,10 @@
+# Exercise of MLR, incl. standardization of coefficients
+# Exercise of interactions
+
+
+
+
+
 # standradized betas
 
 browseURL("http://www.stat.columbia.edu/~gelman/standardize/")

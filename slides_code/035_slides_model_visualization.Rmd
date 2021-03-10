@@ -48,18 +48,17 @@ mod2 = lm(life_exp ~ poly(dem_index, 2) * postsoviet,
 coef(mod2)
 ```
 
-- The countries whose squared democratic index is higher by 1, while their base democratic index is 0 and if they are post soviet, have on average 5.1 years higher life expectancy (???).
+- The countries whose quadratic democratic index is higher by 1, while their base democratic index is 0 and if they are post soviet, have on average 12.7 years higher life expectancy (???).
 
 ## Marginal effects
 
 - Once variables are transformed, interpreting relationships between them becomes difficult
-- A solution is to interpret models visually, instead of relying on regression coefficients tables
-- This can be done by utilizing marginal effects
+- Solution: visual interpretation (instead of regression coefficients tables) using marginal effects
 
 ## Marginal effects
 
-- Marginal effect = expected value of the dependent variable for given values of an independent variable, while other independent variables are held constant
-- In R, can be computed using `ggeffects` package (which in turn partialy depends on `effects`, and `emeans`)
+- Marginal effect = expected value of the dependent variable for given values of selected independent variable while other independent variables are held constant
+- In R, we use `ggeffects` package (which in turn partially depends on `effects`, and `emeans`)
 
 ```{r marg-eff-table, echo=TRUE}
 ggpredict(mod2, terms = c("dem_index [4,6,8]", "postsoviet [yes]"))
@@ -83,6 +82,8 @@ plot(ggpredict(mod2, terms = c("dem_index [all]", "postsoviet")))
 plot(ggpredict(mod2, terms = c("postsoviet")))
 ```
 
+- Question: How is this plot different from a plot displaying simply condititional means of the observed data, i.e. mean life expectancy for the postsoviet vs. non-postsoviet countries?
+  
 ## `ggeffects` package
 
 - `ggeffects` package computes marginal effects and returns `ggplot2` friendly data frames
@@ -98,7 +99,7 @@ plot(ggpredict(mod2, terms = c("postsoviet")))
 - by default, numerical variables, for which we don't compute marginal effects, are set to their mean
 - `ggpredict` sets factor variables to their reference category and characters to their mode
 - `ggeffects` and `ggemeans` computes an "average" for categorical variables
-  - e.g. 42% of countries in the sample are post soviet -> post soviet variable is set to 0.42
+  - e.g. 42% of countries in the sample are post-soviet -> post-soviet variable is set to 0.42
 
 ## `ggeffects` package
 
@@ -140,10 +141,26 @@ tidy(mod4) %>%
   geom_pointrange()
 ```
 
+## Point plots
+
+- Since standardized beta coefficients are often used to compare individual predictors, we may want to sort them by estimates' size
+- We may highlight 0 to make reference to NHT (checking if CI overlaps with 0)
+
+
+```{r forest-example-z-ordered, fig.height=3.5}
+
+tidy(mod4) %>% 
+  ggplot(aes(x = estimate, y = fct_reorder(term, estimate), 
+             xmin = estimate - 1.96*std.error, xmax = estimate + 1.96*std.error)) +
+  geom_vline(xintercept=0, color = "blue", alpha = 0.3) +
+  geom_pointrange()+
+  labs(y="term")
+
+```
 
 ## Point plots
 
-- Best used for large number of predictor, especially for dummy variables
+- Best used for large number of predictor (tables messy), especially for dummy variables
 - In R, the easiest and tidiest way to extract regression coefficients and their standard errors is through the `broom` package
   - We will deal with this package more in later lectures
   - For now, a small tidbit
