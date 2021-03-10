@@ -1,5 +1,5 @@
 ---
-title: "Lesson 4: Model fit"
+title: "Lesson 2: Simple linear regression"
 subtitle: "Jaromír Mazák & Aleš Vomáčka"
 author: "Dpt. of Sociology, Faculty of Arts, Charles University"
 date: "Last updated in February 2021"
@@ -12,6 +12,380 @@ bibliography: references_lecture_04.bib
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(here)
+library(ggeffects)
+
+countries = read.csv(here("data", "countries.csv"))
 ```
 
 ## Goals for today
+
+-   Learn how to evaluate model fit using *R^2^* and ANOVA
+-   Learn how to compute them in R
+-   Learn about their limitations
+
+## Model fit
+
+-   (Almost) any model can be fitted to our data, but not all models will fit equally well
+
+-   Three ways to evaluate model fit:
+
+    -   Checking assumptions the model makes using diagnostic plots (next lecture)
+    -   Fit indexes that summarize fit into a single number
+    -   Formal test of fit (ANOVA/F test)
+
+## Coefficient of determination
+
+-   For Linear models, model fit can be summarized using *coefficient of determination* (*R^2^*)
+
+-   *R^2^* represents the proportion of variance of the depended variable, which can be predicted using the the independent variables
+
+    -   e.g. if *R^2^* = 0.32, we can say our model predicts 32% of variance of the dependent variable (in our data)
+    -   Alternatively, the depend variable shares 32% of its variance with the independent variables
+
+-   Some say *R^2^* is the proportion of variance "explained" by the model, but this has unfortunate implications about causality
+
+## Coefficient of determination
+
+-   Formally, *R^2^* is defined as:
+
+$$
+R^{2} =1 - \frac{Sum \: of \: Squares_{residual} }{Sum \: of \: Squares_{total}}
+$$
+
+Or perhaps in a more interpretable way:
+
+$$
+R^{2} =1 - \frac{Sum \: of \: Squares_{our\:model} }{Sum \: of \: Squares_{intercept\:only\:model}}
+$$
+
+## Coefficient of determination
+
+-   Intercept only model is one with zero predictors, predictions are made solely based on the grand average
+-   This is the "worst" possible model
+
+```{r intercept only, warning=FALSE, fig.height=4}
+mod1 = lm(life_exp ~ hdi, data = countries)
+
+ggplot(aes(x = hdi, y = life_exp), data = countries) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ 1, aes(color = "Intercet only")) +
+  geom_smooth(method = "lm", se = F, formula = y ~ x, aes(color = "HDI as predictor")) +
+  scale_color_manual(values = c("red", "blue")) +
+  labs(color = element_blank()) +
+  theme(legend.position = c(0.8, 0.2))
+```
+
+## Coefficient of determination
+
+-   *R^2^* basically tells us how much we reduced the prediction error by adding our predictors
+
+-   if *R^2^* = 0, then our model is as "good" as if we had no predictor at all
+
+-   if *R^2^* = 1, then we predict our data perfectly
+
+-   There is no universal cut-off for when *R^2^* is good or bad
+
+    -   In laboratory calibrations, *R^2^* \< 0.99 is considered bad and a sign of an equipment failure
+    -   In day to day stock market, *R^2^* \> 0.02 is considered good and such models are used for trading.
+
+-   Conclusion: To interpret *R^2^*, you need to know the purpose of the model and the fit of related models in this field
+
+## ANOVA
+
+-   We can also compare two models formally, using ANOVA/F test
+
+-   This is like a classic ANOVA, but instead of comparing inter- and intra-group variance, we are comparing residual variances of two models
+
+-   Residual variance = variance of dependent variable not predicted by independent variables
+
+-   Null hypothesis: Residual variances of both models are equal
+
+-   Alternative: Residual variance of the second model is smaller than residual variance of the first model
+
+## ANOVA
+
+-   We can compare against the intercept only model, i.e. is our model better than model with no predictors?
+
+```{r anova-null, echo=TRUE}
+mod1 = lm(life_exp ~ hdi, data = countries)
+anova(mod1)
+```
+
+## ANOVA
+
+-   We can also compare two of our models, i.e. does one predict better than the other?
+
+```{r anova, echo=TRUE}
+mod1 = lm(life_exp ~ hdi, data = countries)
+mod2 = lm(life_exp ~ hdi + postsoviet, data = countries)
+anova(mod1, mod2)
+```
+
+# R Intermezzo!
+
+# Limitations of *R^2^* and ANOVA
+
+## Limitations of ANOVA for model comparison
+
+-   All the classic limitations of null hypothesis testing
+
+    -   It is extremely unlikely for two models to "explain" the exact same amount of variance -\> null hypothesis is almost always false by definition
+    -   Differences does not matter, if they are practically unimportant -\> rejecting null hypothesis is by itself not particularly interesting
+    -   power matters, just like with any other test -\> not rejecting null hypothesis does not necessarily mean the two models predict the same amount of variance. We may just not have enough precision to identify the difference
+
+## Limitations of *R^2^*
+
+-   *R^2^* is fundamentally a measure of predictive strength
+-   This makes it behave unintuitively when used for other than predictive models (and sometimes even for them)
+-   There are 4 gotchas you need to be careful about
+
+# Gotcha 1 - *R^2^* depends on the number of predictors
+
+## *R^2^* depends on the number of predictors
+
+-   Consider variable $y$ and 15 variables $x_i$ ($x_1, \: x_2, \:... \: x_{15}$)
+-   All of these variables are independent of each other
+-   What happens to *R^2^*, if we start adding $x_i$ variables as predictors?
+
+## *R^2^* depends on the number of predictors
+
+```{r rsq, fig.height=4}
+set.seed(12345)
+
+d = data.frame(replicate(15, rnorm(n = 100), simplify = F))
+colnames(d) = paste0("x", 1:15)
+y = rnorm(100)
+d = cbind(y, d)
+
+
+fit_lm_rsq = function(data, max_col) {
+  predictors = colnames(data)[2:max_col]
+  
+  m = lm(y ~ ., data[ , c("y", predictors)])
+  summary(m)$r.squared
+}
+
+r_sqr = sapply(2:16, function(x) fit_lm_rsq(d, x))
+
+ggplot(mapping = aes(x = 1:15, y = r_sqr)) +
+  geom_line() +
+  scale_x_continuous(breaks = 1:15) +
+  labs(x = "Number of predictors", y = "R Squared")
+```
+
+-   Notice that the more the predictors the higher *R^2^*, even if the dependent variable $y$ is not related to any of the independent variables $x_i$
+
+## *R^2^* depends on the number of predictors
+
+-   *R^2^* will raise everytime we add a new predictor
+-   This happens because even if there is no correlation between two variables in the population, sample correlation will never be exactly 0 (due to sampling error)
+-   Consequently, to some extent we are predicting random noise
+
+## *R^2^* depends on the number of predictors
+
+-   Solution is to adjust *R^2^* when comparing models with different number of predictors
+-   *Adjusted R^2^* [@henri1961] controls was the number of predictors in the model (represented by the degrees of freedom)
+
+$$
+R^{2}_{adj} = 1 - (1 - R^{2}) * \frac{no. \: of \: observations - 1}{no. \: of \: observations - no. \: of \: parameters - 1}
+$$
+
+-   *Adjusted R^2^* only raises when the contribution of a new predictor is bigger than what we would expect from pure chance
+
+-   Conculsion: Use *Adjusted R^2^* when you are comparing models with different number of predictors
+
+# Gotcha 2 - *R^2^* depends on the variance of the dependent variable
+
+## *R^2^* and the variance of dependent variable
+
+-   Consider variable $x$ and 3 variables $y_1$, $y_2$, $y_3$
+
+-   The relationsip between $x$ and all $y_i$ is the same:
+
+    -   $y_i = 0 + 10*x$
+
+-   Each of $y_i$ has a different standard deviation:
+
+    -   $sd_{y_1} = 50$, $sd_{y_2} = 100$ and $sd_{y_3} = 150$
+
+## *R^2^* and the variance of dependent variable
+
+```{r gotcha2, fig.height=4, fig.width=10}
+set.seed(12345)
+
+d = tibble(
+x = rnorm(1000, sd = 10),
+y1 = 10*x + rnorm(n = 1000, sd = 50),
+y2 = 10*x + rnorm(n = 1000, sd = 100),
+y3 = 10*x + rnorm(n = 1000, sd = 150) )
+
+m1 = lm(y1 ~ x, data = d)
+m2 = lm(y2 ~ x, data = d)
+m3 = lm(y3 ~ x, data = d)
+
+s1 = round(summary(m1)$r.squared,1)
+s2 = round(summary(m2)$r.squared,1)
+s3 = round(summary(m3)$r.squared,1)
+
+c1 = round(coef(m1)[2], 1)
+c2 = round(coef(m2)[2], 1)
+c3 = round(coef(m3)[2], 1)
+
+d %>% pivot_longer(cols = -x) %>%
+  mutate(name = recode(name,
+                       y1 = paste0("R sqr = ", s1, ", beta = ", c1),
+                       y2 = paste0("R sqr = ", s2, ", beta = ", c2),
+                       y3 = paste0("R sqr = ", s3, ", beta = ", c3))) %>% 
+  ggplot(aes(x = x, y = value)) +
+  facet_wrap(~name) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", se = F, formula = y ~ x) +
+  labs(x = element_blank(), y = element_blank()) +
+  geom_abline(intercept = 0, slope = 10, color = "red", linetype = "dashed")
+```
+
+-   Notice that *R^2^* varies widely, despite all models being perfectly specified and describing the relationship correctly
+
+## *R^2^* and the variance of dependent variable
+
+-   Even perfectly specified model (i.e. all relevant variables present, relationships set up correctly) can have low *R^2^* due to random error
+
+-   Low *R^2^* does not neccesarily mean the estimates are incorrect (biased)
+
+-   Low *R^2^* can simply mean that we cannot explain a social phenomenum in its entirity, but that is almost never our goal.
+
+-   Conclusion: If our goal is substantive interpretation of coefficients, *R^2^* is not a good measure of model's quality
+
+    -   Low *R^2^* does not mean an explanatory model is bad (analogously, high *R^2^* does not mean the model is good)
+
+# Gotcha 3 - *R^2^* depends on the range of independent variables
+
+## *R^2^* depends on the range of independent variables
+
+-   Consider variables $y$ and $x$
+-   $x$ is normaly distributed wiht mean of 50 and standard deviation of 15
+-   The relationship between them is $y = 3*x$ with residual standard deviation of 50
+-   What would happen, if limited the range of $x$ to \<35;65\> ?
+
+## *R^2^* and the range of independent variable
+
+```{r trunc, warning=FALSE, fig.height=4, fig.width=10}
+set.seed(12345)
+
+d = tibble(
+  x = rnorm(10000, 50, 15),
+  x_trunc = ifelse(x > 65 | x < 35, NA, x),
+  y = 3*x + rnorm(10000, 0, 50)
+)
+
+m1 = lm(y ~ x, data = d)
+m2 = lm(y ~ x_trunc, data = d)
+
+s1 = round(summary(m1)$r.square,2)
+s2 = round(summary(m2)$r.square,2)
+
+c1 = round(coef(m1)[2],1)
+c2 = round(coef(m2)[2],1)
+
+
+d %>% pivot_longer(cols = -y) %>% 
+  mutate(name = recode(name,
+                       x = paste0("R sqr = ", s1, ", beta = ", c1),
+                       x_trunc = paste0("R sqr = ", s2, ", beta = ", c2))) %>% 
+  ggplot(aes(x = value, y = y)) +
+  facet_wrap(~name) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", se = F, formula = y ~ x) +
+  geom_abline(intercept = 0, slope = 3, color = "red", linetype = "dashed") +
+  labs(x = element_blank(), y = element_blank())
+```
+
+-   Notice that despite the coefficients being (virtually) the same, *R^2^* gets lower as the range of data gets narrower
+
+## *R^2^* and the range of independent variable
+
+-   *R^2^* will naturally gets lower as we restrict the range of independent variables
+
+-   However this does not mean the model is any less valid, just that predictive power is lower
+
+    -   e.g. model predicting attitudes based on income will have lower *R^2^* in populations with smaller income differences (all else held constant)
+
+-   Conclusion - Trimming data, either by filtering out subpopulations or removing outliers, will lower *R^2^*
+
+# Gotcha 4 - Model with higher *R^2^* do not neccesarily provide a better estimate of regression coefficients
+
+## *R^2^* and coefficient bias
+
+-   Imagine we have representative sample of adults and want to learn what is the relationship between intelligence (`IQ`) and work diligence (`diligence`) like. We also know if our respondents have a university degree (`degree`)
+
+-   The truth (which we usually don't know) is that there is weak relationship between `IQ` and `diligence`: `intelligence = 0.1*diligence`
+
+    -   i.e. more intelligent people are somewhat more diligent than the less intelligent ones
+
+-   `degree` is related to both `IQ` and `diligence` - only the top 20% most intelligent or the top 20% most diligent people will obtain a university degreee
+
+-   Should we control for `degree` or not?
+
+## *R^2^* and coefficient bias
+
+```{r collider, fig.height=4, fig.width=10}
+set.seed(12345)
+
+d = tibble(IQ = rnorm(1000, 100, 15),
+           diligence = 0.1*IQ + rnorm(1000, 100, 15),
+           degree = ifelse(IQ > quantile(IQ, 0.8) | diligence > quantile(diligence, 0.8),
+                           "degree", "no degree"))
+
+m0 = lm(IQ ~ diligence, data = d)
+m1 = lm(IQ ~ diligence + degree, data = d)
+
+s0 = round(summary(m0)$r.squared, 2)
+s1 = round(summary(m1)$r.squared, 2)
+
+c0 = round(coef(m0)[2], 1)
+c1 = round(coef(m1)[2], 1)
+
+me1 = ggeffect(m1, terms = c("diligence", "degree"))
+me1$IQ = me1$predicted
+me1$diligence = me1$x
+me1$degree = me1$group
+me1$plot = paste0("R sqr = ", s1, ", beta = ", c1)
+
+dd = rbind(d,d)
+dd$plot = c( rep(paste0("R sqr = ", s0, ", beta = ", c0), 1000), rep(paste0("R sqr = ", s1, ", beta = ", c1), 1000) )
+dd$degree = ifelse(dd$plot == 1, NA, dd$degree)
+d$plot = paste0("R sqr = ", s0, ", beta = ", c0)
+
+ggplot(aes(x = diligence, y = IQ, color = degree), data = dd) +
+  facet_wrap(~plot) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = F, formula = y ~ x, data = me1) +
+  geom_smooth(method = "lm", se = F, formula = y ~ x, data = d, mapping = aes(group = 1), color = "black") +
+  theme(legend.position = c(0.93,0.1)) +
+  labs(color = element_blank())
+```
+
+-   Controlling for `degree` leads to higher *R^2^*, but incorrect coefficient estimate!
+-   Not controlling for `degree` actually provides better estimate of the relationship (remember, true value = 0.1)
+
+## *R^2^* and coefficient bias
+
+-   Controlling for variables that are actually causal consequences of the dependent variable and one of the predictors improves predictive power (i.e. raises *R^2^*), but regression coefficient will no longer be interpretable in a substantive way (*collider bias*)
+-   This also happens with mediators and other confounders
+    -   See the first few chapters of @pearl2016 for details
+    
+
+- Conclusion: If the goal of an analysis is the interpretation of regression coefficients (either for causal inference or testing a hypothesis generated by theory), do not select variables based on *R^2^*. Doing so will sooner or later lead to bias and an incorrect conclusion. Use theory and common sense instead
+
+## Limitations of *R^2^*
+
+- To summarize:
+  - *R^2^* has to be adjusted when comparing models with different number of predictors
+  - If the goal is to test a hypothesis or describe a relationship, *R^2^* doesn't indicate quality of the model
+  - The value of *R^2^* depends on the range of the independent variables
+  - If the goal is hypothesis testing or causal inference, *R^2^* cannot be used to select which variables to include into the model. Doing so can be actively harmful
+  
+## References
