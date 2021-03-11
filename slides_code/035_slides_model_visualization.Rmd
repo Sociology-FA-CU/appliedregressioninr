@@ -57,7 +57,7 @@ coef(mod2)
 
 ## Marginal effects
 
-- Marginal effect = expected value of the dependent variable for given values of selected independent variable while other independent variables are held constant
+- Marginal effect = expected value of the dependent variable for given values of selected independent variable while other independent variables are held constant (preferably at some reasonable value such as mean)
 - In R, we use `ggeffects` package (which in turn partially depends on `effects`, and `emeans`)
 
 ```{r marg-eff-table, echo=TRUE}
@@ -78,11 +78,11 @@ plot(ggpredict(mod2, terms = c("dem_index [all]", "postsoviet")))
 - We can also plot just one variable one, while holding the others constant
 - The following plot shows the difference in expected life expectancy for countries with **average** democratic index (especially useful for non linear relationship)
 
-```{r marg-eff-plot-solo, fig.height=3.5}
+```{r marg-eff-plot-solo, fig.height=3}
 plot(ggpredict(mod2, terms = c("postsoviet")))
 ```
 
-- Question: How is this plot different from a plot displaying simply condititional means of the observed data, i.e. mean life expectancy for the postsoviet vs. non-postsoviet countries?
+- Question: How is this plot different from displaying simply condititional means, i.e. mean life expectancy for the postsoviet vs. non-postsoviet?
   
 ## `ggeffects` package
 

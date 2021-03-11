@@ -334,6 +334,9 @@ $(document).ready(function () {
         <li>
           <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
         </li>
+        <li>
+          <a href="035_slides_model_visualization.html">Model vizualization</a>
+        </li>
         <li class="dropdown-header">Model fit</li>
         <li class="dropdown-header">Ploting regression models, marginal effects</li>
         <li class="dropdown-header">Assumptions of linear models</li>
@@ -426,11 +429,14 @@ var(z) = E[(z_i-\mu_z)^2] = \frac{\sum (z_i - \bar{z})^2}{n}
 <p><span class="math inline">\(R^2\)</span> can be computed directly from these parameters as follows:</p>
 <p><span class="math display">\[
 R^2 = 1 - (\sigma_{residual}^2 / \sigma_z^2)
-\]</span> It is pretty straightforward metric. If <span class="math inline">\(\sigma_{residual}\)</span> is big (meaning large uncertainty), the fraction in the brackets gets bigger, which means that <span class="math inline">\(R^2\)</span> gets smaller.</p>
+\]</span> It is pretty straightforward metric. As <span class="math inline">\(\sigma_{residual}\)</span> gets bigger (meaning large uncertainty), the fraction in the brackets gets bigger, which means that <span class="math inline">\(R^2\)</span> gets smaller (worse fit).</p>
 <div id="properties-of-r2" class="section level2">
 <h2>Properties of <span class="math inline">\(R^2\)</span></h2>
 <p>Unsurprisingly, <span class="math inline">\(R^2\)</span> does not change if we rescale any of the variables in the model in a linear way. In other words, centering variables, standardizing variables to z-scores, rescaling from centimeters to inches, from GDP in thousands of EUR to GDP in CZK, etc. will not change the <span class="math inline">\(R^2\)</span> of the model.</p>
 <p>In simple OLS (one predictor), <span class="math inline">\(R^2\)</span> equals to the square of the correlation between x and y.</p>
+</div>
+<div id="interpreting-r2" class="section level2">
+<h2>Interpreting <span class="math inline">\(R^2\)</span></h2>
 </div>
 <div id="sometimes-small-r2-is-actually-a-good-thing" class="section level2">
 <h2>Sometimes, small <span class="math inline">\(R^2\)</span> is actually a good thing</h2>

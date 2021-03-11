@@ -35,6 +35,8 @@ navbar:
               href: 02_slides_simple_linear_regression.html
             - text: "Multiple linear regression"
               href: 03_slides_multiple_linear_regression.html
+            - text: "Model vizualization"
+              href: 035_slides_model_visualization.html
             - text: "Model fit"
             - text: "Ploting regression models, marginal effects"
             - text: "Assumptions of linear models"
