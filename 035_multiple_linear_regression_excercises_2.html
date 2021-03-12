@@ -11,7 +11,7 @@
 
 
 
-<title>Course literature</title>
+<title>Multiple linear regression - Excercises 2</title>
 
 <script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -21,6 +21,7 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
@@ -257,6 +258,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -411,32 +415,145 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Course literature</h1>
+
+<h1 class="title toc-ignore">Multiple linear regression - Excercises 2</h1>
 
 </div>
 
 
-<p><br></p>
-<div id="primary-literature" class="section level3">
-<h3>Primary literature</h3>
-<ul>
-<li>Gelman, A., Hill, J., &amp; Vehtari, A. (2020). Regression and Other Stories. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879" class="uri">https://doi.org/10.1017/9781139161879</a></li>
-<li>Harrell, F. (2001). Regression Modeling Strategies: With Applications to Linear Models, Logistic Regression, and Survival Analysis. Springer-Verlag. <a href="https://doi.org/10.1007/978-1-4757-3462-1" class="uri">https://doi.org/10.1007/978-1-4757-3462-1</a></li>
-</ul>
-<p><br></p>
-</div>
-<div id="secondary-literature" class="section level3">
-<h3>Secondary literature</h3>
-<ul>
-<li>Cole, S. R., Platt, R. W., Schisterman, E. F., Chu, H., Westreich, D., Richardson, D., &amp; Poole, C. (2010). Illustrating bias due to conditioning on a collider. International Journal of Epidemiology, 39(2), 417–420. <a href="https://doi.org/10.1093/ije/dyp334" class="uri">https://doi.org/10.1093/ije/dyp334</a></li>
-<li>Cook, R. D. (1977). Detection of Influential Observation in Linear Regression. Technometrics, 19(1), 15–18. <a href="https://doi.org/10.2307/1268249" class="uri">https://doi.org/10.2307/1268249</a></li>
-<li>Fox, J. (2015). Applied Regression Analysis and Generalized Linear Models (Third edition). SAGE Publications, Inc.</li>
-<li>Greenland, S., Senn, S. J., Rothman, K. J., Carlin, J. B., Poole, C., Goodman, S. N., &amp; Altman, D. G. (2016). Statistical tests, P values, confidence intervals, and power: A guide to misinterpretations. European Journal of Epidemiology, 31(4), 337–350. <a href="https://doi.org/10.1007/s10654-016-0149-3" class="uri">https://doi.org/10.1007/s10654-016-0149-3</a></li>
-<li>King, G., &amp; Roberts, M. E. (2015). How Robust Standard Errors Expose Methodological Problems They Do Not Fix, and What to Do About It. Political Analysis, 23(2), 159–179.</li>
-<li>Shmueli, G. (2010). To Explain or To Predict? (SSRN Scholarly Paper ID 1351252). Social Science Research Network. <a href="https://doi.org/10.2139/ssrn.1351252" class="uri">https://doi.org/10.2139/ssrn.1351252</a></li>
-</ul>
+<pre class="r fold-show"><code>library(tidyverse)
+un = read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
+<p>Since we did not quite manage to go through interactions in the class this week, the practice assignments today are mostly just MLR with main effects again. Only the assignment 7 and 8 also include interactions to motivate you before the next class :-)</p>
+<p>This time, we will be using the ‘un’ data set which can be downloaded from the data section as ‘UnitedNations.txt’. Note it is a ‘.txt’ file, use ‘read.table’ function to read it into R. For variables description, run the following browseURL - it will open the documentation in your browser.</p>
+<pre class="r fold-show"><code>browseURL(&quot;https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/UnitedNations.pdf&quot;)</code></pre>
+<div id="tasks" class="section level1">
+<h1>Tasks</h1>
+<ol style="list-style-type: decimal">
+<li>We will want to to regress ‘infantMortality’ on ‘tfr’, ‘economicActivityFemale’, and ‘illiteracyFemale’. Before we start modeling, plot the dependent variable using geom_density.</li>
+</ol>
+<pre class="r"><code>ggplot(aes(x=infantMortality), data=un) + geom_density() # it is skewed, but we will proceed with the variable as is, without transformation</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Now, plot the bivariate relationship between each predictor variable and the dependent variable, i.e. three plots in total. Use combination of geom_point and geom_smooth with method argument set to ‘lm’.</li>
+</ol>
+<pre class="r"><code>ggplot(aes(y=infantMortality, x = tfr), data=un) + geom_point() + geom_smooth(method = &quot;lm&quot;)
+# no surprise here, higher fertility associated with higher infant mortality (both typical of less developed countries)
+
+ggplot(aes(y=infantMortality, x = economicActivityFemale), data=un) + geom_point() + geom_smooth(method = &quot;lm&quot;)
+# perhaps surprisingly, female economic activity is not associated with infant mortality 
+
+ggplot(aes(y=infantMortality, x = illiteracyFemale), data=un) + geom_point() + geom_smooth(method = &quot;lm&quot;)
+# this is again what we expected</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Run the model. Regress ‘infantMortality’ on ‘tfr’, ‘economicActivityFemale’, and ‘illiteracyFemale’. Only use the main effects. Interpret the model.</li>
+</ol>
+<pre class="r"><code>fit1 &lt;- lm(infantMortality ~ tfr + economicActivityFemale + illiteracyFemale, data = un)
+summary(fit1)
+
+# total fertility rate, female economic activity, and illiteracy among females all have their independent effect on infantMortality
+
+# Specifically, when 2 countries have the same level of female economic activity and female illiteracy rate, but differ in total fertility rate by one child per woman, the country with higher fertility rate will have 9.6 higher infant mortality rate (infant deaths per 1000 live births), on average. 
+
+# When 2 countries have the same level of total fertility rate and female illiteracy rate, but differ in female activity rate by one percentage point, the country with higher fertility rate will have 0.395 higher infant mortality rate, on average. 
+
+# Finally, when 2 countries have the same level of total fertility rate and female economic activity, but differ in female illiteracy rate by one percentage point, the country with higher female illiteracy rate will have 0.68 higher infant mortality rate, on average.
+
+# Note, correlation is not causation. Even if controlling for other variables, we cannot say that female economic activity causally increases infant mortality. This model is not based on any theory and there may be many other variables we would have to control for before being able to make even a tentative causal statement. The same is true for the other variables. We have no grounds to interpret this model causally at its face value. </code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>There is of course some uncertainty in our estimates. Find 90%, 95% and 99% confidence intervals of the three betas. Use the function confint for that and use help to learn about the function parameter you need to change to change the confidence interval from the 95% default. Before you do that, say which one set of them will be the narrowest and why.</li>
+</ol>
+<pre class="r"><code># 95
+confint(fit1)
+
+# 90
+confint(fit1, level = 0.9)
+
+# 99
+confint(fit1, level = 0.99)</code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>We now want to compare the coefficients to each other to compare the relative size of independent contributions of each of our predictors to the explanatory power of our model. Use standardized betas to do that.</li>
+</ol>
+<pre class="r"><code>fit2 &lt;- lm(scale(infantMortality) ~ scale(tfr) + scale(economicActivityFemale) + scale(illiteracyFemale), 
+           data = un)
+summary(fit2)
+
+# we see tfr and illiteracyFemale have about the same explanatory power, economicActivityFemale has less</code></pre>
+<ol start="7" style="list-style-type: decimal">
+<li>Copy-paste the simulation we did in class (or use your class script). Once you have it in R and it works when you run it, proceed to the next task.</li>
+</ol>
+<pre class="r fold-show"><code># START SIMULATION
+# gender
+women &lt;- rep(&quot;woman&quot;, 1000)
+men &lt;- rep(&quot;man&quot;, 1000)
+gender &lt;- c(women, men)
+
+n &lt;- length(gender)
+
+# years of education
+
+set.seed(248)
+yoe_women &lt;- sample(10:20, n/2, replace = TRUE)
+yoe_men &lt;- sample(10:20, n/2, replace = TRUE)
+yoe &lt;- c(yoe_women, yoe_men)
+
+# income for women
+intercept_w &lt;- 10000
+beta_yoe_w &lt;- 1000
+sigma_w &lt;- 500
+
+income_w &lt;- intercept_w + beta_yoe_w*yoe_women + sigma_w*rnorm(n/2)
+
+# income for men
+intercept_m &lt;- 40000
+beta_yoe_m &lt;- -1000
+sigma_m &lt;- 500
+
+income_m &lt;- intercept_m + beta_yoe_m*yoe_men + sigma_m*rnorm(n/2)
+
+mean(income_w)
+mean(income_m)
+
+income &lt;- c(income_w, income_m)
+
+# produce dataframe
+
+fake &lt;- data.frame(gender, yoe, income)
+
+# END SIMULATION
+
+# visualize
+
+fake %&gt;% ggplot(aes(x=yoe, y = income))+
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;)
+
+fake %&gt;% ggplot(aes(x=yoe, y = income, color = gender))+
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;)</code></pre>
+<ol start="8" style="list-style-type: decimal">
+<li>Regress income on gender and years of education. Use interactions. This is the same thing we did in class. Interpret the coefficients and detect how exactly the parameters hard-coded in the simulation above are “hidden” in the regression coefficients.</li>
+</ol>
+<pre class="r"><code>fit2 &lt;- lm(income ~ yoe*gender, data=fake)
+summary(fit2)</code></pre>
+<ol start="9" style="list-style-type: decimal">
+<li>Center the independent variables and run the model again. Knowing how the parameters were hard-coded in the simulation, how can you now interpret the table? Think about it, this where we will continue next week.</li>
+</ol>
+<pre class="r"><code>fake &lt;-
+  fake %&gt;% mutate(yoe_c = yoe - mean(yoe),
+                  female_c = ifelse(gender == &quot;woman&quot;, 1,0), # first convert to numeric using ifelse
+                  female_c = female_c - mean(female_c)) # then center
+
+
+fit3 &lt;- lm(income ~ yoe_c*female_c, data=fake)
+summary(fit3)</code></pre>
 </div>
 
 
@@ -472,6 +589,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

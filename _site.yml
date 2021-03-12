@@ -35,10 +35,10 @@ navbar:
               href: 02_slides_simple_linear_regression.html
             - text: "Multiple linear regression"
               href: 03_slides_multiple_linear_regression.html
-            - text: "Model vizualization"
+            - text: "Ploting regression models, marginal effects"
               href: 035_slides_model_visualization.html
             - text: "Model fit"
-            - text: "Ploting regression models, marginal effects"
+              href: 04_slides_model_fit.html
             - text: "Assumptions of linear models"
             - text: "Regression diagnostics"
             - text: "Linearity and normality"
@@ -46,7 +46,7 @@ navbar:
             - text: "Exporting results and multiple models"
             - text: "Prediction and regularization"
             - text: "Missing values imputations"
-    - text: "Homework"
+    - text: "Practice"
       menu:
             - text: "Introduction - goals of regression analysis"
               href: 01_intro_R_excercises.html
@@ -55,6 +55,7 @@ navbar:
             - text: "Multiple linear regression"
               href: 03_multiple_linear_regression_excercises.html
             - text: "Interactions"
+              href: 035_multiple_linear_regression_excercises_2.html
             - text: "Model fit"
             - text: "Ploting regression models, marginal effects"
             - text: "Assumptions of linear models"

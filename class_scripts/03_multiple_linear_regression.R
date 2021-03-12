@@ -6,7 +6,6 @@ library(here)
 library(ggeffects)
 countries <- read.csv(here("data", "countries.csv"))
 un <- read.table(here("data", "UnitedNations.txt"))
-vote <- read.csv(here("data" ,"parl_vote_2017.csv"))
 
 
 
@@ -67,6 +66,9 @@ summary(mod5)
 
 mod6 <- lm(tfr ~ illiteracyMale + illiteracyFemale, data = un)
 summary(mod6)
+
+mod7 <- lm(tfr ~ illiteracyFemale + illiteracyMale, data = un)
+summary(mod7)
 
 cor(un$illiteracyFemale, un$illiteracyMale, use = "complete")
 
@@ -212,10 +214,17 @@ plot(ggpredict(mdl2, terms = c("region", "tfr")))
 mdl3 <- lm(infantMortality ~ region + tfr*log(GDPperCapita), data = un)
 summary(mdl3)
 
+
+plot(ggpredict(mdl3, terms = c("GDPperCapita [exp, all]", "tfr")))
+plot(ggpredict(mdl3, terms = c("tfr [all]", "GDPperCapita")))
+
 plot(ggpredict(mdl3, terms = c("GDPperCapita", "tfr")))
 plot(ggpredict(mdl3, terms = c("GDPperCapita [exp]", "tfr")))
 plot(ggpredict(mdl3, terms = c("GDPperCapita", "tfr"), condition = c(region = "Europe")))
-plot(ggpredict(mdl3, terms = c("GDPperCapita [exp]", "tfr"), condition = c(region = "Europe")))
+plot(ggpredict(mdl3, terms = c("GDPperCapita [exp]", "tfr",), condition = c(region = "Europe")))
+
+# dependent on y, first independent on x, second color, third facet
+plot(ggpredict(mdl3, terms = c("GDPperCapita", "tfr", "region")))
 
 # interaction
 

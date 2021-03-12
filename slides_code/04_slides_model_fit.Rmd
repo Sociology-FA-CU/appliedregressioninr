@@ -101,9 +101,9 @@ ggplot(aes(x = hdi, y = life_exp), data = countries) +
 
 -   Residual variance = variance of dependent variable not predicted by independent variables
 
--   Null hypothesis: Residual variances of both models are equal
+-   Null hypothesis: Residual variances of both models are equal.
 
--   Alternative: Residual variances of both models are not equal
+-   Alternative: Residual variance of the second model is smaller than residual variance of the first model.
 
 ## ANOVA
 
@@ -130,6 +130,7 @@ anova(mod1, mod2)
 
 ## Limitations of ANOVA for model comparison
 
+-   Nested models only 
 -   All the classic limitations of null hypothesis testing
 
     -   It is extremely unlikely for two models to "explain" the exact same amount of variance -\> null hypothesis is almost always false by definition

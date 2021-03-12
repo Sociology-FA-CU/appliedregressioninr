@@ -335,10 +335,11 @@ $(document).ready(function () {
           <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
         </li>
         <li>
-          <a href="035_slides_model_visualization.html">Model vizualization</a>
+          <a href="035_slides_model_visualization.html">Ploting regression models, marginal effects</a>
         </li>
-        <li class="dropdown-header">Model fit</li>
-        <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li>
+          <a href="04_slides_model_fit.html">Model fit</a>
+        </li>
         <li class="dropdown-header">Assumptions of linear models</li>
         <li class="dropdown-header">Regression diagnostics</li>
         <li class="dropdown-header">Linearity and normality</li>
@@ -352,7 +353,7 @@ $(document).ready(function () {
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Homework
+    Practice
      
     <span class="caret"></span>
   </a>
@@ -366,7 +367,9 @@ $(document).ready(function () {
     <li>
       <a href="03_multiple_linear_regression_excercises.html">Multiple linear regression</a>
     </li>
-    <li class="dropdown-header">Interactions</li>
+    <li>
+      <a href="035_multiple_linear_regression_excercises_2.html">Interactions</a>
+    </li>
     <li class="dropdown-header">Model fit</li>
     <li class="dropdown-header">Ploting regression models, marginal effects</li>
     <li class="dropdown-header">Assumptions of linear models</li>
@@ -467,7 +470,7 @@ summary (fit1)</code></pre>
 <p>Interpreting coefficients in MLR can be surprisingly tricky as they are, “in part, contingent on the other variables in the model” <span class="citation">(Gelman et al., 2020, p. 131)</span>. This means that they will change when other variables are added to the model or dropped from the model.</p>
 <p>We will cite <span class="citation">Gelman et al. (2020)</span> on how best to interpret them: “The coefficient <span class="math inline">\(\beta_k\)</span> is the average or expected difference in outcome <span class="math inline">\(y_k\)</span>, comparing two people who differ by one unit in the predictor <span class="math inline">\(x_k\)</span> while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in <span class="math inline">\(x_k\)</span> with all the other predictors held constant” (p. 131). We also call this conditional effect.</p>
 <p>For the example above, we could say that if one country has democratic index higher by one point than another country, and they both have the same percentage of university educated people, the first country will have life expectancy higher by 1.8 years (i.e., rounding 1.786), on average.</p>
-<p>Since the coefficient for percentage of university educated people has very broad confidence interval, we could also say that we find no evidence in the data, that two countries with the same level democratic index should be expected to differ in life expectancy conditional on their proportion of university educated people. That is if we believe the sample of countries justifies some generalization to some concrete or at least abstract population of countries. Someone could be tempted to make a purely descriptive interpretation with no ambition to make sample-to-population inference. He or she could try to say something along the lines that for our particular sample of countries and data from given years, we find that for two countries with the same level democratic index the life expectancy goes down by 1.5 years, on average, as the proportion of university educated increases from 0 to 100% (the variable is measured on scale from 0 to 1). This seems to us a meaningless statement and we would discourage from it, even if technically true. The really large standard errors should warn us against making interpretation even in purely descriptive situations. Saying that controlling for democratic index, there does not seem to be any association between life expectancy and proportion of university educated in our sample of countries seems much more sensible.<br />
+<p>Since the coefficient for percentage of university educated people has very broad confidence interval, we could also say that we find no evidence in the data, that two countries with the same level of democratic index should be expected to differ in life expectancy when they have different proportion of university educated people. That is if we believe the sample of countries justifies some generalization to some concrete or at least abstract population of countries. Someone could be tempted to make a purely descriptive interpretation with no ambition to make sample-to-population inference. He or she could try to say something along the lines that for our particular sample of countries and data from given years, we find that for two countries with the same level democratic index the life expectancy goes down by 1.5 years, on average, as the proportion of university educated increases from 0 to 100% (the variable is measured on scale from 0 to 1). This seems to us a meaningless statement and we would discourage from it, even if technically true. The really large standard errors should warn us against making interpretation even in purely descriptive situations. Saying that controlling for democratic index, there does not seem to be any association between life expectancy and proportion of university educated in our sample of countries seems much more sensible.<br />
 Within descriptive modeling strategies, we use MLR to see the effects of individual variables net of the effects of all the other variables in the model. Within predictive modeling, we use MLR to improve our predictions over simple linear model (predictions based on just one predictor term often tend to be weak in social sciences). Within explanatory modeling, we use MLR for adjusting for background variables, hence discovering potentially spurious relationships.</p>
 <div id="difference-based-vs.-change-based-interpretations" class="section level2">
 <h2>Difference-based vs. change-based interpretations</h2>

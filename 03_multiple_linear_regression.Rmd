@@ -135,9 +135,8 @@ average.
 
 Since the coefficient for percentage of university educated people has
 very broad confidence interval, we could also say that we find no
-evidence in the data, that two countries with the same level democratic
-index should be expected to differ in life expectancy conditional on
-their proportion of university educated people. That is if we believe
+evidence in the data, that two countries with the same level of democratic
+index should be expected to differ in life expectancy when they have different proportion of university educated people. That is if we believe
 the sample of countries justifies some generalization to some concrete
 or at least abstract population of countries. Someone could be tempted
 to make a purely descriptive interpretation with no ambition to make
