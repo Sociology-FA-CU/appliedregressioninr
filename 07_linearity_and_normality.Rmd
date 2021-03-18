@@ -79,7 +79,7 @@ plot(ggeffect(mod_number))
 ```
 
 The third option is to discretise the metric variable into categories of equal `width`.
-This can be done using the `cut_width()` function:
+This can be done using the `cut_width()` function. Notice that it will name the intervals so that they nominally have the same width even if the last interval does not have any observations higher than 90.
 
 ```{r cut-width-example, include=TRUE}
 vote$agea_width = cut_width(vote$agea, width  = 30)
@@ -155,14 +155,13 @@ lm(lm(vote ~ poly(agea, 2), data = vote))
 ```
 
 Which of these two types of polynomials should we choose?
-Both types of polynomials lead to the same model in the terms of fit and predictions.
-The advantage of raw polynomials is that the regression coefficients have the traditional interpretation of *change in* $y$, when $x$ is changed by one and $x^k$ is fixed at zero.
-However, the interpretation of variables transformed in such way is difficult no matter what.
-The major advantage of the orthogonal polynomials is that we can compute the proportion variance explained by each variable and therefore assess its contribution to the predictive power.
+Both types of polynomials lead to the same model in terms of fit and predictions. However, the estimated regression coefficients are different. The advantage of raw polynomials is that the regression coefficients have the traditional interpretation of *change in* $y$, when $x$ is changed by one and $x^k$ is fixed at zero.
+However, the interpretation of predictors in form of polynomials is difficult no matter what.
+The major advantage of the orthogonal polynomials is that we can compute the proportion variance explained by each predictor and therefore assess its contribution to the predictive power.
 If our goal is to interpret the relationship between variables visually through the marginal effects plots, or if only include the variable as a control, the choice of polynomial type does not matter.
 
-Since we nonlinear relationship are best interpreted visually, we prefer orthogonal polynomials.
-We can visualize a polynomial regression model using the `ggeffects` package:
+Since the nonlinear relationships are best interpreted visually, we prefer orthogonal polynomials.
+We can visualize a polynomial regression model using the `ggeffects` package just like any other multiple linear regression:
 
 ```{r poly-example}
 mod_poly = lm(vote ~ poly(agea, 2), data = vote)

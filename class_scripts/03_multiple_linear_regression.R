@@ -226,6 +226,29 @@ plot(ggpredict(mdl3, terms = c("GDPperCapita [exp]", "tfr",), condition = c(regi
 # dependent on y, first independent on x, second color, third facet
 plot(ggpredict(mdl3, terms = c("GDPperCapita", "tfr", "region")))
 
+# Exercise 8 plot regression coefficients directly ----------------------------------------
+
+mod3 = lm(life_exp ~ hdi + dem_index + poverty_risk, data = countries)
+
+tidy(mod3) %>% 
+  ggplot(aes(x = estimate, y = term, xmin = estimate - 1.96*std.error, xmax = estimate + 1.96*std.error)) +
+  geom_pointrange()
+
+mod4 = lm(scale(life_exp) ~ scale(hdi) + scale(dem_index) + scale(poverty_risk), data = countries)
+
+tidy(mod4) %>% 
+  ggplot(aes(x = estimate, y = term, xmin = estimate - 1.96*std.error, xmax = estimate + 1.96*std.error)) +
+  geom_pointrange()
+
+
+tidy(mod4) %>% 
+  ggplot(aes(x = estimate, y = fct_reorder(term, estimate), 
+             xmin = estimate - 1.96*std.error, xmax = estimate + 1.96*std.error)) +
+  geom_vline(xintercept=0, color = "blue", alpha = 0.3) +
+  geom_pointrange()+
+  labs(y="term")
+
+
 # interaction
 
 browseURL("https://cran.r-project.org/web/packages/interactions/vignettes/interactions.html")
