@@ -158,7 +158,7 @@ Which of these two types of polynomials should we choose?
 Both types of polynomials lead to the same model in terms of fit and predictions. However, the estimated regression coefficients are different. The advantage of raw polynomials is that the regression coefficients have the traditional interpretation of *change in* $y$, when $x$ is changed by one and $x^k$ is fixed at zero.
 However, the interpretation of predictors in form of polynomials is difficult no matter what.
 The major advantage of the orthogonal polynomials is that we can compute the proportion variance explained by each predictor and therefore assess its contribution to the predictive power.
-If our goal is to interpret the relationship between variables visually through the marginal effects plots, or if only include the variable as a control, the choice of polynomial type does not matter.
+If our goal is to interpret the relationship between variables visually through the marginal effects plots, or if we only include the variable as a control, the choice of polynomial type does not matter.
 
 Since the nonlinear relationships are best interpreted visually, we prefer orthogonal polynomials.
 We can visualize a polynomial regression model using the `ggeffects` package just like any other multiple linear regression:
@@ -212,7 +212,7 @@ $$
 vote = \beta_0 + \beta_1*age_{<25} + \beta_2*age_{25-50} + \beta_3*age_{50-75} + \beta_3*age_{>75}
 $$
 
-For details on how are spline terms computed, see @harrellRegressionModelingStrategies2001 [pp. 22]
+For details on how the spline terms are computed, see @harrellRegressionModelingStrategies2001 [pp. 22]
 
 ### Linear splines
 
@@ -228,6 +228,7 @@ mod_ls = lm(vote ~ lspline(agea, knots = c(25,50,75)), data = vote )
 Linear splines coefficients are interpreted in the same way as any other coefficients, for example looking at the summary of our model:
 
 ```{r ls-summary}
+options(show.signif.stars=FALSE)
 summary(mod_ls)
 ```
 
@@ -237,7 +238,7 @@ Analogously, the next regression terms refers to the slope in the second bin, i.
 This coefficient is approximately 0.007 percentage points, showing that the difference in voter turnout based on age are much bigger for the voters below 25 years, than for the middle aged group of people between 25 and 50 years.
 
 As always, we visualize the model using a marginal effects plot.
-However, the `ggeffect` package has some trouble correctly picking values of the independent to evaluate the model at, so we recommend specifying that all values of the independent variable should be evaluated:
+However, the `ggeffect` package has some trouble correctly picking values of the independent variable to evaluate the model at, so we recommend specifying that all values of the independent variable should be evaluated using *[all]* as follows:
 
 ```{r ls-marginal-plot}
 plot(ggeffect(mod_ls, terms = "agea [all]"))
@@ -271,9 +272,9 @@ While linear splines provide an easily interpretable way to model nonlinear rela
 
 This problem can be solved by using an useful generalization of linear splines, called natural cubic splines or restricted cubic splines.
 Natural cubic splines are similar to polynomial functions in that we are using a polynomial, more specifically cubic, function to model relationships in our data.
-There are however two distinctions, which make natural cubic splines a better options:
+There are however two distinctions, which make natural cubic splines a better choice:
 
-1)  Natural cubic splines divide the data into bins just as linear splines. This solves the problem of non locality, i.e. the fit in one region will not be overly dependent on the fit in other regions.
+1)  Natural cubic splines divide the data into bins just as linear splines. This solves the problem of non locality, i.e. the fit in one region will not be overly dependent on the fit in other regions like we saw with polynomials.
 2)  The polynomial function is only used in the "inner" bins. In the "outer" bins (i.e. in the first and the last one), a simple linear function is fitted. This reduces the "wiggliness" of the regression line typical for polynomial functions, improves fit at the ends and usually leads to better extrapolation results.
 
 The following graph illustrates how natural cubic splines are fitted.
@@ -304,8 +305,8 @@ The most common locations of the knots, based on their number are [@harrellRegre
 | 6     | 0.05  | 0.23   | 0.41      | 0.59 | 0.77   | 0.95   |       |
 | 7     | 0.025 | 0.1833 | 0.33417   | 0.5  | 0.6583 | 0.8167 | 0.975 |
 
-For example, if we decide to use three knots (which would divide the data into four bins), we would place the first knots at the 10th quantile, the second at the 50th quantile and the last one at the 90th quantile.
-More than seven knots are rarely need (in fact three knots are most often satisfactory), but if more are needed, the logic stays the same.
+For example, if we decide to use three knots (which would divide the data into four bins), we would place the first knot at the 10th quantile, the second at the 50th quantile and the last one at the 90th quantile.
+More than seven knots are rarely needed (in fact three knots are most often satisfactory), but if more are needed, the logic stays the same.
 
 To fit a natural cubic splines in R, we can use the `ns()` function from the `splines` package.
 The number of knots can be specified in two ways.
@@ -315,14 +316,14 @@ The `knots` argument is a vector representing the position of the inner knots, w
 To place three knots manually according to Harrel's recommendation:
 
 ```{r ns-example-manual, eval=FALSE}
-quantile(vote$agea, probs = 0.5) #value of 53
-quantile(vote$agea, probs = c(0.1, 0.9)) #values of 25.8 and 80.2
+quantile(vote$agea, probs = 0.5) # returns value of 53
+quantile(vote$agea, probs = c(0.1, 0.9)) # returns values of 25.8 and 80.2
 
 mod_ns_manual = lm(vote ~ ns(agea, knots = 53, Boundary.knots = c(25.8, 80.2)), data = vote)
 ```
 
 The code above a single inner knot at the 50th quantile and two boundary knots, at 10th and 90th quantile.
-Unfortunately, the `ggeffects` package does not seem to play nice with the output of the quantile() function and so it is better to specify the `knots` and the `Boundary.knots` arguments manually.
+Unfortunately, the `ggeffects` package does not seem to work nicely with the output of the quantile() function and so it is better to specify the `knots` and the `Boundary.knots` arguments manually like in the code above (separately use quantile to retrieve the value you need and hard-code the value in the *lm* call in the *ns* function).
 
 Alternative approach is to specify the knots through the degrees of freedom.
 The `df` argument places `df - 1` inner knots, plus two boundary knots at the sides.
@@ -335,7 +336,7 @@ mod_ns_df = lm(vote ~ ns(agea, df = 3), data = vote)
 plot(ggeffect(mod_ns_df, terms = "agea [all]"))
 ```
 
-It is worth mentioning that the `splines` package places knots by default at slightly different positions that is recommended by @harrellRegressionModelingStrategies2001.
+It is worth mentioning that the `splines` package places knots by default at slightly different positions than that recommended by @harrellRegressionModelingStrategies2001.
 For example, the boundary knots are placed at the maximum and the minimum of the data, when specified by the `df` argument.
 However, the differences in the final model are generally speaking minimal.
 This can be seen in the graph below, where the differences between the models fitted according to the recommendation by Harrel and the default of the splines package are minimal :
@@ -369,22 +370,22 @@ Which one should be used when?
 
 Categorization is the most problematic of the approaches, given its sensitivity to cutpoints placements, often unreasonable assumptions of the flat relationships between the variables inside a bin, loss of precision and statistical power, as well as other problems described by Harrel.
 On the other hand, the one big strength of categorization is its simplicity, as most people are able to understand simple means.
-Therefore, categorization should be used when we present our results to lay audience, unfamiliar with interpretation of quantitative data.
+Therefore, categorization should be considered when we present our results to lay audience, unfamiliar with interpretation of quantitative data.
 
 Linear splines can be seen as a more flexible version of the categorization approach.
-They still suffer from the arbitrariness of the knots/cutpoints placement, but they do not assume the flat relationship inside bins and, if the knots are properly placed, do not suffer from the loss of statistical power.
+They still suffer from the arbitrariness of the knots/cutpoints placement, but they do not assume the flat relationship inside bins (note that by flat we mean having no slope) and, if the knots are properly placed, do not suffer from the loss of statistical power.
 At the same time, the regression coefficient are still easily interpreted without the needs for marginal effect plots.
-Linear splines are therefore ideal when we want to present our model in a table form to professional arguments (which is common at conferences, technical reports and academic papers).
+Linear splines are therefore ideal when we want to present our model in a table form to professional arguments (which is common at conferences, technical reports and academic papers, especially when the models are simple enough to be meaningfully presented in a tabular form).
 
-Polynomials in theory represents a simple way to model nonlinear relationship without a need of categorization.
-However, the fact that polynomial functions are non local and by definition have to follow a polynomial function greatly limits their usefulness, as it makes them both unstable and unable to model certain types of non linear relationships.
-This is not helped by the fact that the regression coefficient of polynomial functions are hard to interpret substantially.
+Polynomials in theory represent a simple way to model nonlinear relationship without a need of categorization.
+However, the fact that polynomial functions are non local and by definition have to follow a polynomial function greatly limits their usefulness, as it makes them both unstable (especially at the "ends") and unable to model certain types of non-linear relationships (such as when the curve is first bent, but levels out to straight line eventually).
+This is not helped by the fact that the regression coefficient of polynomial functions are hard to interpret substantially (we usually need to rely on plotting the marginal effects for interpretation).
 
 Natural/restricted cubic splines are the most flexible way to model nonlinearity presented here.
 They are able to represent relationships of most shapes and do not suffer from the loss of statistical power in the same way as categorization.
 Unlike linear splines, they are also relatively robust to the placement of the knots.
 Their most significant disadvantage is the inability to interpret regression coefficient in a substantive manner, a shortcoming which they share with simple polynomials.
-However, unlike simple polynomials, they can model wide range of relationships, including ones which are nonlinear in some regions and linear in other.
+However, unlike simple polynomials, they can model wide range of relationships, including ones which are nonlinear in some regions and linear in others.
 This is demonstrated in the graph below, which shows the natural splines fit (blue) and the simple polynomial fit (red).
 Despite both models consuming the same number of degrees of freedom (i.e. they both have the same demands in term of sample size), the natural splines model is significantly less "wiggly" and represents the data better than the simply polynomial.
 
