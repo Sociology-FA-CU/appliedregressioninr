@@ -332,7 +332,7 @@ $$
 -   Conclusion: Use *Adjusted R^2^* when you are comparing models with different number of predictors
 
 
-# Gotcha 3 - *R^2^* depends on the range of independent variables
+# Gotcha 4 - *R^2^* depends on the range of independent variables
 
 ## *R^2^* depends on the range of independent variables
 

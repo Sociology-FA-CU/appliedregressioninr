@@ -305,7 +305,9 @@ $(document).ready(function () {
         <li>
           <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
         </li>
-        <li class="dropdown-header">Model fit</li>
+        <li>
+          <a href="04_model_fit.html">Model fit</a>
+        </li>
         <li class="dropdown-header">Ploting regression models, marginal effects</li>
         <li>
           <a href="06_assumptions.html">Assumptions of linear models</a>
@@ -418,32 +420,212 @@ $(document).ready(function () {
 </div>
 
 
-<p>So far, we have paid attention to individual coefficients. In this lecture, we will focus on the model as a whole by assessing its model fit.</p>
+<p>So far, we have paid attention to individual coefficients. In this lecture, we will focus on the model as a whole by assessing its model fit. You will learn how to evaluate model fit using <em>R<sup>2</sup></em> and ANOVA, how to compute these in R, and you will also learn about their limitations and the trick they can play on you.</p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Almost any model can be fitted to our data, but not all models will fit equally well. In this course, we will discuss three ways to evaluate model fit:</p>
+<ul>
+<li>Checking if individual model assumptions are fulfilled using diagnostic plots (next lecture).</li>
+<li>Fit indexes that summarize fit into a single number (<em>R<sup>2</sup></em>, i.e. coefficient of determination, which we will cover today, is one of them, other frequently used are so called information criteria, i.e. ICs based on maximum likelihood estimation. The most frequently used ones are AIC and BIC and we will not cover them in this course.)</li>
+<li>Formal test of fit (ANOVA/F test). It will be covered here.</li>
+</ul>
+</div>
 <div id="coefficient-of-determination" class="section level1">
 <h1>Coefficient of determination</h1>
-<p>The coefficient of determination, also pronounced as ‘R squared,’ is one of the most frequently used measures of model fit. It is the proportion of variance in the dependent variable explained by the model.</p>
-<p>Recall, variance is the average square deviation from the variable mean, for variable <span class="math inline">\(z\)</span>, the variance is:</p>
+<p>The coefficient of determination, also pronounced as ‘R squared,’ is one of the most frequently used measures of model fit. It is the proportion of variance in the dependent variable predicted by the model. E.g. if <em>R<sup>2</sup></em> = 0.32, we can say our model predicts 32% of variance of the dependent variable (in our data). Alternatively, we can say that the depend variable shares 32% of its variance with the independent variables in the model.</p>
+<p>(You may also encounter the interpretation that <em>R<sup>2</sup></em> is the proportion of variance “explained” by the model. However, we will try to avoid it as we understand explanation in causal terms (see lecture one). Saying “variance explained” seems to us like unnecessarily misleading use of causal language.)</p>
+<div id="computing-and-interpreting-coefficient-of-determination" class="section level2">
+<h2>Computing and interpreting coefficient of determination</h2>
+<p>Formally, <em>R<sup>2</sup></em> is defined as follows:</p>
 <p><span class="math display">\[
-var(z) = E[(z_i-\mu_z)^2] = \frac{\sum (z_i - \bar{z})^2}{n}
+R^{2} =1 - \frac{Sum \: of \: Squares_{residual} }{Sum \: of \: Squares_{total}}
 \]</span></p>
-<p>And we often use standard deviation which is simply square root of the variance. <span class="math display">\[
-\sigma_z = \sqrt{var{(z)}}
-\]</span> Also recall that we said regression can be conceptualized as conditional mean. Deviation from this conditional mean is caught in the parameter <span class="math inline">\(\sigma_{residual}\)</span> which is called ‘residual standard error’ in the regression output in R.</p>
-<p><span class="math inline">\(R^2\)</span> can be computed directly from these parameters as follows:</p>
+<p>Or perhaps easier to grasp:</p>
 <p><span class="math display">\[
-R^2 = 1 - (\sigma_{residual}^2 / \sigma_z^2)
-\]</span> It is pretty straightforward metric. As <span class="math inline">\(\sigma_{residual}\)</span> gets bigger (meaning large uncertainty), the fraction in the brackets gets bigger, which means that <span class="math inline">\(R^2\)</span> gets smaller (worse fit).</p>
+R^{2} =1 - \frac{Sum \: of \: Squares_{our\:model} }{Sum \: of \: Squares_{intercept\:only\:model}}
+\]</span> Conceptually, this means that we compare our predictions if we only knew the mean of the dependent variable to our predictions based on the actual model.</p>
+<ul>
+<li>The first is sometimes also called <em>null model</em> or <em>intercept only model</em> and it means that we compare the actual observations of the dependent variable to its mean and calculate how much off they are in total in terms of square distance from the mean. That is the denominator in the fraction above.</li>
+<li>The latter is comparison of predicted values by our model with actual observations. Again, we calculate how much off the actual observations are from the predicted values in total in terms of square distance. That is the numerator in the fraction above.</li>
+</ul>
+<p>The logic is straightforward. If our model is very good at predicting observed data, the sum of squares of our model is small relative to the sum of square of the intercept-only-model. This means we subtract a small number from 1 and the resulting <em>R<sup>2</sup></em> is large. We can also say that <em>R<sup>2</sup></em> tells us how much we reduced the prediction error by adding our predictors:</p>
+<ul>
+<li>if <em>R<sup>2</sup></em> = 0, then our model is as “good” as if we had no predictor at all</li>
+<li>if <em>R<sup>2</sup></em> = 1, then we predict our data perfectly (in law-like manner)</li>
+</ul>
+<p>Graphically, you can compare the intercept-only model with the a linear regression model on the figure below. Conceptually, the closer the red line gets to the points (observed data) on average when compared to the blue line, the bigger the <em>R<sup>2</sup></em>.</p>
+<p><img src="04_model_fit_files/figure-html/intercept%20only-1.png" width="672" /></p>
+<p>There is no universal cut-off for when <em>R<sup>2</sup></em> is good enough or too bad. To interpret <em>R<sup>2</sup></em>, you need to know the purpose of the model and the fit of related models in the field.</p>
+<ul>
+<li>In laboratory calibrations when perfect relationship is expected, <em>R<sup>2</sup></em> &lt; 0.99 is considered bad and a sign of an equipment failure.</li>
+<li>In day to day stock market, <em>R<sup>2</sup></em> &gt; 0.02 is considered good and such models are used for trading.</li>
+</ul>
+<p>In social science, in our experience, you can generally see higher values of <em>R<sup>2</sup></em> for aggregated-level data (such as countries) than for model using individual-level data.</p>
+<p>In R, <em>R<sup>2</sup></em> is returned by default when you use <code>summary</code> function on the object created by the <code>lm</code> function.</p>
+</div>
 <div id="properties-of-r2" class="section level2">
-<h2>Properties of <span class="math inline">\(R^2\)</span></h2>
+<h2>Properties of <em>R<sup>2</sup></em></h2>
 <p>Unsurprisingly, <span class="math inline">\(R^2\)</span> does not change if we rescale any of the variables in the model in a linear way. In other words, centering variables, standardizing variables to z-scores, rescaling from centimeters to inches, from GDP in thousands of EUR to GDP in CZK, etc. will not change the <span class="math inline">\(R^2\)</span> of the model.</p>
 <p>In simple OLS (one predictor), <span class="math inline">\(R^2\)</span> equals to the square of the correlation between x and y.</p>
 </div>
-<div id="interpreting-r2" class="section level2">
-<h2>Interpreting <span class="math inline">\(R^2\)</span></h2>
 </div>
-<div id="sometimes-small-r2-is-actually-a-good-thing" class="section level2">
-<h2>Sometimes, small <span class="math inline">\(R^2\)</span> is actually a good thing</h2>
-<p>The closer <span class="math inline">\(R^2\)</span> is to 1, the better the fit of the model. But it does not mean that we should always be happy with high <span class="math inline">\(R^2\)</span>, substantively speaking. Imagine that you model dependence of students’ score in their university admission test (e.g. their percentile in SCIO test) on their parents’ education. If parents’ education strongly predicts students’ score, we will see a high <span class="math inline">\(R^2\)</span>. But maybe we should be happier if students’ success was less rather than more dependent on their parents’ education.</p>
+<div id="anova-for-model-fit" class="section level1">
+<h1>ANOVA for model fit</h1>
+<p>We can also compare two models formally, using ANOVA, i.e, F test. This is like a classic ANOVA, but instead of comparing between- and within-group variance, we are comparing residual variances of two models. Residual variance is the variance of dependent variable not predicted by the model (i.e. the residual sum of squares from the formula above).</p>
+<p>We can only use ANOVA to compare two nested models, which means that the more complex model contains all the predictors as the simpler model plus something extra. It is not possible to compare with ANOVA two models where each of them has some unique predictors.</p>
+<p>We can use ANOVA to compare the following two models as the first is nested in the second:</p>
+<p><span class="math display">\[
+y = var1 + var2 
+\]</span> <span class="math display">\[
+y = var1 + var2 + var3
+\]</span> We cannot use ANOVA to compare the following two models as none of them is nested in the other:</p>
+<p><span class="math display">\[
+y = var1 + var2
+\]</span></p>
+<p><span class="math display">\[
+y = var1 + var3
+\]</span> ANOVA is a standard statistical test with a test statistic and its p-value.</p>
+<ul>
+<li>The null hypothesis of the ANOVA test = Residual variances of the model with more predictors is not smaller than that of the model with less predictors.</li>
+<li>Alternative hypothesis = Residual variance of the model with more predictors is smaller than residual variance of the model with less predictors.</li>
+</ul>
+<div id="using-anova-in-r" class="section level2">
+<h2>Using ANOVA in R</h2>
+<p>In R, you get the ANOVA test by applying the <code>anova</code> function on the object created by the <code>lm</code> function. If you only feed the function with one model, as shown below, you conduct a comparison of the model against the intercept-only model, i.e. model with no predictors. For simple linear regression, this is usually redundant as the t-test of the one predictor and the F-test of the whole model are equivalent in terms of p-value.</p>
+<pre class="r"><code>mod1 = lm(life_exp ~ hdi, data = countries)
+
+summary(mod1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = life_exp ~ hdi, data = countries)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.0465 -1.1026  0.1787  1.0405  2.9161 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   43.038      4.610   9.335 4.97e-11 ***
+## hdi           41.870      5.273   7.940 2.44e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.711 on 35 degrees of freedom
+##   (1 observation deleted due to missingness)
+## Multiple R-squared:  0.643,  Adjusted R-squared:  0.6328 
+## F-statistic: 63.05 on 1 and 35 DF,  p-value: 2.441e-09</code></pre>
+<pre class="r"><code>anova(mod1)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Response: life_exp
+##           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+## hdi        1 184.65 184.654  63.047 2.441e-09 ***
+## Residuals 35 102.51   2.929                      
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>More frequently, you will want to compare two specified models. To do so, we feed them both to the <code>anova</code> function as displayed below. We see residual sums of squares for both models in the output. The test statistic is computed fot their difference. In the case below, the F-test value is 24.9, which together with 1 degree of freedom (degrees of freedom of the first model minus degrees of freedom of the second model) produces a tiny p-value resulting in rejection of the null hypothesis. Indeed, the second model seem a better fit.</p>
+<pre class="r"><code>mod1 = lm(life_exp ~ hdi, data = countries)
+mod2 = lm(life_exp ~ hdi + postsoviet, data = countries)
+anova(mod1, mod2)</code></pre>
+<pre><code>## Analysis of Variance Table
+## 
+## Model 1: life_exp ~ hdi
+## Model 2: life_exp ~ hdi + postsoviet
+##   Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1     35 102.509                                  
+## 2     34  59.186  1    43.322 24.887 1.777e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+</div>
+<div id="limitations-of-r2-and-anova" class="section level1">
+<h1>Limitations of <em>R<sup>2</sup></em> and ANOVA</h1>
+<p>Now that we know how the two tools for assessing model fit work, we will talk about their limitations.</p>
+<div id="limitations-of-anova-for-model-comparison" class="section level2">
+<h2>Limitations of ANOVA for model comparison</h2>
+<p>We already said that ANOVA can be used for comparing nested models only. In addition, all the classic limitations of null hypothesis testing apply:</p>
+<pre><code>-   It is extremely unlikely for two models to &quot;explain&quot; the exact same amount of variance -\&gt; null hypothesis is almost always false by definition. 
+-   Differences do not matter, if they are practically unimportant -\&gt; rejecting null hypothesis is by itself not particularly interesting.
+-   Power matters, just like with any other test -\&gt; not rejecting null hypothesis does not necessarily mean the two models predict the same amount of variance. We may just not have enough precision to identify the difference. In other words, we would be able to reject the null hypothesis if we had a bigger sample. </code></pre>
+<p>When assessing ANOVA results, it is a good idea to consider the size of the difference in RSS of the two models compared to their original RSSs. It the difference is only a tiny fraction, then perhaps we should not neccessarily opt for the more complicated model, even if p-value is smaller than 0.05.</p>
+</div>
+<div id="limitations-of-r2" class="section level2">
+<h2>Limitations of <em>R<sup>2</sup></em></h2>
+<p><em>R<sup>2</sup></em> is fundamentally a measure of predictive strength. It may behave unintuitively when used for other than predictive modeling and it may mislead even within predictive modeling. There are 4 trick or “gotcha” moments that <em>R<sup>2</sup></em> can play on you. Know about them and be prepared.</p>
+<div id="gotcha-1---model-with-higher-r2-does-not-neccesarily-provide-a-better-estimate-of-true-regression-coefficients" class="section level3">
+<h3>Gotcha 1 - Model with higher <em>R<sup>2</sup></em> does not neccesarily provide a better estimate of true regression coefficients</h3>
+<p>Imagine we have representative sample of adults and want to analyze the relationship between intelligence (<code>IQ</code>) and work diligence (<code>diligence</code>). We also know if our respondents have a university degree (<code>degree</code>). Suppose that the true relationship (which we usually don’t know, of course) is a weak relationship between <code>IQ</code> and <code>diligence</code>: <code>intelligence = 0.1*diligence</code>, i.e., more intelligent people are somewhat more diligent than the less intelligent ones.</p>
+<p>However, the <code>degree</code> is related to both <code>IQ</code> and <code>diligence</code>. For simplicity, in this example they are related in a deterministic manner: only those who are top 20% most intelligent or the top 20% most diligent people will obtain a university degree.</p>
+<p>The key question here is whther we should control for <code>degree</code> or not? Degree surely is associated with both <code>IQ</code> and <code>diligence</code>, so why not?</p>
+<p>The figure below compares what happens when we do not control for <code>degree</code> (left panel) and when we do control for <code>degree</code>(right panel).</p>
+<p><img src="04_model_fit_files/figure-html/collider-1.png" width="960" /></p>
+<p>We see that controlling for <code>degree</code> leads to higher <em>R<sup>2</sup></em>, but incorrect coefficient estimates! Not controlling for <code>degree</code> actually provides better estimate of the relationship (remember, the true value = 0.1). In other words, higher <em>R<sup>2</sup></em> is no guarantee that or model is (more) correct.</p>
+<p><strong>What did just happen? How can controlling for a variable results in wrong coefficients estimates?</strong></p>
+<p>This is a general issue. Controlling for variables that are actually causal <strong>consequences</strong> of the dependent variable and one of the predictors improves predictive power (i.e. raises <em>R<sup>2</sup></em>), but regression coefficient will no longer be interpretable in a substantive way. This is also called <em>collider bias</em>. A similar problem also happens with mediators, i.e., when controlling for a variable which a causal effect of the independent variable of interest and also a cause of the dependent variable. See the first few chapters of <span class="citation">(<strong>pearl2016?</strong>)</span> for details.</p>
+<p>Conclusion: If the goal of an analysis is interpretation of regression coefficients (either for causal inference or testing a hypothesis generated by theory), do not select variables based on <em>R<sup>2</sup></em>. Doing so will sooner or later lead to bias and incorrect conclusions. Use theory and common sense instead to avoid conditioning on colliders and mediators.</p>
+<p><strong>Quick note on conditioning</strong></p>
+<p>Conditioning is broader term which encompasses multiple practices such as controlling for variables in regression analysis, stratification (in the above example: separate analysis of people with degree and without degree), sub-sampling (in the above example: only analyzing one subsample such as those with degree).</p>
+</div>
+<div id="gotcha-2---r2-depends-on-the-variance-of-the-dependent-variable" class="section level3">
+<h3>Gotcha 2 - <em>R<sup>2</sup></em> depends on the variance of the dependent variable</h3>
+<p>Consider variable <span class="math inline">\(x\)</span> and 3 variables <span class="math inline">\(y_1\)</span>, <span class="math inline">\(y_2\)</span>, <span class="math inline">\(y_3\)</span>. The relationship between <span class="math inline">\(x\)</span> and all <span class="math inline">\(y_i\)</span> is the same:</p>
+<ul>
+<li><span class="math inline">\(y_i = 0 + 10*x\)</span></li>
+</ul>
+<p>However, each of <span class="math inline">\(y_i\)</span> has a different standard deviation:</p>
+<ul>
+<li><span class="math inline">\(sd_{y_1} = 50\)</span>, <span class="math inline">\(sd_{y_2} = 100\)</span> and <span class="math inline">\(sd_{y_3} = 150\)</span></li>
+</ul>
+<p><img src="04_model_fit_files/figure-html/gotcha2-1.png" width="960" /></p>
+<p>Notice that <em>R<sup>2</sup></em> varies widely, despite all models being perfectly specified and describing the relationship correctly (this is a simulation, we know the data generation process, so we can be sure of that).</p>
+<p>(Remember the conceptual distinction between regression coefficients and correlation coefficients. This is a similar issue. They are conceptually different and <em>R<sup>2</sup></em> conceptually allied with correlation coefficients.)</p>
+<p>In other words, even perfectly specified model (i.e. all relevant variables present, correct regression specification) can have low <em>R<sup>2</sup></em> due to random error. When there is a lot of randomness in the World, even the best model will have low <em>R<sup>2</sup></em>.</p>
+<ul>
+<li>Low <em>R<sup>2</sup></em> does not necessarily mean the estimates are incorrect (biased)</li>
+<li>Low <em>R<sup>2</sup></em> can simply mean that we cannot explain a social phenomenon in its entirety, but that is almost never our goal.</li>
+</ul>
+<p>Conclusion: If our goal is substantive interpretation of coefficients, <em>R<sup>2</sup></em> is not a good measure of model’s quality. Low <em>R<sup>2</sup></em> does not mean an explanatory model is bad (analogously, high <em>R<sup>2</sup></em> does not mean the model is good). If our goal is purely predictive and we do not intend to interpret the coefficients, then bigger <em>R<sup>2</sup></em> does mean more precise predictions.</p>
+</div>
+<div id="gotcha-3---r2-depends-on-the-number-of-predictors" class="section level3">
+<h3>Gotcha 3 - <em>R<sup>2</sup></em> depends on the number of predictors</h3>
+<p>Consider a variable <span class="math inline">\(y\)</span> and 15 variables <span class="math inline">\(x_i\)</span> (<span class="math inline">\(x_1, \: x_2, \:... \: x_{15}\)</span>). All of these variables are independent of each other. What happens to <em>R<sup>2</sup></em>, if we start adding <span class="math inline">\(x_i\)</span> variables as predictors?</p>
+<p><img src="04_model_fit_files/figure-html/rsq-1.png" width="672" /></p>
+<p>Notice that the more predictors in the model, the higher the <em>R<sup>2</sup></em>, even if the dependent variable <span class="math inline">\(y\)</span> is not related to any of the independent variables <span class="math inline">\(x_i\)</span> (again, we know this because we generated the data as random and mutually independent).</p>
+<p><em>R<sup>2</sup></em> will increase (almost) every time we add a new predictor, because even if there is no correlation between two variables in the population, sample correlation will rarely be exactly 0 (due to sampling random error). Consequently, to some extent we are predicting random noise (by the way, this is the problem of overfitting in predictive modeling).</p>
+<p>A simple solution to this problem has been implemented in almost every statistical package and is called the <em>adjusted R<sup>2</sup></em>.</p>
+<p><em>Adjusted R<sup>2</sup></em> <span class="citation">(<strong>henri1961?</strong>)</span> controls the number of predictors in the model (represented by the degrees of freedom). <em>Adjusted R<sup>2</sup></em> only increases when the contribution of a new predictor is bigger than what we would expect by chance.</p>
+<p><span class="math display">\[
+R^{2}_{adj} = 1 - (1 - R^{2}) * \frac{no. \: of \: observations - 1}{no. \: of \: observations - no. \: of \: parameters - 1}
+\]</span></p>
+<p>Conclusion: Use <em>Adjusted R<sup>2</sup></em> when you are comparing models with different number of predictors.</p>
+</div>
+<div id="gotcha-4---r2-depends-on-the-range-of-independent-variables" class="section level3">
+<h3>Gotcha 4 - <em>R<sup>2</sup></em> depends on the range of independent variables</h3>
+<p>Consider variables <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span>. The variable <span class="math inline">\(x\)</span> is normally distributed with mean of 50 and standard deviation of 15. The relationship between them is <span class="math inline">\(y = 3*x\)</span> with residual standard deviation of 50. What would happen if we limited the range of <span class="math inline">\(x\)</span> to &lt;35;65&gt; ?</p>
+<p><img src="04_model_fit_files/figure-html/trunc-1.png" width="960" /></p>
+<p>Notice that despite the coefficients being (virtually) the same, <em>R<sup>2</sup></em> gets lower as the range of data gets narrower. Indeed, <em>R<sup>2</sup></em> will naturally get lower as we restrict the range of independent variables. This does not mean that the model is any less valid, just that predictive power is lower.</p>
+<ul>
+<li>e.g. model predicting attitudes based on income will have lower <em>R<sup>2</sup></em> in populations with smaller income differences (other things being equal).</li>
+</ul>
+<p>Conclusion: Trimming data, either by filtering out subpopulations or removing outliers, will result in lower <em>R<sup>2</sup></em>.</p>
+</div>
+</div>
+<div id="limitations-of-r2-summary" class="section level2">
+<h2>Limitations of <em>R</em><sup>2</sup> Summary</h2>
+<ul>
+<li>If the goal is hypothesis testing or causal inference, <em>R<sup>2</sup></em> cannot be used to select which variables to include into the model. Doing so can be actively harmful.</li>
+<li>If the goal is to test a hypothesis or describe a relationship, <em>R<sup>2</sup></em> doesn’t indicate quality of the model</li>
+<li><em>R<sup>2</sup></em> has to be adjusted when comparing predictive power of models with different number of predictors</li>
+<li>The value of <em>R<sup>2</sup></em> depends on the range of the independent variables</li>
+</ul>
+</div>
+<div id="final-notes-on-coefficient-of-determination" class="section level2">
+<h2>Final notes on coefficient of determination</h2>
+<p>The output of linear models in R produces <em>R<sup>2</sup></em> by default. But in simple linear regression (one predictor), you can also calculate it from the residual standard deviation, which is also provided in the R output, and the standard deviation of the single independent variable. Maybe realizing this helps to connect some dot in the mental image on variance, standard deviation, residual sum of squares and total sum of squares.</p>
+<p><span class="math display">\[
+R^2 = 1 - (\sigma_{residual}^2 / \sigma_z^2)
+\]</span></p>
+<p>We said that there is no general cutpoint for what constitutes a good or a bad <em>R<sup>2</sup></em>. We also explained what can go wrong when people start using <em>R<sup>2</sup></em> to navigate their decisions regarding choice of variables or models, especially when modeling for inference rather than prediction. But can we at least say that all the things mentioned in the <em>gotcha</em> examples being equal, better <em>R<sup>2</sup></em> is better? Not quite. If we leave the technical level and take a more normative position, sometimes, small <em>R<sup>2</sup></em> is actually a good thing. The closer <em>R<sup>2</sup></em> is to 1, the better the fit of the model. But it does not mean that we should always be happy with high <em>R<sup>2</sup></em>, even substantively speaking. Imagine that you model dependence of students’ score in their university admission test on their parents’ education. If parents’ education strongly predicts students’ score, we will see a high <em>R<sup>2</sup></em>. But maybe we should be happier if students’ success was less rather than more dependent on their parents’ education. This is actually a more general concern. We are so focused on relationships in data analysis that we may sometimes forget that a non-relation can also be substantively very relevant.</p>
 </div>
 </div>
 <div id="references" class="section level1">
