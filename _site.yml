@@ -15,9 +15,9 @@ navbar:
               href: 02_simple_linear_regression.html
             - text: "Multiple linear regression"
               href: 03_multiple_linear_regression.html
-            - text: "Model fit"
-              href: 04_model_fit.html
             - text: "Ploting regression models, marginal effects"
+            - text: "Model fit"
+              href: 05_model_fit.html
             - text: "Assumptions of linear models"
               href: 06_assumptions.html
             - text: "Regression diagnostics"
@@ -37,9 +37,9 @@ navbar:
             - text: "Multiple linear regression"
               href: 03_slides_multiple_linear_regression.html
             - text: "Ploting regression models, marginal effects"
-              href: 035_slides_model_visualization.html
+              href: 04_slides_model_visualization.html
             - text: "Model fit"
-              href: 04_slides_model_fit.html
+              href: 05_slides_model_fit.html
             - text: "Assumptions of linear models"
             - text: "Regression diagnostics"
             - text: "Linearity and normality"
@@ -57,8 +57,9 @@ navbar:
               href: 03_multiple_linear_regression_excercises.html
             - text: "Interactions"
               href: 035_multiple_linear_regression_excercises_2.html
-            - text: "Model fit"
             - text: "Ploting regression models, marginal effects"
+              href: 04_model_visualization_exercies.html
+            - text: "Model fit"
             - text: "Assumptions of linear models"
             - text: "Regression diagnostics"
             - text: "Linearity and normality"

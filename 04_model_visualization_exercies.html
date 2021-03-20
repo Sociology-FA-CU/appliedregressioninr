@@ -11,7 +11,7 @@
 
 
 
-<title>Simple linear regression - Excercises</title>
+<title>Model visualization - Excercises</title>
 
 <script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -429,37 +429,99 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Simple linear regression - Excercises</h1>
+<h1 class="title toc-ignore">Model visualization - Excercises</h1>
 
 </div>
 
 
-<pre class="r"><code>countries = read.csv(&quot;data/countries.csv&quot;)</code></pre>
+<pre class="r fold-show"><code>library(tidyverse)
+library(ggeffects)
+countries = read.csv(&quot;data/countries.csv&quot;)
+un &lt;- read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
+<p>We will be using the ‘countries’ and the ‘un’ data sets for this set of exercises. You will be asked to run models we ran earlier in the course (use this as an opportunity for revision) and then add a visual representation of the model. Either marginal effects or point plots</p>
+<div id="tasks" class="section level1">
+<h1>Tasks</h1>
 <ol style="list-style-type: decimal">
-<li>Using the <code>countries</code> data, create a regression model predicting the percentage of people at risk of poverty (<code>poverty_risk</code>) by using the democratic index (<code>dem_index</code>).</li>
+<li>Use the ‘countries’ data set. Regress ‘per capita GDP’ (you will need to construct this) on ‘uni_prc’ and ‘dem_index’. Then use ‘ggpredict’ function to see predicted values of ‘per capita GDP’ for various values of dem_index when the percentage of people with degree is kept constant at its mean. And what if the percentage of people with degree is held at its maximum? And minimum? Do you expect the predicted values to be very different?</li>
 </ol>
-<pre class="r"><code>mod1 = lm(poverty_risk ~ dem_index, data = countries)</code></pre>
+<pre class="r"><code># computing per_capita_gdp
+countries &lt;-
+  countries %&gt;% mutate(percapita_gdp = (gdp*1000000)/population)
+
+# running and saving the model
+mod1 &lt;- lm(percapita_gdp ~ uni_prc + dem_index, data = countries)
+summary(mod1)
+
+# unused metric terms are automatically held constant at their mean, we do not have to set it explicitly
+ggpredict(mod1, terms = c(&quot;dem_index&quot;)) # note that some values are unrealistic (negative). It can happen with predicted values 
+
+# If you want to use other terms constant at a specified level, use the &#39;condition&#39; parameter.
+# The syntax may take some time to get used to: a) the variables fed to &#39;terms&#39; must be quoted, the variables fed to &#39;condition&#39; must be entered using the &#39;c&#39; function, even if it is just one variable.
+ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = max(countries$uni_prc, na.rm = TRUE)))
+
+ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = min(countries$uni_prc, na.rm = TRUE)))
+
+# Notice that the predicted values are somewhat higher when percentage of people with degree is held at its maximum rather then mean. And lower when held at their minimum. This should be expected, the coefficient for uni_prc is positive. However, the differences are not huge (no wonder again, uni_prc was not statistically significant.)</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Interpret regression coefficients of the model.</li>
+<li>Now make a marginal plot for all the three predictions made in previous task.</li>
 </ol>
-<pre class="r"><code>summary(mod1)
+<pre class="r"><code>ggpredict(mod1, terms = c(&quot;dem_index&quot;)) %&gt;% plot()
 
-&quot;Intercept - the expected proportion of people at the risk of poverty in a country with democratic index of zero. In such country, we would expect to see 63% (0.63) of people at the risk of poverty.&quot;
+ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = max(countries$uni_prc, na.rm = TRUE))) %&gt;% plot()
 
-&quot;dem_index - the difference in the expected proportion of people at the risk of povery when the democratic index raises by one. According to our model, countries with 1 additional point on the democratic index have on average 5 percentage points smaller proportion of people at the risk of poverty&quot;</code></pre>
+ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = min(countries$uni_prc, na.rm = TRUE))) %&gt;% plot()
+
+# This is really simple. Just apply &#39;plot&#39; function on the output of &#39;ggpredict&#39;. Notice the changing width of the estimation error (shaded area). When &#39;uni_prc&#39; is held at its maximum, estimates are not very precise for values of low &#39;dem_index&#39; - the combination of high &#39;uni_prc and low &#39;dem_index&#39; is rare in the data, so the estimation lacks precision. </code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Is the interpretation of the intercept in our model (as stated in solution to task 2) meaningful?</li>
+<li>Take the ‘un’ dataset. Regress ‘infantMortality’ on ‘lifeFemale’, ‘illiteracyFemale’, and ‘region’. Apart from main effects, also include interaction between ‘lifeFemale’ and ‘illiteracyFemale’. To make interpretation of main effect easier, centralize ‘lifeFemale’ and ‘illiteracyFemale’ before you run the model. Interpret the model from the table.</li>
 </ol>
-<pre class="r"><code>&quot;No, it is only technical. On inspection of the data, you will notice there are no countries in the sample even close to democratic index of 0. So the interpetation is, in fact, a wild extrapolation to an area for which we have no data.&quot;</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Center the democratic index variable and fit the model again. How does the interpretation of the coefficients changes?</li>
-</ol>
-<pre class="r"><code>countries$dem_index_c = countries$dem_index - mean(countries$dem_index, na.rm = TRUE)
+<pre class="r"><code># first, centralize the the predictors which are used in interaction
+un &lt;- 
+  un %&gt;% mutate(lifeFemale_c = lifeFemale - mean(lifeFemale, na.rm=TRUE),
+                illiteracyFemale_c = illiteracyFemale - mean(illiteracyFemale, na.rm=TRUE))
 
-mod2 = lm(poverty_risk ~ dem_index_c, data = countries)
+# run the model
+mod2 &lt;- lm(infantMortality ~ lifeFemale_c*illiteracyFemale_c + region, data = un)
 summary(mod2)
 
-&quot;The intercept now represents the proportion of people at the risk of poverty in a country with average democratic index (average within our sample, of course). The interpretation of the slope coefficient does not change.&quot;</code></pre>
+
+# interpretation (note the Africa is the reference category - missing in the regression table)
+# According to the model...
+# ... African countries with mean female life expectancy and mean female illiteracy have infant mortality rate of 37.7 on average.
+
+# Note, you can compare it to the actual empirical average of African countries with the code below. The infant mortality rate is 85, this is because in reality, African countries do not have mean female life expectancy and mean female illiteracy (they have lower than average life expectancy and higher illiteracy). The model enables to estimate the effect of Africa controlling for the effect of life expectancy and illiteracy. 
+un %&gt;% filter(region == &quot;Africa&quot;) %&gt;% summarise(mean_imr = mean(infantMortality, na.rm=TRUE))
+
+# ... American countries with mean female life expectancy and mean female illiteracy have infant mortality rate larger than African countries by 7.5 (i.e. 37.7 + 7.5) on average.
+# ... etc for other continents
+# ... countries with female life expectancy higher by one year than the average life expectancy have infant mortality rate lower by 2.8 on average
+# ... countries with female illiteracy higher by one percentage point than the average female illiteracy have infant mortality rate higher by 0.19 on average
+# ... [the interaction term]... this interaction term is very hard to interpret directly from the table. Since the estimate is negative, it says somethings along the lines that if both life expectancy and illiteracy go up, the predicted fertility rate is a bit lower than expected simply from the main effects. But both the predictors are measured in different units and both push infant mortality in opposite directions (life expectancy is negatively associated with it, illiteracy positively.) So it is quite hard to imagine anything meaningful behind the coefficient. </code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>To better understand the effect of the interaction above, we will now use marginal effects. First, plot the marginal effect of female life expectancy on infant mortality rates for illiteracy fixed at its mean and at one standard deviation under and above the mean.</li>
+</ol>
+<pre class="r"><code># Default - marginal effect of female life expectancy on infant mortality rates for illiteracy fixed at its mean and at one standard deviation under and above the mean. 
+ggpredict(mod2, terms = c(&quot;lifeFemale_c&quot;, &quot;illiteracyFemale_c&quot;)) %&gt;% plot()
+
+# We see that for low values of illiteracy, the slope is a little less steep compared to high values of illiteracy. In other words, differences in life expectancy lead us to predicting bigger differences in mortality when illiteracy is high. When illiteracy is low, increase in life expectancy predicts slightly smaller drop of mortality rate.</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>In the previous task, you may have thought it is somewhat inconvenient to work with marginal effects on centered variables. Indeed, when interpreting regression with marginal effects, you can use the raw values and interpret them. Re-run the model with predictors in raw form and show the same marginal plot again. Then show an alternative marginal plot with the two predictors swaped - showing the marginal effect of illiteracy on mortality for different levels of life expectancy.</li>
+</ol>
+<pre class="r"><code>mod3 &lt;- lm(infantMortality ~ lifeFemale*illiteracyFemale + region, data = un)
+summary(mod3)
+
+
+ggpredict(mod3, terms = c(&quot;lifeFemale&quot;, &quot;illiteracyFemale&quot;)) %&gt;% plot()
+# we see a very similar image to that above, only now we can see that the slope for illiteracy fixed at one standard deviation below the mean actually means fixed at illiteracy of 1.35 %. At that illiteracy, countries with female life expectancy of 40 see about 100 per 1000 infants die, whereas with female life expectancy of 80, only a very few children per 1000 die as infants.  
+
+ggpredict(mod3, terms = c(&quot;illiteracyFemale&quot;, &quot;lifeFemale&quot;)) %&gt;% plot()
+# When we swap the predictors, we can learn about the marginal effect of illiteracy when life expectancy is fixed. Once life expectancy is high, infant mortality rate remains low irrespective of the level of illiteracy.  
+# For low life expectancy, however, growth in illiteracy predicts fairly strong growth in mortality. </code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>You should not forget that marginal effects are computed always at all other predictors in the model held constant. While we do not have to (and sometimes cannot if they are too many) include all other predictors in the plot, they are part of the story. Did you realize that all the figures so far have been for region held “Africa”? However, we know that the region variable did not enter the model in any interaction. Region is a categorical variable, so it will only change the intercept of the curves we have described so far. But see it for yourselves. Plot the marginal effect of illiteracy for the three levels of life expectancy and each of the continents.</li>
+</ol>
+<pre class="r"><code>ggpredict(mod3, terms = c(&quot;illiteracyFemale&quot;, &quot;lifeFemale&quot;, &quot;region&quot;)) %&gt;% plot()</code></pre>
+</div>
 
 
 

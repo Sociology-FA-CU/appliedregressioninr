@@ -305,10 +305,10 @@ $(document).ready(function () {
         <li>
           <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
         </li>
-        <li>
-          <a href="04_model_fit.html">Model fit</a>
-        </li>
         <li class="dropdown-header">Ploting regression models, marginal effects</li>
+        <li>
+          <a href="05_model_fit.html">Model fit</a>
+        </li>
         <li>
           <a href="06_assumptions.html">Assumptions of linear models</a>
         </li>
@@ -337,10 +337,10 @@ $(document).ready(function () {
           <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
         </li>
         <li>
-          <a href="035_slides_model_visualization.html">Ploting regression models, marginal effects</a>
+          <a href="04_slides_model_visualization.html">Ploting regression models, marginal effects</a>
         </li>
         <li>
-          <a href="04_slides_model_fit.html">Model fit</a>
+          <a href="05_slides_model_fit.html">Model fit</a>
         </li>
         <li class="dropdown-header">Assumptions of linear models</li>
         <li class="dropdown-header">Regression diagnostics</li>
@@ -372,8 +372,10 @@ $(document).ready(function () {
     <li>
       <a href="035_multiple_linear_regression_excercises_2.html">Interactions</a>
     </li>
+    <li>
+      <a href="04_model_visualization_exercies.html">Ploting regression models, marginal effects</a>
+    </li>
     <li class="dropdown-header">Model fit</li>
-    <li class="dropdown-header">Ploting regression models, marginal effects</li>
     <li class="dropdown-header">Assumptions of linear models</li>
     <li class="dropdown-header">Regression diagnostics</li>
     <li class="dropdown-header">Linearity and normality</li>
@@ -454,7 +456,7 @@ R^{2} =1 - \frac{Sum \: of \: Squares_{our\:model} }{Sum \: of \: Squares_{inter
 <li>if <em>R<sup>2</sup></em> = 1, then we predict our data perfectly (in law-like manner)</li>
 </ul>
 <p>Graphically, you can compare the intercept-only model with the a linear regression model on the figure below. Conceptually, the closer the red line gets to the points (observed data) on average when compared to the blue line, the bigger the <em>R<sup>2</sup></em>.</p>
-<p><img src="04_model_fit_files/figure-html/intercept%20only-1.png" width="672" /></p>
+<p><img src="05_model_fit_files/figure-html/intercept%20only-1.png" width="672" /></p>
 <p>There is no universal cut-off for when <em>R<sup>2</sup></em> is good enough or too bad. To interpret <em>R<sup>2</sup></em>, you need to know the purpose of the model and the fit of related models in the field.</p>
 <ul>
 <li>In laboratory calibrations when perfect relationship is expected, <em>R<sup>2</sup></em> &lt; 0.99 is considered bad and a sign of an equipment failure.</li>
@@ -558,7 +560,7 @@ anova(mod1, mod2)</code></pre>
 <p>However, the <code>degree</code> is related to both <code>IQ</code> and <code>diligence</code>. For simplicity, in this example they are related in a deterministic manner: only those who are top 20% most intelligent or the top 20% most diligent people will obtain a university degree.</p>
 <p>The key question here is whther we should control for <code>degree</code> or not? Degree surely is associated with both <code>IQ</code> and <code>diligence</code>, so why not?</p>
 <p>The figure below compares what happens when we do not control for <code>degree</code> (left panel) and when we do control for <code>degree</code>(right panel).</p>
-<p><img src="04_model_fit_files/figure-html/collider-1.png" width="960" /></p>
+<p><img src="05_model_fit_files/figure-html/collider-1.png" width="960" /></p>
 <p>We see that controlling for <code>degree</code> leads to higher <em>R<sup>2</sup></em>, but incorrect coefficient estimates! Not controlling for <code>degree</code> actually provides better estimate of the relationship (remember, the true value = 0.1). In other words, higher <em>R<sup>2</sup></em> is no guarantee that or model is (more) correct.</p>
 <p><strong>What did just happen? How can controlling for a variable results in wrong coefficients estimates?</strong></p>
 <p>This is a general issue. Controlling for variables that are actually causal <strong>consequences</strong> of the dependent variable and one of the predictors improves predictive power (i.e. raises <em>R<sup>2</sup></em>), but regression coefficient will no longer be interpretable in a substantive way. This is also called <em>collider bias</em>. A similar problem also happens with mediators, i.e., when controlling for a variable which a causal effect of the independent variable of interest and also a cause of the dependent variable. See the first few chapters of <span class="citation">(<strong>pearl2016?</strong>)</span> for details.</p>
@@ -576,7 +578,7 @@ anova(mod1, mod2)</code></pre>
 <ul>
 <li><span class="math inline">\(sd_{y_1} = 50\)</span>, <span class="math inline">\(sd_{y_2} = 100\)</span> and <span class="math inline">\(sd_{y_3} = 150\)</span></li>
 </ul>
-<p><img src="04_model_fit_files/figure-html/gotcha2-1.png" width="960" /></p>
+<p><img src="05_model_fit_files/figure-html/gotcha2-1.png" width="960" /></p>
 <p>Notice that <em>R<sup>2</sup></em> varies widely, despite all models being perfectly specified and describing the relationship correctly (this is a simulation, we know the data generation process, so we can be sure of that).</p>
 <p>(Remember the conceptual distinction between regression coefficients and correlation coefficients. This is a similar issue. They are conceptually different and <em>R<sup>2</sup></em> conceptually allied with correlation coefficients.)</p>
 <p>In other words, even perfectly specified model (i.e. all relevant variables present, correct regression specification) can have low <em>R<sup>2</sup></em> due to random error. When there is a lot of randomness in the World, even the best model will have low <em>R<sup>2</sup></em>.</p>
@@ -589,7 +591,7 @@ anova(mod1, mod2)</code></pre>
 <div id="gotcha-3---r2-depends-on-the-number-of-predictors" class="section level3">
 <h3>Gotcha 3 - <em>R<sup>2</sup></em> depends on the number of predictors</h3>
 <p>Consider a variable <span class="math inline">\(y\)</span> and 15 variables <span class="math inline">\(x_i\)</span> (<span class="math inline">\(x_1, \: x_2, \:... \: x_{15}\)</span>). All of these variables are independent of each other. What happens to <em>R<sup>2</sup></em>, if we start adding <span class="math inline">\(x_i\)</span> variables as predictors?</p>
-<p><img src="04_model_fit_files/figure-html/rsq-1.png" width="672" /></p>
+<p><img src="05_model_fit_files/figure-html/rsq-1.png" width="672" /></p>
 <p>Notice that the more predictors in the model, the higher the <em>R<sup>2</sup></em>, even if the dependent variable <span class="math inline">\(y\)</span> is not related to any of the independent variables <span class="math inline">\(x_i\)</span> (again, we know this because we generated the data as random and mutually independent).</p>
 <p><em>R<sup>2</sup></em> will increase (almost) every time we add a new predictor, because even if there is no correlation between two variables in the population, sample correlation will rarely be exactly 0 (due to sampling random error). Consequently, to some extent we are predicting random noise (by the way, this is the problem of overfitting in predictive modeling).</p>
 <p>A simple solution to this problem has been implemented in almost every statistical package and is called the <em>adjusted R<sup>2</sup></em>.</p>
@@ -602,7 +604,7 @@ R^{2}_{adj} = 1 - (1 - R^{2}) * \frac{no. \: of \: observations - 1}{no. \: of \
 <div id="gotcha-4---r2-depends-on-the-range-of-independent-variables" class="section level3">
 <h3>Gotcha 4 - <em>R<sup>2</sup></em> depends on the range of independent variables</h3>
 <p>Consider variables <span class="math inline">\(y\)</span> and <span class="math inline">\(x\)</span>. The variable <span class="math inline">\(x\)</span> is normally distributed with mean of 50 and standard deviation of 15. The relationship between them is <span class="math inline">\(y = 3*x\)</span> with residual standard deviation of 50. What would happen if we limited the range of <span class="math inline">\(x\)</span> to &lt;35;65&gt; ?</p>
-<p><img src="04_model_fit_files/figure-html/trunc-1.png" width="960" /></p>
+<p><img src="05_model_fit_files/figure-html/trunc-1.png" width="960" /></p>
 <p>Notice that despite the coefficients being (virtually) the same, <em>R<sup>2</sup></em> gets lower as the range of data gets narrower. Indeed, <em>R<sup>2</sup></em> will naturally get lower as we restrict the range of independent variables. This does not mean that the model is any less valid, just that predictive power is lower.</p>
 <ul>
 <li>e.g. model predicting attitudes based on income will have lower <em>R<sup>2</sup></em> in populations with smaller income differences (other things being equal).</li>

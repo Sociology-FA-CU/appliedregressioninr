@@ -1,0 +1,128 @@
+---
+title: "Model visualization - Excercises "
+output:
+  html_document:
+    code_foldin: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = F)
+```
+
+```{r data, class.source = "fold-show"}
+library(tidyverse)
+library(ggeffects)
+countries = read.csv("data/countries.csv")
+un <- read.table("data/UnitedNations.txt")
+```
+
+We will be using the 'countries' and the 'un' data sets for this set of exercises. You will be asked to run models we ran earlier in the course (use this as an opportunity for revision) and then add a visual representation of the model. Either marginal effects or point plots
+
+# Tasks
+
+1) Use the 'countries' data set. Regress 'per capita GDP' (you will need to construct this) on 'uni_prc' and 'dem_index'. Then use 'ggpredict' function to see predicted values of 'per capita GDP' for various values of dem_index when the percentage of people with degree is kept constant at its mean. And what if the percentage of people with degree is held at its maximum? And minimum? Do you expect the predicted values to be very different? 
+
+```{r}
+
+# computing per_capita_gdp
+countries <-
+  countries %>% mutate(percapita_gdp = (gdp*1000000)/population)
+
+# running and saving the model
+mod1 <- lm(percapita_gdp ~ uni_prc + dem_index, data = countries)
+summary(mod1)
+
+# unused metric terms are automatically held constant at their mean, we do not have to set it explicitly
+ggpredict(mod1, terms = c("dem_index")) # note that some values are unrealistic (negative). It can happen with predicted values 
+
+# If you want to use other terms constant at a specified level, use the 'condition' parameter.
+# The syntax may take some time to get used to: a) the variables fed to 'terms' must be quoted, the variables fed to 'condition' must be entered using the 'c' function, even if it is just one variable.
+ggpredict(mod1, terms = "dem_index", condition = c(uni_prc = max(countries$uni_prc, na.rm = TRUE)))
+
+ggpredict(mod1, terms = "dem_index", condition = c(uni_prc = min(countries$uni_prc, na.rm = TRUE)))
+
+# Notice that the predicted values are somewhat higher when percentage of people with degree is held at its maximum rather then mean. And lower when held at their minimum. This should be expected, the coefficient for uni_prc is positive. However, the differences are not huge (no wonder again, uni_prc was not statistically significant.)
+```
+
+
+2) Now make a marginal plot for all the three predictions made in previous task.    
+
+```{r}
+
+ggpredict(mod1, terms = c("dem_index")) %>% plot()
+
+ggpredict(mod1, terms = "dem_index", condition = c(uni_prc = max(countries$uni_prc, na.rm = TRUE))) %>% plot()
+
+ggpredict(mod1, terms = "dem_index", condition = c(uni_prc = min(countries$uni_prc, na.rm = TRUE))) %>% plot()
+
+# This is really simple. Just apply 'plot' function on the output of 'ggpredict'. Notice the changing width of the estimation error (shaded area). When 'uni_prc' is held at its maximum, estimates are not very precise for values of low 'dem_index' - the combination of high 'uni_prc and low 'dem_index' is rare in the data, so the estimation lacks precision. 
+
+```
+
+3) Take the 'un' dataset. Regress 'infantMortality' on 'lifeFemale', 'illiteracyFemale', and 'region'. Apart from main effects, also include interaction between 'lifeFemale' and 'illiteracyFemale'. To make interpretation of main effect easier, centralize 'lifeFemale' and 'illiteracyFemale' before you run the model. Interpret the model from the table.
+
+```{r}
+
+# first, centralize the the predictors which are used in interaction
+un <- 
+  un %>% mutate(lifeFemale_c = lifeFemale - mean(lifeFemale, na.rm=TRUE),
+                illiteracyFemale_c = illiteracyFemale - mean(illiteracyFemale, na.rm=TRUE))
+
+# run the model
+mod2 <- lm(infantMortality ~ lifeFemale_c*illiteracyFemale_c + region, data = un)
+summary(mod2)
+
+
+# interpretation (note the Africa is the reference category - missing in the regression table)
+# According to the model...
+# ... African countries with mean female life expectancy and mean female illiteracy have infant mortality rate of 37.7 on average.
+
+# Note, you can compare it to the actual empirical average of African countries with the code below. The infant mortality rate is 85, this is because in reality, African countries do not have mean female life expectancy and mean female illiteracy (they have lower than average life expectancy and higher illiteracy). The model enables to estimate the effect of Africa controlling for the effect of life expectancy and illiteracy. 
+un %>% filter(region == "Africa") %>% summarise(mean_imr = mean(infantMortality, na.rm=TRUE))
+
+# ... American countries with mean female life expectancy and mean female illiteracy have infant mortality rate larger than African countries by 7.5 (i.e. 37.7 + 7.5) on average.
+# ... etc for other continents
+# ... countries with female life expectancy higher by one year than the average life expectancy have infant mortality rate lower by 2.8 on average
+# ... countries with female illiteracy higher by one percentage point than the average female illiteracy have infant mortality rate higher by 0.19 on average
+# ... [the interaction term]... this interaction term is very hard to interpret directly from the table. Since the estimate is negative, it says somethings along the lines that if both life expectancy and illiteracy go up, the predicted fertility rate is a bit lower than expected simply from the main effects. But both the predictors are measured in different units and both push infant mortality in opposite directions (life expectancy is negatively associated with it, illiteracy positively.) So it is quite hard to imagine anything meaningful behind the coefficient. 
+      
+```
+
+4) To better understand the effect of the interaction above, we will now use marginal effects. First, plot the marginal effect of female life expectancy on infant mortality rates for illiteracy fixed at its mean and at one standard deviation under and above the mean.
+
+
+```{r}
+
+# Default - marginal effect of female life expectancy on infant mortality rates for illiteracy fixed at its mean and at one standard deviation under and above the mean. 
+ggpredict(mod2, terms = c("lifeFemale_c", "illiteracyFemale_c")) %>% plot()
+
+# We see that for low values of illiteracy, the slope is a little less steep compared to high values of illiteracy. In other words, differences in life expectancy lead us to predicting bigger differences in mortality when illiteracy is high. When illiteracy is low, increase in life expectancy predicts slightly smaller drop of mortality rate.
+
+```
+
+
+5) In the previous task, you may have thought it is somewhat inconvenient to work with marginal effects on centered variables. Indeed, when interpreting regression with marginal effects, you can use the raw values and interpret them. Re-run the model with predictors in raw form and show the same marginal plot again. Then show an alternative marginal plot with the two predictors swaped - showing the marginal effect of illiteracy on mortality for different levels of life expectancy.
+
+
+```{r}
+
+mod3 <- lm(infantMortality ~ lifeFemale*illiteracyFemale + region, data = un)
+summary(mod3)
+
+
+ggpredict(mod3, terms = c("lifeFemale", "illiteracyFemale")) %>% plot()
+# we see a very similar image to that above, only now we can see that the slope for illiteracy fixed at one standard deviation below the mean actually means fixed at illiteracy of 1.35 %. At that illiteracy, countries with female life expectancy of 40 see about 100 per 1000 infants die, whereas with female life expectancy of 80, only a very few children per 1000 die as infants.  
+
+ggpredict(mod3, terms = c("illiteracyFemale", "lifeFemale")) %>% plot()
+# When we swap the predictors, we can learn about the marginal effect of illiteracy when life expectancy is fixed. Once life expectancy is high, infant mortality rate remains low irrespective of the level of illiteracy.  
+# For low life expectancy, however, growth in illiteracy predicts fairly strong growth in mortality. 
+```
+
+6) You should not forget that marginal effects are computed always at all other predictors in the model held constant. While we do not have to (and sometimes cannot if they are too many) include all other predictors in the plot, they are part of the story. Did you realize that all the figures so far have been for region held "Africa"? However, we know that the region variable did not enter the model in any interaction. Region is a categorical variable, so it will only change the intercept of the curves we have described so far. But see it for yourselves. Plot the marginal effect of illiteracy for the three levels of life expectancy and each of the continents.
+
+```{r}
+ggpredict(mod3, terms = c("illiteracyFemale", "lifeFemale", "region")) %>% plot()
+
+```
