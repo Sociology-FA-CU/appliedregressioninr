@@ -12,7 +12,7 @@ csl: apa.csl
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r data-and-packages}
+```{r data-and-packages, message=FALSE, warning=FALSE, echo=FALSE}
 library(tidyverse)
 library(splines)
 library(lspline)
@@ -79,7 +79,8 @@ plot(ggeffect(mod_number))
 ```
 
 The third option is to discretise the metric variable into categories of equal `width`.
-This can be done using the `cut_width()` function. Notice that it will name the intervals so that they nominally have the same width even if the last interval does not have any observations higher than 90.
+This can be done using the `cut_width()` function.
+Notice that it will name the intervals so that they nominally have the same width even if the last interval does not have any observations higher than 90.
 
 ```{r cut-width-example, include=TRUE}
 vote$agea_width = cut_width(vote$agea, width  = 30)
@@ -155,7 +156,9 @@ lm(lm(vote ~ poly(agea, 2), data = vote))
 ```
 
 Which of these two types of polynomials should we choose?
-Both types of polynomials lead to the same model in terms of fit and predictions. However, the estimated regression coefficients are different. The advantage of raw polynomials is that the regression coefficients have the traditional interpretation of *change in* $y$, when $x$ is changed by one and $x^k$ is fixed at zero.
+Both types of polynomials lead to the same model in terms of fit and predictions.
+However, the estimated regression coefficients are different.
+The advantage of raw polynomials is that the regression coefficients have the traditional interpretation of *change in* $y$, when $x$ is changed by one and $x^k$ is fixed at zero.
 However, the interpretation of predictors in form of polynomials is difficult no matter what.
 The major advantage of the orthogonal polynomials is that we can compute the proportion variance explained by each predictor and therefore assess its contribution to the predictive power.
 If our goal is to interpret the relationship between variables visually through the marginal effects plots, or if we only include the variable as a control, the choice of polynomial type does not matter.
@@ -348,7 +351,7 @@ ggplot(aes(x = agea, y = vote), data = vote) +
   geom_smooth(method = "lm", se = F, formula = y ~ ns(x, df = 2), color = "red", alpha = 0.5)
 ```
 
-This illustrates the advantage of the natural cubic splines, namely that they are relatively to the arbitrary decisions such as the placements of the knots.
+This illustrates the advantage of the natural cubic splines, namely that they are relatively robust to the arbitrary decisions such as the placements of the knots.
 As long as the number of the knots is identical and they are placed evenly and symmetrically along the range of the data, the results will be mostly the same.
 
 ### Selecting the position and the number of knots
