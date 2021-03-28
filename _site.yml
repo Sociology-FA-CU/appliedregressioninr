@@ -58,7 +58,7 @@ navbar:
             - text: "Interactions"
               href: 035_multiple_linear_regression_excercises_2.html
             - text: "Ploting regression models, marginal effects"
-              href: 04_model_visualization_exercies.html
+              href: 04_model_visualization_exercises.html
             - text: "Model fit"
               href: 05_model_fit_exercises.html
             - text: "Assumptions of linear models"

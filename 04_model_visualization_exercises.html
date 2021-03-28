@@ -11,7 +11,7 @@
 
 
 
-<title>Model fit - Excercises</title>
+<title>Model visualization - Excercises</title>
 
 <script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -377,7 +377,7 @@ $(document).ready(function () {
       <a href="035_multiple_linear_regression_excercises_2.html">Interactions</a>
     </li>
     <li>
-      <a href="04_model_visualization_exercies.html">Ploting regression models, marginal effects</a>
+      <a href="04_model_visualization_exercises.html">Ploting regression models, marginal effects</a>
     </li>
     <li>
       <a href="05_model_fit_exercises.html">Model fit</a>
@@ -431,62 +431,98 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Model fit - Excercises</h1>
+<h1 class="title toc-ignore">Model visualization - Excercises</h1>
 
 </div>
 
 
 <pre class="r fold-show"><code>library(tidyverse)
+library(ggeffects)
+countries = read.csv(&quot;data/countries.csv&quot;)
 un &lt;- read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
-<p>We will be using the ‘un’ data set, i.e., the data from United Nations organization.</p>
+<p>We will be using the ‘countries’ and the ‘un’ data sets for this set of exercises. You will be asked to run models we ran earlier in the course (use this as an opportunity for revision) and then add a visual representation of the model. Either marginal effects or point plots</p>
 <div id="tasks" class="section level1">
 <h1>Tasks</h1>
 <ol style="list-style-type: decimal">
-<li>Regress infant mortality on female life expectancy and female illiteracy rate (main effects only). What is the percentage of variance predicted by the two predictors?</li>
+<li>Use the ‘countries’ data set. Regress ‘per capita GDP’ (you will need to construct this) on ‘uni_prc’ and ‘dem_index’. Then use ‘ggpredict’ function to see predicted values of ‘per capita GDP’ for various values of dem_index when the percentage of people with degree is kept constant at its mean. And what if the percentage of people with degree is held at its maximum? And minimum? Do you expect the predicted values to be very different?</li>
 </ol>
-<pre class="r"><code>model1 &lt;- lm(infantMortality ~ lifeFemale + illiteracyFemale, data = un)
-summary(model1)
+<pre class="r"><code># computing per_capita_gdp
+countries &lt;-
+  countries %&gt;% mutate(percapita_gdp = (gdp*1000000)/population)
 
-# The answer is 89.84 %. That is a lot. Such a high value of R-squared very rarely occurs in sociological data on individual level, but it can happen sometimes on aggregate level (such as here - data on country level). </code></pre>
+# running and saving the model
+mod1 &lt;- lm(percapita_gdp ~ uni_prc + dem_index, data = countries)
+summary(mod1)
+
+# unused metric terms are automatically held constant at their mean, we do not have to set it explicitly
+ggpredict(mod1, terms = c(&quot;dem_index&quot;)) # note that some values are unrealistic (negative). It can happen with predicted values 
+
+# If you want to use other terms constant at a specified level, use the &#39;condition&#39; parameter.
+# The syntax may take some time to get used to: a) the variables fed to &#39;terms&#39; must be quoted, the variables fed to &#39;condition&#39; must be entered using the &#39;c&#39; function, even if it is just one variable.
+ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = max(countries$uni_prc, na.rm = TRUE)))
+
+ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = min(countries$uni_prc, na.rm = TRUE)))
+
+# Notice that the predicted values are somewhat higher when percentage of people with degree is held at its maximum rather then mean. And lower when held at their minimum. This should be expected, the coefficient for uni_prc is positive. However, the differences are not huge (no wonder again, uni_prc was not statistically significant.)</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Compute another model where you also add interaction between life expectancy and female illiteracy rate as a third predictor. Also compute a third model where you also add region as main effect on top of that. Compare their values of R-squared. Which one of the models is best at predicting variance in the dependent variable?</li>
+<li>Now make a marginal plot for all the three predictions made in previous task.</li>
 </ol>
-<pre class="r"><code>model2 &lt;- lm(infantMortality ~ lifeFemale*illiteracyFemale, data = un)
-model3 &lt;- lm(infantMortality ~ lifeFemale*illiteracyFemale + region, data = un)
+<pre class="r"><code>ggpredict(mod1, terms = c(&quot;dem_index&quot;)) %&gt;% plot()
 
-summary(model1)
-summary(model2)
-summary(model3)
+ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = max(countries$uni_prc, na.rm = TRUE))) %&gt;% plot()
 
-# model 1: 0.8971
-# model 2: 0.9018
-# model 3: 0.907
+ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = min(countries$uni_prc, na.rm = TRUE))) %&gt;% plot()
 
-# Note, since the comparison is of models with dufferent number of predictors, the formally correct approach is comparing adjusted R-squared. This changes nothing about the fact the with each adding of complexity,the R-squared increases a little. So it looks like the most complex model has some value added over the less complex models beyond just random noise. However, the increase in predictive power is only very small. It would be prefectly justifiable here to to opt for the simplest model with simple and straightforward interpretation. Dependening on the modeling purpose. If you compete to make the best predictions and interprtability is secondary, you will probably wanto to pick the most complex model here.</code></pre>
+# This is really simple. Just apply &#39;plot&#39; function on the output of &#39;ggpredict&#39;. Notice the changing width of the estimation error (shaded area). When &#39;uni_prc&#39; is held at its maximum, estimates are not very precise for values of low &#39;dem_index&#39; - the combination of high &#39;uni_prc and low &#39;dem_index&#39; is rare in the data, so the estimation lacks precision. </code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Use ‘anova’ function to conduct another comparison of the models.</li>
+<li>Take the ‘un’ dataset. Regress ‘infantMortality’ on ‘lifeFemale’, ‘illiteracyFemale’, and ‘region’. Apart from main effects, also include interaction between ‘lifeFemale’ and ‘illiteracyFemale’. To make interpretation of main effect easier, centralize ‘lifeFemale’ and ‘illiteracyFemale’ before you run the model. Interpret the model from the table.</li>
 </ol>
-<pre class="r"><code>anova(model1, model2)
-anova(model2, model3)
+<pre class="r"><code># first, centralize the the predictors which are used in interaction
+un &lt;- 
+  un %&gt;% mutate(lifeFemale_c = lifeFemale - mean(lifeFemale, na.rm=TRUE),
+                illiteracyFemale_c = illiteracyFemale - mean(illiteracyFemale, na.rm=TRUE))
 
-# Quite in concord with the comparison in task 2, comparing models using anova also tells as that moving from model1 to model2 leads to statistically significant improvement in model fit (p-value is smaller than 0.05, so we can reject the null hypothesis of no difference in model fit, on the commonly used significance level). Similarly, moving from model2 to model3 also means statistically significant improvement in model fit. But again, we should also reflect that the improvement, while *statistically* significant,is *not really significant* for many purposes. </code></pre>
-<p>In the following tasks, you will not need to code anything. Just think and try to give your best answer before you look at our solution.</p>
+# run the model
+mod2 &lt;- lm(infantMortality ~ lifeFemale_c*illiteracyFemale_c + region, data = un)
+summary(mod2)
+
+
+# interpretation (note the Africa is the reference category - missing in the regression table)
+# According to the model...
+# ... African countries with mean female life expectancy and mean female illiteracy have infant mortality rate of 37.7 on average.
+
+# Note, you can compare it to the actual empirical average of African countries with the code below. The infant mortality rate is 85, this is because in reality, African countries do not have mean female life expectancy and mean female illiteracy (they have lower than average life expectancy and higher illiteracy). The model enables to estimate the effect of Africa controlling for the effect of life expectancy and illiteracy. 
+un %&gt;% filter(region == &quot;Africa&quot;) %&gt;% summarise(mean_imr = mean(infantMortality, na.rm=TRUE))
+
+# ... American countries with mean female life expectancy and mean female illiteracy have infant mortality rate larger than African countries by 7.5 (i.e. 37.7 + 7.5) on average.
+# ... etc for other continents
+# ... countries with female life expectancy higher by one year than the average life expectancy have infant mortality rate lower by 2.8 on average
+# ... countries with female illiteracy higher by one percentage point than the average female illiteracy have infant mortality rate higher by 0.19 on average
+# ... [the interaction term]... this interaction term is very hard to interpret directly from the table. Since the estimate is negative, it says somethings along the lines that if both life expectancy and illiteracy go up, the predicted fertility rate is a bit lower than expected simply from the main effects. But both the predictors are measured in different units and both push infant mortality in opposite directions (life expectancy is negatively associated with it, illiteracy positively.) So it is quite hard to imagine anything meaningful behind the coefficient. </code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>You want to know if consumption of ice-cream causes people to drown. In your modeling, you make the assumption that the only thing which is in reality associated somehow with ice-cream consumption and drowning is the outside temperature. So you have measured three variables, ice-cream consumption on given day, number of people who drown, and outside temperature. It is obvious you will want to regress drowning on ice-cream, but should you also control for the outside temperature? It results in better model fit, indeed, but is it a correct model? Or should you not control for it?</li>
+<li>To better understand the effect of the interaction above, we will now use marginal effects. First, plot the marginal effect of female life expectancy on infant mortality rates for illiteracy fixed at its mean and at one standard deviation under and above the mean.</li>
 </ol>
-<pre class="r"><code># Of course, you DO need to control for outside temperature, because the only plausible explanation is that outside temperature preceeds and causes ice-cream consumption (people are hot and want to eat ice-cream) and drowning (are hot and want to swim).  </code></pre>
+<pre class="r"><code># Default - marginal effect of female life expectancy on infant mortality rates for illiteracy fixed at its mean and at one standard deviation under and above the mean. 
+ggpredict(mod2, terms = c(&quot;lifeFemale_c&quot;, &quot;illiteracyFemale_c&quot;)) %&gt;% plot()
+
+# We see that for low values of illiteracy, the slope is a little less steep compared to high values of illiteracy. In other words, differences in life expectancy lead us to predicting bigger differences in mortality when illiteracy is high. When illiteracy is low, increase in life expectancy predicts slightly smaller drop of mortality rate.</code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>You assume that your new program for unemployed people will result in their change of attitudes and this will help them find a job. You have an intervention group and a control group, but they were not randomized, so tou cannot rely on the fact that they are the same. So you measured their attitudes at the beginning to be able to compare the two groups. Then, the intervention took place. Next, you measured their attitudes again after the intervention. Finally, after three months, you looked if they managed to find a job. At the end of the day, you have four variables: clearly, your dependent variable is whether the person found a job or not after the three months. Clearly, your main independent variable is the group membership (intervention vs. control). You also have attitudes before the intervention and after it. Which one of them should you control for in the model? None of them? Only attitudes before the intervention? Only attitudes after the intervention? Both of them?</li>
+<li>In the previous task, you may have thought it is somewhat inconvenient to work with marginal effects on centered variables. Indeed, when interpreting regression with marginal effects, you can use the raw values and interpret them. Re-run the model with predictors in raw form and show the same marginal plot again. Then show an alternative marginal plot with the two predictors swaped - showing the marginal effect of illiteracy on mortality for different levels of life expectancy.</li>
 </ol>
-<pre class="r"><code># The correct answer is that you should only control for the attitudes before the intervention. They preceded the intervention, so you want to put them in the model to compare the intervention and control groups when their attitudes before the intervention are held constant. On the other hand, you should not control for the the attitudes after the intervention because they are a mediator, they are your causal mechanism (you believe it is the change of attitudes caused by the intervention which ultimately results in better chance of finding a job). Controlling for it would undermine your analysis - you would effectively filter out the effect that you are trying to find.     </code></pre>
+<pre class="r"><code>mod3 &lt;- lm(infantMortality ~ lifeFemale*illiteracyFemale + region, data = un)
+summary(mod3)
+
+
+ggpredict(mod3, terms = c(&quot;lifeFemale&quot;, &quot;illiteracyFemale&quot;)) %&gt;% plot()
+# we see a very similar image to that above, only now we can see that the slope for illiteracy fixed at one standard deviation below the mean actually means fixed at illiteracy of 1.35 %. At that illiteracy, countries with female life expectancy of 40 see about 100 per 1000 infants die, whereas with female life expectancy of 80, only a very few children per 1000 die as infants.  
+
+ggpredict(mod3, terms = c(&quot;illiteracyFemale&quot;, &quot;lifeFemale&quot;)) %&gt;% plot()
+# When we swap the predictors, we can learn about the marginal effect of illiteracy when life expectancy is fixed. Once life expectancy is high, infant mortality rate remains low irrespective of the level of illiteracy.  
+# For low life expectancy, however, growth in illiteracy predicts fairly strong growth in mortality. </code></pre>
 <ol start="6" style="list-style-type: decimal">
-<li>But what if you did not remember to measure the attitudes before the intervention. You only measured them afterwards. So probably, the difference in attitudes between the intervention and control group after the intervention partly reflects the difference prior to the intervention (remember, you were not able to use randomization), and it partly reflects the effect of the intervention. Should you control for it in the absence of knowing the prior attitudes?</li>
+<li>You should not forget that marginal effects are computed always at all other predictors in the model held constant. While we do not have to (and sometimes cannot if they are too many) include all other predictors in the plot, they are part of the story. Did you realize that all the figures so far have been for region held “Africa”? However, we know that the region variable did not enter the model in any interaction. Region is a categorical variable, so it will only change the intercept of the curves we have described so far. But see it for yourselves. Plot the marginal effect of illiteracy for the three levels of life expectancy and each of the continents.</li>
 </ol>
-<pre class="r"><code># No. The reason is still the same as above. In fact, when you failed to randomize and you also failed to measure the attitudes prior to the intervention, there is no way of knowing if your intervention had any effect. You do not know if any difference between the two groups in finding a job is caused by your intervention or prior differences in attitudes. A botched research design prevents you from making any conclusions. Well, it should prevent you from making any conclusions. It does not mean there are not such faulty conclusions out there...    </code></pre>
-<ol start="7" style="list-style-type: decimal">
-<li>Imagine your political views are progressive left. You notice that among your friends, those who study sociology are less aligned with your political views than those of your friends who do not study sociology. Can you make the conclusion that for some reason being sociology student makes people less progressive (either people who are less progressive go to sociology or the studying sociology itself makes them less progressive, the mechanism does not matter)? Why (not)?</li>
-</ol>
-<pre class="r"><code># No, such a conclusion could be unwarranted, because it could suffer from the *conditioning on collider* bias. What you would be, in fact, doing is setting up a model in your head where the depending variable (less progressive views) would be caused by being sociology student BUT you would only observe the subset of people who are your friends. That is a big problem because how do people become your friends? For simplicity, we can assume two mechanisms - (a) they are sociology students, spend time with you, you have beers together, so you become friends, (b) they are similar to you, have similar political views, so you pick them as friends. In other words, studying sociology is one cause of friendship with you, being politically progressive is another. It means that the causal effect leads to &quot;friendship with you&quot; from both &quot;being sociology student&quot; and &quot;being progressive&quot;. This means that being friends with you is a collider in this analysis. And analyzing the relationship between studying sociology and political views ONLY among your friends is a form of conditioning on collider.</code></pre>
+<pre class="r"><code>ggpredict(mod3, terms = c(&quot;illiteracyFemale&quot;, &quot;lifeFemale&quot;, &quot;region&quot;)) %&gt;% plot()</code></pre>
 </div>
 
 
