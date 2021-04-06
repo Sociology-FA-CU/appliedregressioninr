@@ -1,0 +1,246 @@
+---
+title: "Lesson 5: Model assumptions"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in March 2021"
+output:
+  ioslides_presentation:
+    widescreen: true
+csl: "../apa.csl"
+bibliography: 06_model_assumptions.bib
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(patchwork)
+
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Goals for today
+
+-   Learn about assumptions of linear regression
+-   Learn how to use diagnostic plots
+-   Learn about the limitations of statistical test for assumption checking
+
+## Bias and random error
+
+-   Total error composed of two parts: bias and random error
+
+<br>
+
+-   Bias - systemic error, i.e. systemic under- or overestimation of the expected values
+-   Random error - random deviations from the true value (due to the sampling and measurement error)
+
+<br>
+
+-   Violations of assumption can increase either or both
+
+## Precision and efficiency
+
+-   Precision
+
+    -   reciprocal to the random error (high precision = low random error)
+
+<br>
+
+-   Efficiency
+
+    -   how many observations we need to achieve a specific level of performance
+    -   e.g. model based on data that meet its assumptions require less observations to achieve 80% statistical power, i.e. is more efficient
+
+## How to think about assumptions
+
+-   Regression models represent a simplification of real world
+-   To make this simplification, some assumptions have to be made
+
+<br>
+
+-   All models make assumptions
+-   It is important to realize that no real model actually meet all assumptions we make (in fact, most models don't meet any of our assumptions exactly)
+
+<br>
+
+-   Models can be by useful even when assumptions are wrong
+-   What is important is to what extent are our assumptions violated
+
+## How to think about assumptions
+
+-   Don't think about assumptions in binary term (*"ok"* vs *"bad"*)
+-   Instead, think *how much* we deviate from them
+-   Not all assumption are also important for all tasks
+
+<br>
+
+-   Therefore, we need to know why are some assumptions important and what happens when they are wrong
+
+## Assumptions of linear regression
+
+-   Helpfully sorted by @gelman2020 in order of (general) importance:
+
+    -   Validity
+
+    -   Representativeness
+
+    -   Linearity and additivity
+
+    -   Independence of errors
+
+    -   Homoscedasticity of errors
+
+    -   Normality of errors
+
+## Validity
+
+-   Most important and at the same time most elusive assumption
+
+-   Relates to both our data and our model
+
+-   Firstly, we should make sure that the data we use are sufficient to answer the research question at hand (e.g. no important variable is missing)
+
+    -   Often a problem in secondary analysis
+
+-   Secondly, all traits and phenomena we want to analyze need to be measured with sufficient quality
+
+    -   Remember to checks instrument's quality and don't mistake related traits for each other
+
+## Validity
+
+- Thirdly, data must be gathered in such way that inference to the desired population is possible
+
+- Lastly, our models has to be correctly specified to capture the true relationships between variables.
+
+<br>
+
+- Violation of this assumption will lead to bias
+
+## Representativeness
+
+-  If our goal is either prediction or inference, our data needs to be a representative sample of the population of interest
+
+- More specifically, we assume that the distribution of the dependent variable is representative of the population, given the the predictors
+
+## Representativeness
+
+- If our goal is only to describe relationship between variables, and we aren't interested in measures of centrality, we don't actually need our sample to be representative in all aspects
+
+- Consider model predicting `income` based on `age`. What happens if our data are not representative?
+  - More specifically, what if only people with above average age/income participate in our survey?
+
+## Representativeness
+
+```{r representativeness-example, message=FALSE, echo=FALSE, warning=FALSE, fig.width=8}
+rep_df = tibble(age = rnorm(1000, 40, 10),
+                income = 10000 + 100*age + rnorm(100, 0, 1000))
+
+full_plot = ggplot(data = rep_df, aes(x = age, y = income)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, color = "tomato") +
+  scale_x_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(8000,18000))
+
+con_age_plot = ggplot(data = rep_df[rep_df$age > mean(rep_df$age),], aes(x = age, y = income)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, fullrange = T) +
+  geom_smooth(method = "lm", se = F, fullrange = T, data = rep_df, color = "tomato") +
+  scale_x_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(8000,18000))
+
+con_income_plot = ggplot(data = rep_df[rep_df$income > mean(rep_df$income),], aes(x = age, y = income)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, fullrange = T) +
+    geom_smooth(method = "lm", se = F, fullrange = T, data = rep_df, color = "tomato") +
+  scale_x_continuous(limits = c(0,80)) +
+  scale_y_continuous(limits = c(8000,18000))
+
+full_plot + con_age_plot + con_income_plot + plot_layout(nrow = 2) + plot_annotation(tag_levels = "A")
+```
+
+- We get unbiased estimate of the regression coefficient even when sample is not representative in terms of age (independent variable)
+
+## Linearity and additivity
+
+- Linear models are linear, because they assume linear form:
+
+$$
+y = \beta_0 + \beta_1*x_1 + \beta_2*x_2\:+\:...\:\beta_p*x_p
+$$
+
+- No all relationship are neccesary linear though:
+
+$$
+y = \beta_0 + (\beta_1*x_1) * (\beta_2*x_2)
+$$
+- Model is linear, if the regression coefficients are only either add or subtracted from each other
+
+## Linearity and additivity
+
+- Some nonlinear models can be translated into linear form using an appropriate transformation:
+
+$$
+\beta_0 + log[(\beta_1*x_1) * (\beta_2*x_2)] = \beta_0 + log(\beta_1*x_1) + log(\beta_2*x_2)
+$$
+<br>
+
+- Linear models can only capture relationships that fulfill this assumption
+- Violation of this assumption leads to bias
+
+## Independence of errors
+
+- Linear regression assumes that differences between the true and the predicted values, are independent of each other across the range of the predictors. 
+-  Often violated in time series, where the errors at the time of t are correlated with the errors at the time of t-1 (or t-2, t-3, etc.).
+- Also problem in spatial analysis
+
+<br>
+
+- Violation of this assumption leads to incorrect estimation of standard error, and therefore presents a risk to inference
+
+## Homoscedasticity (constant variance of errors)
+
+- The standard linear regression is derived under the assumption that the errors have the same variance across all levels of the dependent variable
+- This situation is called homoscedasticity
+- If the variance of the errors is not constant, the the error are heteroscedastic.
+
+
+## Homoscedasticity (constant variance of errors)
+
+```{r homoscedasticity-examples, fig.cap= "Example of A) homoscedastic data B) heteroscedastic data", echo=FALSE, fig.width=10, fig.height=3}
+
+set.seed(1234)
+
+#homodescadistic data
+x_const = rnorm(n = 1000)
+y_const = rnorm(n = 1000)
+plot_homodescadistic = qplot(x = x_const, y = y_const) + labs(x = "Scaled predicted values", y = "Scaled errors")+ geom_hline(yintercept = 0, linetype = "dashed", color = "grey70")
+
+#heterodescadistic data
+n=1:1000
+eps = rnorm(n,mean=0,sd=sqrt(n^1.3))
+y= n + eps
+mod <- lm(y ~ n)
+plot_heterodescadistic = qplot(scale(mod$fitted.values),scale(mod$residuals)) + labs(x = "Scaled predicted values", y = "Scaled errors") + geom_hline(yintercept = 0, linetype = "dashed", color = "grey70")
+
+
+plot_homodescadistic + plot_heterodescadistic + plot_annotation(tag_levels = "A")
+```
+
+## Homoscedasticity (constant variance of errors)
+
+- The violation of this assumption has two consequences.
+
+<br>
+
+- Firstly, the estimation of the regression coefficients become inefficient.
+- The second, more serious problem is that the estimates of the standard errors of the coefficients would be biased, leading to incorrectly specified p values and standard errors. 
+
+## Normality of errors
+
+- Linear regression assumes that the errors are normally distributed
+- Especially important for the prediction of individual observations
+- Furthermore, the normality of residuals is important for the inference from small samples
+  - for large enough samples, the sampling distribution of regression coefficient will approach normality no matter the distribution of residuals
+  
+<br>
+
+- Violation of this assumptions lead to incorrect prediction for individual observations and for incorrect p values and confidence intervals in small samples
+## References
