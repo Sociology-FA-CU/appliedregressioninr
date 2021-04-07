@@ -40,8 +40,8 @@ navbar:
               href: 04_slides_model_visualization.html
             - text: "Model fit"
               href: 05_slides_model_fit.html
-            - text: "Assumptions of linear models"
-            - text: "Regression diagnostics"
+            - text: "Assumptions of linear models and diagnostics"
+              href: 06_slides_model_assumptions.html
             - text: "Linearity and normality"
             - text: "Homoscedasticity"
             - text: "Exporting results and multiple models"
