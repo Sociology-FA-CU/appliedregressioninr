@@ -68,7 +68,7 @@ un = read.table("../data/UnitedNations.txt")
 
 ## How to think about assumptions
 
--   The total error depends on how much are the assumptions violated, small violations lead to only small error 
+-   The total error depends on how much are the assumptions violated, small violations lead to only small error
 -   Don't think about assumptions in binary term (*"ok"* vs *"bad"*)
 -   Instead, think *how much* we deviate from them
 -   Not all assumption are also important for all tasks
@@ -81,17 +81,17 @@ un = read.table("../data/UnitedNations.txt")
 
 -   Helpfully sorted by @gelman2020 in order of (general) importance:
 
-    1)   Validity
+    1)  Validity
 
-    2)   Representativeness
+    2)  Representativeness
 
-    3)   Linearity and additivity
+    3)  Linearity and additivity
 
-    4)   Independence of errors
+    4)  Independence of errors
 
-    5)   Homoscedasticity of errors
+    5)  Homoscedasticity of errors
 
-    6)   Normality of errors
+    6)  Normality of errors
 
 ## Validity
 
@@ -109,26 +109,27 @@ un = read.table("../data/UnitedNations.txt")
 
 ## Validity
 
-- Thirdly, data must be gathered in such way that inference to the desired population is possible
+-   Thirdly, data must be gathered in such way that inference to the desired population is possible
 
-- Lastly, our models has to be correctly specified to capture the true relationships between variables.
+-   Lastly, our models has to be correctly specified to capture the true relationships between variables.
 
 <br>
 
-- Violation of this assumption will lead to bias
+-   Violation of this assumption will lead to bias
 
 ## Representativeness
 
--  If our goal is either prediction or inference, our data needs to be a representative sample of the population of interest
+-   If our goal is either prediction or inference, our data needs to be a representative sample of the population of interest
 
-- More specifically, we assume that the distribution of the dependent variable is representative of the population, given the the predictors
+-   More specifically, we assume that the distribution of the dependent variable is representative of the population, given the the predictors
 
 ## Representativeness
 
-- If our goal is only to describe relationship between variables, and we aren't interested in measures of location (mean, median, etc.), we don't actually need our sample to be representative in all aspects
+-   If our goal is only to describe relationship between variables, and we aren't interested in measures of location (mean, median, etc.), we don't actually need our sample to be representative in all aspects
 
-- Consider model predicting `income` based on `age`. What happens if our data are not representative?
-  - More specifically, what if only people with above average age/income participate in our survey?
+-   Consider model predicting `income` based on `age`. What happens if our data are not representative?
+
+    -   More specifically, what if only people with above average age/income participate in our survey?
 
 ## Representativeness
 
@@ -170,51 +171,48 @@ con_income_plot = ggplot(data = rep_df[rep_df$income > mean(rep_df$income),], ae
 con_age_plot + con_income_plot + plot_annotation(tag_levels = "A") + plot_layout(guides = "collect") & theme(legend.position = "bottom")
 ```
 
-- We get unbiased estimate of the regression coefficient even when sample is not representative in terms of age (independent variable)
+-   We get unbiased estimate of the regression coefficient even when sample is not representative in terms of age (independent variable)
 
 ## Linearity and additivity
 
-- Linear models are linear, because they assume linear form:
+-   Linear models are linear, because they assume linear form:
 
 $$
 y = \beta_0 + \beta_1*x_1 + \beta_2*x_2\:+\:...\:\beta_p*x_p
 $$
 
-- No all relationship are neccesary linear though:
+-   No all relationship are neccesary linear though:
 
 $$
 y = \beta_0 + (\beta_1*x_1) * (\beta_2*x_2)
-$$
-- Model is linear, if the regression coefficients are only either add or subtracted from each other
+$$ - Model is linear, if the regression coefficients are only either add or subtracted from each other
 
 ## Linearity and additivity
 
-- Some nonlinear models can be translated into linear form using an appropriate transformation:
+-   Some nonlinear models can be translated into linear form using an appropriate transformation:
 
 $$
 \beta_0 + log[(\beta_1*x_1) * (\beta_2*x_2)] = \beta_0 + log(\beta_1*x_1) + log(\beta_2*x_2)
-$$
-<br>
+$$ <br>
 
-- Linear models can only capture relationships that fulfill this assumption
-- Violation of this assumption leads to bias
+-   Linear models can only capture relationships that fulfill this assumption
+-   Violation of this assumption leads to bias
 
 ## Independence of errors
 
-- Linear regression assumes that differences between the true and the predicted values, are independent of each other across the range of the predictors. 
--  Often violated in time series, where the errors at the time of t are correlated with the errors at the time of t-1 (or t-2, t-3, etc.).
-- Also problem in spatial analysis
+-   Linear regression assumes that differences between the true and the predicted values, are independent of each other across the range of the predictors.
+-   Often violated in time series, where the errors at the time of t are correlated with the errors at the time of t-1 (or t-2, t-3, etc.).
+-   Also problem in spatial analysis
 
 <br>
 
-- Violation of this assumption leads to incorrect estimation of standard error, and therefore presents a risk to inference
+-   Violation of this assumption leads to incorrect estimation of standard error, and therefore presents a risk to inference
 
 ## Homoscedasticity (constant variance of errors)
 
-- The standard linear regression is derived under the assumption that the errors have the same variance across all levels of the dependent variable
-- This situation is called homoscedasticity
-- If the variance of the errors is not constant, the the error are heteroscedastic.
-
+-   The standard linear regression is derived under the assumption that the errors have the same variance across all levels of the dependent variable
+-   This situation is called homoscedasticity
+-   If the variance of the errors is not constant, the the error are heteroscedastic.
 
 ## Homoscedasticity (constant variance of errors)
 
@@ -240,33 +238,36 @@ plot_homodescadistic + plot_heterodescadistic + plot_annotation(tag_levels = "A"
 
 ## Homoscedasticity (constant variance of errors)
 
-- The violation of this assumption has two consequences.
+-   The violation of this assumption has two consequences.
 
 <br>
 
-- Firstly, the estimation of the regression coefficients become inefficient.
-- The second, more serious problem is that the estimates of the standard errors of the coefficients would be biased, leading to incorrectly specified p values and standard errors. 
+-   Firstly, the estimation of the regression coefficients become inefficient.
+-   The second, more serious problem is that the estimates of the standard errors of the coefficients would be biased, leading to incorrectly specified p values and standard errors.
 
 ## Normality of errors
 
-- Linear regression assumes that the errors are normally distributed
-- Especially important for the prediction of individual observations
-- Furthermore, the normality of residuals is important for the inference from small samples
-  - for large enough samples, the sampling distribution of regression coefficient will approach normality no matter the distribution of residuals
-  
+-   Linear regression assumes that the errors are normally distributed
+
+-   Especially important for the prediction of individual observations
+
+-   Furthermore, the normality of residuals is important for the inference from small samples
+
+    -   for large enough samples, the sampling distribution of regression coefficient will approach normality no matter the distribution of residuals
+
 <br>
 
-- Violation of this assumptions lead to incorrect prediction for individual observations and for incorrect p values and confidence intervals in small samples
+-   Violation of this assumptions lead to incorrect prediction for individual observations and for incorrect p values and confidence intervals in small samples
 
 # Diagnostic plots
 
 ## Diagnostic plots
 
-- The main, and arguably best, tool for checking assumptions are diagnostic plots.
+-   The main, and arguably best, tool for checking assumptions are diagnostic plots.
 
 ## Diagnostic plots - Linearity
 
-- The assumption of linearity can be checked by plotting predicted values against residuals (usually both are Z transformed)
+-   The assumption of linearity can be checked by plotting predicted values against residuals (usually both are Z transformed)
 
 ```{r residuals-plot-example}
 set.seed(1234)
@@ -281,7 +282,7 @@ qplot(x = x_lin, y = y_lin) +
 
 ## Diagnostic plots - Linearity
 
-- Ideally, there should be no pattern in the data, nonlinear patterns suggests nonlinear relationships that haven't been accounted for
+-   Ideally, there should be no pattern in the data, nonlinear patterns suggests nonlinear relationships that haven't been accounted for
 
 ```{r linearity-examples, message=FALSE, echo=FALSE, warning=FALSE, fig.width=10, fig.height=4}
 set.seed(1234)
@@ -301,7 +302,7 @@ plot_linear + plot_nonlinear + plot_annotation(tag_levels = "A")
 
 ## Diagnostics plots - Normality of residuals
 
-- Can be checked either by histogram or Quantile-Quantile plot
+-   Can be checked either by histogram or Quantile-Quantile plot
 
 ```{r qqplot-example, fig.width=10, fig.height=5, warning=FALSE, echo=FALSE, message=FALSE}
 set.seed(1234)
@@ -329,7 +330,7 @@ chisq_qq_plot = ggplot(mapping = aes(sample = chisq_dist)) +
 
 ## Diagnostic plots - influentials observations
 
-- Influential observations can distort the relationship between variables
+-   Influential observations can distort the relationship between variables
 
 ```{r anscombe, fig.height=4}
 ggplot(aes(x = x4, y = y4), data = as.data.frame(anscombe)) +
@@ -339,13 +340,13 @@ ggplot(aes(x = x4, y = y4), data = as.data.frame(anscombe)) +
 
 ## Diagnostic plots - influentials observations
 
-- Basic measure of influence is leverage
-- leverage = how big a role an observation plays when fitting a regression line
-- More precisely, how far the observation lies from the centre of the data
+-   Basic measure of influence is leverage
+-   leverage = how big a role an observation plays when fitting a regression line
+-   More precisely, how far the observation lies from the centre of the data
 
 ## Diagnostic plots - influentials observations
 
-- The further the observation from the centre, the higher its leverage
+-   The further the observation from the centre, the higher its leverage
 
 ```{r, out.width='60%'}
 knitr::include_graphics("../images/seesaw.png")
@@ -353,18 +354,18 @@ knitr::include_graphics("../images/seesaw.png")
 
 ## Diagnostic plots - influentials observations
 
-- Leverage formally:
+-   Leverage formally:
 
 $$
 leverage_i = \frac{\partial \hat{y_i}}{\partial y_i} = \frac{partial\:change\:in\:expected\:y_i}{partial\:change\:in\:observed\:y_i} 
 $$
 
-- How much the bigger effect on the expected value would changing the observed value have, the bigger that observation's leverage
+-   How much the bigger effect on the expected value would changing the observed value have, the bigger that observation's leverage
 
 <br>
 
-- However, just because an observation has high leverage does not necessarily mean it will distort our model
-- Only observations with high leverage *and* high residuals distorts the model
+-   However, just because an observation has high leverage does not necessarily mean it will distort our model
+-   Only observations with high leverage *and* high residuals distorts the model
 
 ## Diagnostic plots - influentials observations
 
@@ -412,20 +413,19 @@ levh_ress_plot + levs_resh_plot + levh_resh_plot + plot_layout(ncol = 2)
 
 ## Diagnostic plots - influentials observations
 
-- The information about leverage and residuals can be summarized using Cook's distance:
+-   The information about leverage and residuals can be summarized using Cook's distance:
 
 $$
 Cook's\:distance_i=\frac{residual_i^2}{number\:of\:parameters*MSE}*\left[\frac{leverage_i}{(1-leverage_i)^2}\right]
-$$
-- An observation will generally have high Cook's distance if both their residual and their leverage is very high
+$$ - An observation will generally have high Cook's distance if both their residual and their leverage is very high
 
 # Partial residual plots
 
 ## Partial residual plots
 
-- Classic diagnostic plots allow us to check the model as a whole
-- But if something looks wrong, how can we tell which variable is the source of the problem?
-- Consider model predicting infant mortality rate (`infantMortality`) by total fertility rate (`tfr`) and GDP per capita (`GDPperCapita`):
+-   Classic diagnostic plots allow us to check the model as a whole
+-   But if something looks wrong, how can we tell which variable is the source of the problem?
+-   Consider model predicting infant mortality rate (`infantMortality`) by total fertility rate (`tfr`) and GDP per capita (`GDPperCapita`):
 
 ```{r residal-model, echo=TRUE}
 mod_res = lm(infantMortality ~ tfr + GDPperCapita, data = un)
@@ -437,7 +437,7 @@ mod_res = lm(infantMortality ~ tfr + GDPperCapita, data = un)
 plot(mod_res, which = 1)
 ```
 
-- From the residual plot, there seems to be a problem with heteroskedasticity and linearity, but which of the predictors is problematic? `tfr`? `GDPperCapita`? Both?
+-   From the residual plot, there seems to be a problem with heteroskedasticity and linearity, but which of the predictors is problematic? `tfr`? `GDPperCapita`? Both?
 
 ## Partial residual plots
 
@@ -445,42 +445,58 @@ plot(mod_res, which = 1)
 crPlots(mod_res)
 ```
 
-- We can produce partial residual plot (also known as component residual plot) for each predictor
+-   We can produce partial residual plot (also known as component residual plot) for each predictor
 
 ## Diagnostic tests and why not to use them
 
-- Some researchers prefere testing assumptions formally, using statistical tests
-  - Shapiro-Wilk test for normality, Levene's test for homoscedasticity, etc.
+-   Some researchers prefere testing assumptions formally, using statistical tests
+
+    -   Shapiro-Wilk test for normality, Levene's test for homoscedasticity, etc.
 
 <br>
 
-- This is universally a bad idea and should be avoided
-- Two reasons:
-  - In real data, most (all?) assumptions literaly cannot be absolutely true
-  - It is not neccesary to fulfill the assumptions to the letter
+-   This is universally a bad idea and should be avoided
+
+-   Two reasons:
+
+    -   In real data, most (all?) assumptions literaly cannot be absolutely true
+    -   It is not neccesary to fulfill the assumptions to the letter
 
 ## Diagnostic tests and why not to use them
 
-- Consider normal distribution
-- Normal distribution is a theoretical construct, that only arises under highly specific conditions (e.g. infinity number of sample means)
-- In real life, normal distribution doesn't exist -> we know that our residuals don't follow normal distributio before we even run a test
-- Consequently, all observed nonsignificant results are false negatives
+-   Consider normal distribution
+-   Normal distribution is a theoretical construct, that only arises under highly specific conditions (e.g. infinity number of sample means)
+-   In real life, normal distribution doesn't exist -\> we know that our residuals don't follow normal distributio before we even run a test
+-   Consequently, all observed nonsignificant results are false negatives
 
 ## Diagnostic tests and why not to use them
 
-- Some say *"We should use normality tests for small samples, in large samples they are too sensitive!"*
-- This misunderstands the problem
-- Normality tests are equally valid for both small and large samples
-- The problem is the hypothesis, not the test
+-   Some say *"We should use normality tests for small samples, in large samples they are too sensitive!"*
+-   This misunderstands the problem
+-   Normality tests are equally valid for both small and large samples
+-   The problem is the hypothesis, not the test
 
 <br>
 
-- Tests of equal variance are somewhat more plausible, but still highly unrealistic
-  - What are the chances, that two diffrent groups of people have the the same variance of incomes, to an arbitrary decimal point?
+-   Tests of equal variance are somewhat more plausible, but still highly unrealistic
+
+    -   What are the chances, that two diffrent groups of people have the the same variance of incomes, to an arbitrary decimal point?
 
 ## Diagnostic tests and why not to use them
 
-- Luckily for us, we don't need all the assumptions to be fullfiled perfectly
-- Small deviations from the assumptions only lead to a small errors -> for practical purposes, our model will still work fine
+-   Luckily for us, we don't need all the assumptions to be fullfiled perfectly
+-   Small deviations from the assumptions only lead to a small errors -\> for practical purposes, our model will still work fine
+
+## Summary
+
+| Assumption                 | When violated                                            | How to check              |
+|----------------------------|----------------------------------------------------------|---------------------------|
+| Validity                   | biased estimates                                         | good study design         |
+| Representativeness         | biased estimates                                         | good study design         |
+| Linearity and additivity   | biased estimates                                         | residual plot             |
+| Independence of errors     | biased inference                                         | good study design         |
+| Homoscedasticity of errors | biased inference, inefficient estimates                  | (scaled) residual plot    |
+| Normality of errors        | biased ind. prediction, biased inference (small samples) | Q-Q plot, histogram       |
+| (no influential obs.)      | (biased estimates)                                       | Cook's distance, leverage |
 
 ## References

@@ -417,9 +417,9 @@ Example of A) homoscedastic data B) heteroscedastic data
 </article></slide><slide class=""><hgroup><h2>Normality of errors</h2></hgroup><article  id="normality-of-errors">
 
 <ul>
-<li>Linear regression assumes that the errors are normally distributed</li>
-<li>Especially important for the prediction of individual observations</li>
-<li>Furthermore, the normality of residuals is important for the inference from small samples
+<li><p>Linear regression assumes that the errors are normally distributed</p></li>
+<li><p>Especially important for the prediction of individual observations</p></li>
+<li><p>Furthermore, the normality of residuals is important for the inference from small samples</p>
 
 <ul>
 <li>for large enough samples, the sampling distribution of regression coefficient will approach normality no matter the distribution of residuals</li>
@@ -563,7 +563,7 @@ Cook&#39;s\:distance_i=\frac{residual_i^2}{number\:of\:parameters*MSE}*\left[\fr
 </article></slide><slide class=""><hgroup><h2>Diagnostic tests and why not to use them</h2></hgroup><article  id="diagnostic-tests-and-why-not-to-use-them">
 
 <ul>
-<li>Some researchers prefere testing assumptions formally, using statistical tests
+<li><p>Some researchers prefere testing assumptions formally, using statistical tests</p>
 
 <ul>
 <li>Shapiro-Wilk test for normality, Levene’s test for homoscedasticity, etc.</li>
@@ -573,8 +573,8 @@ Cook&#39;s\:distance_i=\frac{residual_i^2}{number\:of\:parameters*MSE}*\left[\fr
 <p><br></p>
 
 <ul>
-<li>This is universally a bad idea and should be avoided</li>
-<li>Two reasons:
+<li><p>This is universally a bad idea and should be avoided</p></li>
+<li><p>Two reasons:</p>
 
 <ul>
 <li>In real data, most (all?) assumptions literaly cannot be absolutely true</li>
@@ -603,7 +603,7 @@ Cook&#39;s\:distance_i=\frac{residual_i^2}{number\:of\:parameters*MSE}*\left[\fr
 <p><br></p>
 
 <ul>
-<li>Tests of equal variance are somewhat more plausible, but still highly unrealistic
+<li><p>Tests of equal variance are somewhat more plausible, but still highly unrealistic</p>
 
 <ul>
 <li>What are the chances, that two diffrent groups of people have the the same variance of incomes, to an arbitrary decimal point?</li>
@@ -617,9 +617,57 @@ Cook&#39;s\:distance_i=\frac{residual_i^2}{number\:of\:parameters*MSE}*\left[\fr
 <li>Small deviations from the assumptions only lead to a small errors -&gt; for practical purposes, our model will still work fine</li>
 </ul>
 
+</article></slide><slide class=""><hgroup><h2>Summary</h2></hgroup><article  id="summary">
+
+<table class = 'rmdtable'>
+<col width="24.778761%" />
+<col width="51.327434%" />
+<col width="23.893805%" />
+<tr class="header">
+<th align="left">Assumption</th>
+<th align="left">When violated</th>
+<th align="left">How to check</th>
+</tr>
+<tr class="odd">
+<td align="left">Validity</td>
+<td align="left">biased estimates</td>
+<td align="left">good study design</td>
+</tr>
+<tr class="even">
+<td align="left">Representativeness</td>
+<td align="left">biased estimates</td>
+<td align="left">good study design</td>
+</tr>
+<tr class="odd">
+<td align="left">Linearity and additivity</td>
+<td align="left">biased estimates</td>
+<td align="left">residual plot</td>
+</tr>
+<tr class="even">
+<td align="left">Independence of errors</td>
+<td align="left">biased inference</td>
+<td align="left">good study design</td>
+</tr>
+<tr class="odd">
+<td align="left">Homoscedasticity of errors</td>
+<td align="left">biased inference, inefficient estimates</td>
+<td align="left">(scaled) residual plot</td>
+</tr>
+<tr class="even">
+<td align="left">Normality of errors</td>
+<td align="left">biased ind. prediction, biased inference (small samples)</td>
+<td align="left">Q-Q plot, histogram</td>
+</tr>
+<tr class="odd">
+<td align="left">(no influential obs.)</td>
+<td align="left">(biased estimates)</td>
+<td align="left">Cook’s distance, leverage</td>
+</tr>
+</table>
+
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references" class="unnumbered">
 
-<div id="refs" line-spacing="2" class="references csl-bib-body hanging-indent">
+<div line-spacing="2" class="references csl-bib-body hanging-indent" id="refs">
 <div id="ref-gelman2020" class="csl-entry">
 <p>Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href='https://doi.org/10.1017/9781139161879' title=''>https://doi.org/10.1017/9781139161879</a></p></div></div></article></slide>
 

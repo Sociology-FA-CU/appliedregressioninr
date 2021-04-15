@@ -42,7 +42,8 @@ navbar:
               href: 05_slides_model_fit.html
             - text: "Assumptions of linear models and diagnostics"
               href: 06_slides_model_assumptions.html
-            - text: "Linearity and normality"
+            - text: "Linearity"
+              href: 07_slides_nonlinearity.html
             - text: "Homoscedasticity"
             - text: "Exporting results and multiple models"
             - text: "Prediction and regularization"

@@ -1,0 +1,338 @@
+---
+title: "Lesson 6: Modeling nonlinearity"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in April 2021"
+output:
+  ioslides_presentation:
+    widescreen: true
+csl: "../apa.csl"
+bibliography: 07_nonlinearity.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r data-and-packages, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(splines)
+library(lspline)
+library(ggeffects)
+
+vote = read.csv("../data/parl_vote_2017.csv")
+un = read.table("../data/UnitedNations.txt")
+```
+
+## Goals for today
+
+-   Learn how to model model nonlinearity using using:
+
+    -   categorization
+    -   Simple polynomials
+    -   Linear and natural splines
+
+## Nonlinear relationships
+
+-   Nonlinear relationships are common in practice
+
+```{r age-vs-vote, fig.cap="Age vs voter turnout in parlaiment election 2017, ESS"}
+ggplot(data = vote, aes(x = agea, y = vote)) +
+  geom_point() +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  labs(x = "Age", y = "% of respondents who attended the elections")
+```
+
+## Nonlinear relationships
+
+-   Modeling the relationship between voter turnout and age as linear is not sufficient
+
+```{r voter-model, echo=TRUE}
+mod1 = lm(vote ~ agea, data = vote)
+```
+
+```{r voter-residuals}
+plot(mod1, which = 1)
+```
+
+## Nonlinear models
+
+-   How can we change our model to capture the nonlinear relationship?
+
+-   Three popular options:
+
+    -   Categorizations
+    -   Simple polynomials
+    -   Splines
+
+# Categorization
+
+## Categorization
+
+-   Most basic way of dealing with nonlinearity
+
+-   We can transform numeric predictors into discrete categories and model them as ordinal
+
+-   There are many different ways a numerical variable can be cut into categories:
+
+    -   based on quantiles
+    -   to produce equaly wide intervals
+    -   to produce prespecified number of categories
+    -   based on theory
+
+## Categorization - categories of equal range
+
+```{r cut-interval-example, include=TRUE, message=FALSE}
+vote$agea_interval = cut_interval(vote$agea, n = 3)
+
+mod_interval = lm(vote ~ agea_interval, data = vote)
+
+plot(ggeffect(mod_interval, terms = "agea_interval"))
+```
+
+## Categorization - same number of observations
+
+```{r cut-number-example, include=TRUE, message=FALSE}
+vote$agea_number = cut_number(vote$agea, n = 3)
+
+mod_number = lm(vote ~ agea_number, data = vote)
+
+plot(ggeffect(mod_number, terms = "agea_number"))
+```
+
+## Categorization - groups with specified width
+
+```{r cut-width-example, include=TRUE, message=FALSE}
+vote$agea_width = cut_width(vote$agea, width  = 30)
+
+mod_width = lm(vote ~ agea_width, data = vote)
+
+plot(ggeffect(mod_width, terms = "agea_width"))
+```
+
+## Categorization - based on theory
+
+```{r cut-theory-example, include=TRUE, message=FALSE}
+vote$agea_theory = case_when(
+                             vote$agea <= 25 ~ "25 or less",
+                             vote$agea <= 55 ~ "26 to 55",
+                             vote$agea > 55 ~ "55 or more")
+
+mod_theory = lm(vote ~ agea_theory, data = vote)
+
+plot(ggeffect(mod_theory, terms = "agea_theory"))
+```
+
+# R Intermetzzo!
+
+## Categorization - pros and cons
+
+-   The main advantage of categorizations is that the output is easily interpretable
+
+-   However, there are many technical drawbacks [@harrell2001]:
+
+    -   Estimated values will have reduced precision, and associated tests will have reduced power
+
+    -   Categorization assumes that the relationship between the predictor and the response is flat within intervals
+
+    -   Categorization assumes that there is a discontinuity in response as interval boundaries are crossed.
+
+    -   Cutpoints are arbitrary and manipulatable; cutpoints can be found that can result in both positive and negative associations
+
+# Simple polynomials
+
+## Polynomials
+
+-   Some of the problems of categorization can be solved by using simple polynomials (e.g. quadratic effect)
+
+$$
+vote = \beta_0 + \beta_1*age + \beta_2*age^2
+$$
+
+-   We are essentialy trading the assumption that the relationship is linear for the assumption is in the form of a polynomial (e.g. parabala)
+
+## Polynomials
+
+```{r poly-example}
+mod_poly = lm(vote ~ poly(agea, 2), data = vote)
+
+plot(ggeffect(mod_poly, terms = "agea"))
+```
+
+## Polynomials - raw and orthogonal types
+
+-   There are two types of polynomials: raw and orthogonal ones
+
+    -   Raw polynomial is simply a variable taken to the power of *k* (e.g. *age^2^*)
+    -   Orthogonal polynomials are computed so that the polynomials are uncorrelated with the lower forms (e.g. *age* will be uncorrelated with *age^2^*)
+
+<br>
+
+-   The advantage of raw polynomials is that regression coefficients have the classic interpretation
+-   The advantage of orthogonal polynomials is that it's easier to compute how much variance each of the forms predicts
+
+<br>
+
+-   If you only want to control for a variable or are interpreting the model visualy, the choice doesn't matter
+
+# R Intermetzzo!
+
+## Polynomials - Pros and cons
+
+-   Simple polynomials alleviates some of the problems of categorization (arbitrary cutpoints, assumptions of flat intervals)
+
+-   However, two problems:
+
+    -   Polynomials can only capture polynomial relationships
+    -   Polynomials are extremely unstable at the ends
+
+## Polynomials - Pros and cons
+
+```{r poly-wiggle-data, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(un, mapping = aes(x = GDPperCapita, y = infantMortality)) +
+  geom_point()
+```
+
+## Polynomials - Pros and cons
+
+```{r poly-wiggle, warning=FALSE, message=FALSE, echo=FALSE}
+ggplot(un, mapping = aes(x = GDPperCapita, y = infantMortality)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ poly(x,2)) +
+  geom_smooth(method = "lm", se = F, formula = y ~ poly(x,3), color = "tomato") +
+  labs(caption = "Blue line = 2nd order polynomial model, red = 3rd order polynomial model")
+```
+
+# Splines
+
+## Splines
+
+-   Also known as piecewise regression
+-   Basic idea is simple - Instead of trying to fit a single line/curve through the entire data, cut it into smaller bins
+
+```{r splines-example, fig.height=4}
+ggplot(aes(x = agea, y = vote), data = vote) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ lspline(x, c(25,50,75))) +
+  geom_vline(xintercept = 25, linetype = "dashed") +
+  geom_vline(xintercept = 50, linetype = "dashed") +
+  geom_vline(xintercept = 75, linetype = "dashed")
+```
+
+## Splines
+
+-   The values dividing individual bins are called knots
+-   General form of the model from previous slide:
+
+$$
+vote = \beta_0 + \beta_1*age_{<25} + \beta_2*age_{25-50} + \beta_3*age_{50-75} + \beta_3*age_{>75}
+$$ <br>
+
+-   We will learn about two types of splines: linear splines and natural splines (although many other types exists)
+
+## Linear splines
+
+-   Linear splines divide the data into bins and then fit a (continuous) line through each of them
+
+```{r splines-example-again, fig.height=4}
+ggplot(aes(x = agea, y = vote), data = vote) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ lspline(x, c(25,50,75))) +
+  geom_vline(xintercept = 25, linetype = "dashed") +
+  geom_vline(xintercept = 50, linetype = "dashed") +
+  geom_vline(xintercept = 75, linetype = "dashed")
+```
+
+## Linear splines
+
+-   We can think of linear splines as a more flexible version of categorization
+
+    -   Still suffers with the problems of arbitrary cutpoins, same as categorization
+    -   BUT we no longer have the unrealistic assumptions that all observations inside a bin have the same value of the dependent variable
+
+<br>
+
+-   Still, there is the problem of the the arbitrary knots positions and the sudden change in slope
+-   Can we do better?
+
+## Natural splines
+
+-   also known as restricted cubic splines
+-   Instead of fitting lines, we fit polynomial (cubic) terms for the inner bins and lines for the outer ones
+
+```{r ns-example-bins, echo=FALSE, fig.height=4}
+ggplot(aes(x = agea, y = vote), data = vote) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ ns(x,2)) +
+  geom_vline(xintercept = quantile(vote$agea, probs = 0.1), linetype = "dashed") +
+  geom_vline(xintercept = quantile(vote$agea, probs = 0.5), linetype = "dashed") +
+  geom_vline(xintercept = quantile(vote$agea, probs = 0.9), linetype = "dashed") +
+  annotate(geom = "text", x = 17, y = 0.9, label = "Linear fit", color = "grey50") +
+  annotate(geom = "text", x = 89, y = 0.9, label = "Linear fit", color = "grey50") +
+  annotate(geom = "text", x = 35, y = 0.9, label = "Cubic fit", color = "grey50") +
+  annotate(geom = "text", x = 65, y = 0.9, label = "Cubic fit", color = "grey50")
+```
+
+## Natural splines
+
+-   Natural splines solve both the problems of categorization/linear splines (sudden changes in slope, arbitrary cutpoints) and simple polynomials (only capturing polynomial relationships, unstable at the ends)
+-   Natural splines are one of the most flexible ways for modeling nonlinearity in the context of linear models
+
+# R Intermezzo!
+
+## Splines - Choosing cutpoints
+
+-   How to choose the number and position of cutpoints?
+
+-   Linear splines
+
+    -   Very sensitive to cutpoins position (same as categorization) -\> best choose based on theory
+
+-   Natural splines
+
+    -   As long as the cutpoints are evenly spaced, their position matters less, what's important is their number
+
+## Splines - choosing cutpoins
+
+-   Typical position, based on @harrell2001 [pp. 27]:
+
+| knots |       |        | Quantiles |      |        |        |       |
+|-------|-------|--------|-----------|------|--------|--------|-------|
+| 3     |       | 0.1    | 0.5       | 0.9  |        |        |       |
+| 4     |       | 0.05   | 0.35      | 0.65 | 0.95   |        |       |
+| 5     |       | 0.05   | 0.275     | 0.5  | 0.725  | 0.95   |       |
+| 6     | 0.05  | 0.23   | 0.41      | 0.59 | 0.77   | 0.95   |       |
+| 7     | 0.025 | 0.1833 | 0.33417   | 0.5  | 0.6583 | 0.8167 | 0.975 |
+
+## Splines - choosing cutpoins
+
+-   But, as long as evenly spaced and symmetrical, the position of knots doesn't matter for natural splines
+-   It is unlikely you will need more than 3-4 knots for most data
+-   Every knot is an additional parameter in the model -\> you can use adjusted R^2^ to test how many knots you need
+
+## Splines - Pros and cons
+
+-   Linear splines:
+
+    -   Essentialy a better version of categorization, but still suffers from the arbitrary
+
+# Nonlinearity - what to use?
+
+## Nonlinearity - what to use?
+
+- Use categorization when presenting your analysis to lay audience.
+- Use linear splines if you present to professionals, but still want interpretable regression coefficients.
+- Use natural/restricted cubic splines if you are analyzing potentially complex relationships and are comfortable with using marginal effect plots.
+- Avoid simple polynomials altogether.
+
+## Nonlinearity - what to use?
+
+```{r ns-vs-poly-example, warning=FALSE, message=FALSE}
+ggplot(un, mapping = aes(x = GDPperCapita, y = infantMortality)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ ns(x, df = 6)) +
+  geom_smooth(method = "lm", se = F, formula = y ~ poly(x, 5), color = "red") +
+  labs(caption = "Blue line = natural spline, red line = simple polynomial")
+```
+
+## References
