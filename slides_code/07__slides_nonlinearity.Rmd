@@ -334,14 +334,19 @@ ggplot(aes(x = agea, y = vote), data = vote) +
 ## Splines - choosing cutpoins
 
 -   But, as long as evenly spaced and symmetrical, the position of knots doesn't matter for natural splines
--   It is unlikely you will need more than 3-4 knots for most data
+-   It is unlikely you will need more than 3-4 knots for most data (including the outer ones)
 -   Every knot is an additional parameter in the model -\> you can use adjusted R^2^ to test how many knots you need
 
 ## Splines - Pros and cons
 
 -   Linear splines:
 
-    -   Essentialy a better version of categorization, but still suffers from the arbitrary
+    -   Essentialy a better version of categorization, but still suffers from the arbitrary cutpoint/knots positions and sudden changes in slope
+    - The advantage over natural splines is that they can still be interpreted from coefficients table
+
+- Natural splines
+   - More flexible than the other methods, robust to exact positions of the knots
+   - Can only be interpreted through marginal effects plots
 
 # Nonlinearity - what to use?
 

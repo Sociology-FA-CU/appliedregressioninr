@@ -508,7 +508,7 @@ vote = \beta_0 + \beta_1*age_{&lt;25} + \beta_2*age_{25-50} + \beta_3*age_{50-75
 
 <ul>
 <li>But, as long as evenly spaced and symmetrical, the position of knots doesn’t matter for natural splines</li>
-<li>It is unlikely you will need more than 3-4 knots for most data</li>
+<li>It is unlikely you will need more than 3-4 knots for most data (including the outer ones)</li>
 <li>Every knot is an additional parameter in the model -&gt; you can use adjusted R<sup>2</sup> to test how many knots you need</li>
 </ul>
 
@@ -518,7 +518,14 @@ vote = \beta_0 + \beta_1*age_{&lt;25} + \beta_2*age_{25-50} + \beta_3*age_{50-75
 <li><p>Linear splines:</p>
 
 <ul>
-<li>Essentialy a better version of categorization, but still suffers from the arbitrary</li>
+<li>Essentialy a better version of categorization, but still suffers from the arbitrary cutpoint/knots positions and sudden changes in slope</li>
+<li>The advantage over natural splines is that they can still be interpreted from coefficients table</li>
+</ul></li>
+<li><p>Natural splines</p>
+
+<ul>
+<li>More flexible than the other methods, robust to exact positions of the knots</li>
+<li>Can only be interpreted through marginal effects plots</li>
 </ul></li>
 </ul>
 
@@ -539,7 +546,7 @@ vote = \beta_0 + \beta_1*age_{&lt;25} + \beta_2*age_{25-50} + \beta_3*age_{50-75
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  class="unnumbered" id="references">
 
-<div id="refs" line-spacing="2" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
 <div class="csl-entry" id="ref-harrell2001">
 <p>Harrell, F. (2001). <em>Regression Modeling Strategies: With Applications to Linear Models, Logistic Regression, and Survival Analysis</em>. Springer-Verlag. <a href='https://doi.org/10.1007/978-1-4757-3462-1' title=''>https://doi.org/10.1007/978-1-4757-3462-1</a></p></div></div></article></slide>
 
