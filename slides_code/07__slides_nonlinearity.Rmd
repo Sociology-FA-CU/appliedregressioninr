@@ -139,6 +139,33 @@ plot(ggeffect(mod_theory, terms = "agea_theory"))
 
     -   Cutpoints are arbitrary and manipulatable; cutpoints can be found that can result in both positive and negative associations
 
+## Categorization - often shown like this...
+
+```{r cut-theory-example-again, include=TRUE, message=FALSE}
+vote$agea_theory = case_when(
+                             vote$agea <= 25 ~ "25 or less",
+                             vote$agea <= 55 ~ "26 to 55",
+                             vote$agea > 55 ~ "55 or more")
+
+mod_theory = lm(vote ~ agea_theory, data = vote)
+
+plot(ggeffect(mod_theory, terms = "agea_theory"))
+```
+
+## Categorization - ... but actually this
+
+```{r cat-con-example}
+mod_cat = ggpredict(mod_theory, terms = "agea_theory")
+ggplot(aes(x = agea, y = vote), data = vote) +
+  geom_point(alpha = 0.5) + 
+  geom_segment(aes(x = 15, xend = 25, y = mod_cat[1,2], yend = mod_cat[1,2]), size = 1, color = "red") +
+  geom_segment(aes(x = 25, xend = 55, y = mod_cat[2,2], yend = mod_cat[2,2]), size = 1, color = "red") +
+  geom_segment(aes(x = 55, xend = 90, y = mod_cat[3,2], yend = mod_cat[3,2]), size = 1, color = "red") +
+  geom_vline(xintercept = 25, linetype = "dashed") +
+  geom_vline(xintercept = 55, linetype = "dashed") +
+  theme_ggeffects()
+```
+
 # Simple polynomials
 
 ## Polynomials
@@ -149,7 +176,7 @@ $$
 vote = \beta_0 + \beta_1*age + \beta_2*age^2
 $$
 
--   We are essentialy trading the assumption that the relationship is linear for the assumption is in the form of a polynomial (e.g. parabala)
+-   We are essentialy trading the assumption that the relationship is linear for the assumption is in the form of a polynomial (e.g. parabola)
 
 ## Polynomials
 
