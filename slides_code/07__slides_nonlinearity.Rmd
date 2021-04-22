@@ -123,7 +123,7 @@ mod_theory = lm(vote ~ agea_theory, data = vote)
 plot(ggeffect(mod_theory, terms = "agea_theory"))
 ```
 
-# R Intermetzzo!
+# R Intermezzo!
 
 ## Categorization - pros and cons
 
@@ -175,7 +175,7 @@ plot(ggeffect(mod_poly, terms = "agea"))
 
 -   If you only want to control for a variable or are interpreting the model visualy, the choice doesn't matter
 
-# R Intermetzzo!
+# R Intermezzo!
 
 ## Polynomials - Pros and cons
 

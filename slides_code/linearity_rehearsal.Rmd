@@ -1,0 +1,75 @@
+---
+title: "Linearity: The rehearsal"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in April 2021"
+output:
+  ioslides_presentation:
+    widescreen: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r data-and-packages, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(splines)
+library(lspline)
+library(ggeffects)
+library(patchwork)
+
+vote = read.csv("../data/parl_vote_2017.csv")
+un = read.table("../data/UnitedNations.txt")
+```
+
+## What linearity?
+
+- People talk about linearity into two ways:
+  - linear relationships between variables
+  - linear forms of regression models
+  
+## Linear relationships
+
+```{r}
+d1 = tibble(x = seq(1,100,1),
+               y = 2*x)
+
+d2 = tibble(x = seq(1,100,1),
+            y = x^2)
+
+g1 = qplot(x = x,y = y, data = d1, geom = "line")
+g2 = qplot(x = x,y = y, data = d2, geom = "line")
+
+g1 + g2
+```
+
+## Linear forms
+
+- Linear forms
+
+$vote = \beta_0 + \beta_1 *age$
+
+$vote = \beta_0 + \beta_1 *age + \beta_2*age^2$
+
+$log(income) = \beta_0 + \beta_1 *log(age) + \beta_2*log(education)$
+
+- Nonlinear forms
+
+$price = \beta_0 + \frac{1}{\beta_1} * demand$
+
+$income = \beta_0 + \beta_1*age^{\beta_2*education}$
+
+## Formal linearity
+
+- Mathematically, linear regression assumes that the linear form can capture the relationships between variables
+- e.g.:
+
+$log(income) = \beta_0 + \beta_1 *log(age) + \beta_2*log(education)$
+
+can capture the relationship between income, age and education (whether the relationship *between the raw variables* is linear or not)
+
+
+- However just because your linear model can capture **a** nonlinear relationship, it won't necessarily capture the correct relationship
+- The residual plot basically tells you if the relationship between variables differs from the relationships assumed by your model
+

@@ -1,0 +1,33 @@
+---
+title: "Dobrovolný úkol - Přesnost předvoleních průzkům v USA"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Úvod
+
+V rámci našeho dobrovolnéh úkolu se podíváme na téma, které se pravidelně stává populární každých pár let: přesnost předvolenbních průzkumů. Konkrétně budeme pracovat s daty poskytnutými organizací [FiveThirtyEight](https://fivethirtyeight.com/).
+FiveThirtyEight je americkou organizací zabývající se datovou žurnalistikou, a to zejména tématy politiky a sportu.
+Spravuja také jeden z nejpopulárnějších agregátorů průzkumů veřejného mínění s politickou tématikou.
+
+My budeme pracovat s daty o jednotlivých předvolebních průzkumech v USA za posledních zhruba 20 let.
+
+# Zadání
+
+V rámci domácího úkolů se pokuste zodpovědět následující otázku:
+
+*Liší se přesnost předvolebních průzkumů (proměnná `error`) v závislosti na metodologii sběru dat (`methodology`)?*
+
+Data k analýze si stáhněte pomocí následujícího kódu:
+
+```{r data-dowload, eval=FALSE}
+polls = read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw-polls.csv")
+
+polls = subset(polls, methodology == c("IVR", "Live Phone", "Online"))
+```
+
+(Z dat si také pro zjednodušení vyfiltrujeme pouze určité kategorie `methodology`. Za malé bezvýznamné plus se můžete podívat na celková data a zamyslet se nad tím, proč jsem vybral jen tyhle tři.)
+
