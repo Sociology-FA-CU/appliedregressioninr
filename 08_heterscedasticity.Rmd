@@ -15,6 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r data-and-packages, message=FALSE, warning=FALSE, echo=FALSE}
 library(tidyverse)
 library(estimatr)
+library(gt)
+library(ggeffects)
+library(ggforce)
 
 un = read.table("data/UnitedNations.txt")
 ```
@@ -37,9 +40,9 @@ From the plot above, we can see that the assumption of homoscedasticity has been
 This has two consequences: 1) The estimate of the regression coefficient will be less efficient, i.e. we will require more observations to reach the same level of precision, compared to model that fulfills the homoscedasticity assumption.
 2) More concernedly, the standard errors estimates will be biased, leading to systematically under/overestimated confidence of our results.
 
-# Classic Standard errors
+# Classical Standard errors
 
-To see why homoscedasticity may be a problem, let's see how classic standard errors for regression coefficients are computed.
+To see why homoscedasticity may be a problem, let's see how classical standard errors for regression coefficients are computed.
 Formally, the classic standard error of a regression coefficient is:
 
 $$
@@ -50,15 +53,14 @@ Where $\sigma^2$ is the variance of residuals, also known as the mean square err
 The important thing to notice is that the variance of residuals ($\sigma^2$) is a constant, a single value applied for all values of the independent variable.
 
 The reason why we compute the variance of all residuals regardless of the values of the independent variable is because of the fact that if several groups of data have the same variance, than all the data together will have also the same variance.
-For example, consider the following two vectors of numbers:
-
-`vector 1 = 0.8551603, -0.1219514,0.7444561, -1.6354559, 0.1577908`
-
-`vector 2 = -0.00542261, -1.71423480, 0.51218859, 0.79087341, 0.41659541`
+For example, consider the following two groups of numbers plotted below:
 
 ```{r vars-equal, echo=FALSE}
-vector1 = c(0.8551603, -0.1219514,0.7444561, -1.6354559, 0.1577908)
-vector2 = c(-0.00542261, -1.71423480, 0.51218859, 0.79087341, 0.41659541)
+set.seed(123)
+vector1 = scale(rnorm(10))
+vector2 = scale(rnorm(10))
+#vector1 = c(0.8551603, -0.1219514,0.7444561, -1.6354559, 0.1577908)
+#vector2 = c(-0.00542261, -1.71423480, 0.51218859, 0.79087341, 0.41659541)
 vector3 = c(vector1,vector2)
 
 var1 = round(mean( (vector1 - mean(vector1))^2 ),2)
@@ -67,13 +69,36 @@ var3 = round(mean( (vector3 - mean(vector3))^2 ),2)
 
 ```
 
+```{r homoscedascity-plot1, echo=FALSE}
+df_homosced = tibble(value = c(vector1, vector2),
+                     group = c(rep("group 1", times = length(value) / 2), rep("group 2", times = length(value)/ 2)))
+
+ggplot(data = df_homosced, aes(x = group, y = value, color = group)) +
+  geom_point() +
+  geom_mark_ellipse() + 
+  annotate(geom = "text", x = 1, y = 2.1, color = "#F8766D", label = paste("varience =", var1)) +
+  annotate(geom = "text", x = 2, y = 2.1, color = "#00BFC4", label = paste("varience =", var2)) +
+  scale_y_continuous(limits = c(-3,3)) +
+  labs(x = element_blank(), y = element_blank()) +
+  theme(legend.position = "none")
+```
+
 The variance of of the first vector is `r var1`.
-The second vector has the same variance (barring some rounding errors) of `r var2`.
-If we were to combine the two vectors together:
+The second vector has the same variance of `r var2`.
+If we were to combine the two groups together and then compute the variance of all, we would find that all the values together have the same variance as both groups separately, that is `r var3`.
 
-`vector3 = 0.8551603, -0.1219514,0.7444561, -1.6354559, 0.1577908, -0.00542261, -1.71423480, 0.51218859, 0.79087341, 0.41659541`
+```{r homoscedascity-plot2, echo=FALSE}
+df_homosced = tibble(value = c(vector1, vector2),
+                     group = c(rep("group 1", times = length(value) / 2), rep("group 2", times = length(value) / 2)))
 
-and then compute the variance of all, we would find that all the values together have the same variance as both groups separately, that is `r var3`.
+ggplot(data = df_homosced, aes(x = group, y = value)) +
+  geom_point() +
+  geom_mark_ellipse(aes(group = 1)) + 
+  annotate(geom = "text", x = 1.5, y = 1.9, label = paste("varience =", var3)) +
+  scale_y_continuous(limits = c(-3,3)) +
+  labs(x = element_blank(), y = element_blank()) +
+  theme(legend.position = "none")
+```
 
 This provides an immensely useful computational shortcut, which allowed for computation of linear regression models long before computers become prevalent.
 By computing the variance of all residuals together, we will know variance of residuals for every value of the independent variable.
@@ -84,8 +109,12 @@ However, as mentioned, this is only true if the variance of residuals across all
 What if the variance of residuals differ, based on the value of the independent variable?
 
 ```{r vars-nonequal, echo=FALSE}
-vector1 = c(0.05329121, 0.47450291, 0.68218495, -0.92324431, -0.28673476)
-vector2 = c(-1.04618281, 3.36022661, -1.62755560, -0.76224781, 0.07575961)
+set.seed(123)
+vector1 = scale(rnorm(10, sd = 0.5), scale = F)
+vector2 = scale(rnorm(10, sd = 1.2), scale = F)
+
+#vector1 = c(0.05329121, 0.47450291, 0.68218495, -0.92324431, -0.28673476)
+#vector2 = c(-1.04618281, 3.36022661, -1.62755560, -0.76224781, 0.07575961)
 vector3 = c(vector1,vector2)
 
 var1 = round(mean( (vector1 - mean(vector1))^2 ),2)
@@ -96,13 +125,36 @@ var3 = round(mean( (vector3 - mean(vector3))^2 ),2)
 
 Consider a different two vectors of numbers:
 
-`vector 1 = 0.05329121, 0.47450291, 0.68218495, -0.92324431, -0.28673476`
+```{r heteroscedasticity-plot1, echo=FALSE}
+df_heterosced = tibble(value = c(vector1, vector2),
+                     group = c(rep("group 1", times = length(value) / 2), rep("group 2", times = length(value) / 2)))
 
-`vector 2 = -1.04618281, 3.36022661, -1.62755560, -0.76224781, 0.07575961`
+ggplot(data = df_heterosced, aes(x = group, y = value, color = group)) +
+  geom_mark_ellipse() + 
+  geom_point() +
+  annotate(geom = "text", x = 1, y = 1.7, color = "#F8766D", label = paste("varience =", var1)) +
+  annotate(geom = "text", x = 2, y = 2.4, color = "#00BFC4", label = paste("varience =", var2)) +
+  scale_y_continuous(limits = c(-3,3)) +
+  labs(x = element_blank(), y = element_blank()) +
+  theme(legend.position = "none")
+```
 
 The variance of the first vector is `r var1`, while the variance of the second one is `r var2`.
 Since those two vectors have different variances, it is no surprise that the variance of all the values together is not equal to any of the two groups (in this case, it is `r var3`).
 Consequently, if the assumption of the assumption of homoscedasticity is violated, we cannot infer variance of residuals for any level of the independent variable by simply computing the variance of all residuals.
+
+```{r heteroscedascity-plot2, echo=FALSE}
+df_heterosced = tibble(value = c(vector1, vector2),
+                     group = c(rep("group 1", times = length(value) / 2), rep("group 2", times = length(value) / 2)))
+
+ggplot(data = df_heterosced, aes(x = group, y = value)) +
+  geom_point() +
+  geom_mark_ellipse(aes(group = 1)) + 
+  annotate(geom = "text", x = 1.5, y = 1.9, label = paste("varience =", var3)) +
+  scale_y_continuous(limits = c(-3,3)) +
+  labs(x = element_blank(), y = element_blank()) +
+  theme(legend.position = "none")
+```
 
 What then?
 The answer is surprisingly straightforward.
@@ -112,5 +164,87 @@ The formula for the standard error of a regression coefficient becomes [@wooldri
 $$
 SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
 $$
-Notice that the only thing that changed from the previous formula is that we no longer computes the sum of squares ($\sum(x_i - \bar{x})^2$) and then multiple it by the variance of residuals. Instead we compute the variance of residuals for every level of the independent variable separately ($\sigma_i^2$). This way of computing standard error is known as the robust standard errors, also known as heteroscedastic standard errors or sandwich errors.
+
+Notice that the only thing that changed from the previous formula is that we no longer computes the sum of squares ($\sum(x_i - \bar{x})^2$) and then multiple it by the variance of residuals.
+Instead we compute the variance of residuals for every level of the independent variable separately ($\sigma_i^2$).
+This way of computing standard errors is known as robust standard errors, also known as heteroscedastic standard errors or sandwich errors.
 Note that if the variance of residuals is actually the same for all levels of independent variable, i.e. if the residuals are actually homoscedastic, both formulas give the same result.
+
+## Correction for finite sample size
+
+The robust standard errors presented above works well as the sample sample size approaches infinity, but is biased for small samples.
+To account for this, numerous corrections has been proposed, usually denoted by letters *HC* [@hayes2007].
+The basic robust standard errors we already see is called *HC0*.
+There three other popular versions: *HC1* (which corrects using the degrees of freedom of the model), *HC2* (which is based on accounting for leverage) and *HC3* (which is similar to HC2, but puts bigger focus on observation with very high leverage).
+The exact nature of these corrections are beyond the scope of this course, but interested readers may refer to @hayes2007.
+Also note that these are not the only corrections that exist, but they are the most prevalent.
+
+While the individual correction can perform slightly better or worse depending on the exact situation, generally speaking, the differences between them tend to be small.
+The table below shows estimated standard error of regression coefficient for total fertility rate from the model `infantMortality ~ tfr`:
+
+```{r errror-comp, echo=FALSE}
+setype = c("classical", "HC0", "HC1", "HC2", "HC3")
+
+robust_type = function(se_type = "classical") {
+  m = lm_robust(infantMortality ~ tfr, se_type = se_type ,data = un)
+  round(summary(m)$coefficients[2, 2], 3)
+}
+
+errors = tibble(error_type = setype,
+                value = sapply(setype, robust_type))
+```
+
+```{r errors-table, echo=FALSE}
+gt(errors) %>%
+  cols_label(error_type = "Type of standard error", value = "Estimated standard error") %>% 
+  tab_options(table.width = 400)
+
+```
+
+As we can see, the biggest differences is between the classical standard error (i.e. the one assuming homoscedasticity) and all variants of the robust one.
+While there are some small differences depending on the used correction, for all cases it is clear that the robust standard error is about 33% larger than the classical one.
+
+# Robust Standard errors in R
+
+Many packages offer options for computing robust standard errors.
+Perhaps the most straightforward to use is the `estimatr` package.
+To fit a regression model without assuming homoscedasticity, we can use the `lm_robust()` function:
+
+```{r lm-robust}
+mod1 = lm_robust(infantMortality ~ tfr, se_type = "HC2", data = un)
+```
+
+We can specify the type of robust standard error we want using the `se_type` argument.
+By default, `lm_robust()` computes `HC2` standard errors, but also offers option for `HC0`, `HC1`, `HC3` and `classical` (i.e. the nonrobust one).
+The ouput of the function behaves in the same way as objects created by `lm()`, e.g. we can use `summary()` to see the results.
+
+While the output of the `lm_robust()` function cannot be easily passed into `ggpredic()`, we can compute the simple model using `lm()` and then compute robust standard error during plotting, to visualize the model using marginal effects plot:
+
+```{r robust-marginal}
+mod2 = lm(infantMortality ~ tfr, data = un)
+
+plot(ggpredict(mod2, vcov.fun = "vcovHC", vcov.type = "HC2", terms = "tfr"))
+```
+
+Note that we need to specify both the function used to compute the robust standard errors (`vcov.fun = "vcovHC"`) and the type of error to be computed (`vcov.type = "HC2"`).
+Otherwise, classical standard errors will be computed.
+
+# Why not always use robust standard errors?
+
+If robust standard errors are valid even under heteroscedasticity, why not use them all the time?
+There are at least three reasons:
+
+Robust standard errors are only proven to work only in large samples @wooldridge2015[pp. 247].
+There are two problems at hands.
+Firstly, even with a *HC* correction, robust standard errors may be biased when the sample size is small, especially if the variance of residuals is actually constant.
+Secondly, even if the standard error estimate is unbiased, the test statistic for classic tests of regression coefficients won't have the appropriate (Student's) distribution in small samples.
+Consequently, normal test are not valid for regression models with robust standard errors and small sample size.
+
+Robust standard errors are also less efficient than the classic ones [@hinkley1991].
+This means that larger samples are needed to reach the same level of precision, compared to the classic standard errors.
+Consequently, when homoscedasticity can be assumed, classic standard errors are preferred.
+
+Lastly, heteroscedasticity can be a sign of model misspecification [@king2015]. In other words, heteroscedastic residuals can be a sign that an important variable is missing in the model or that an incorrect type of relationship is assumed between variables (e.g. an incorrect assumption of linearity).
+Robust standard errors should therefore not be applied blindly, but only after considering other improvements of our model.
+
+# References

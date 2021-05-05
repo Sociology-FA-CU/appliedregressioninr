@@ -25,6 +25,7 @@ navbar:
             - text: "Linearity and normality"
               href: 07_linearity_and_normality.html
             - text: "Homoscedasticity"
+              href: 08_heterscedasticity.html
             - text: "Exporting results and multiple models"
             - text: "Prediction and regularization"
             - text: "Missing values imputations"
