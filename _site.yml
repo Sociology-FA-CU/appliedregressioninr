@@ -3,12 +3,10 @@ output_dir: "."
 navbar:
   title: "Applied Regression in R"
   left:
-    - text: "Home"
-      href: index.html
-    - text: "Lectures"
-      menu:
         - text: "Lecture Notes"
           menu:
+            - text: "Quick recap on selected concepts in statistics"
+              href: 00_quick_recap.html
             - text: "Introduction - goals of regression analysis"
               href: 01_intro.html
             - text: "Simple linear regression"
@@ -29,7 +27,7 @@ navbar:
             - text: "Exporting results and multiple models"
             - text: "Prediction and regularization"
             - text: "Missing values imputations"
-        - text: "Lecture Slides"
+        - text: "Slides"
           menu:
             - text: "Introduction - goals of regression analysis"
               href: 01_slides_intro.html
@@ -49,8 +47,8 @@ navbar:
             - text: "Exporting results and multiple models"
             - text: "Prediction and regularization"
             - text: "Missing values imputations"
-    - text: "Practice"
-      menu:
+        - text: "Exercise"
+          menu:
             - text: "Introduction - goals of regression analysis"
               href: 01_intro_R_excercises.html
             - text: "Simple linear regression"
@@ -70,11 +68,11 @@ navbar:
             - text: "Exporting results and multiple models"
             - text: "Prediction and regularization"
             - text: "Missing values imputations"
-    - text: "Completion Requirements"
-      href: completion_requirements.html
     - text: "Materials"
       menu:
-        - text: "Course data"
+        - text: "Syllabus"
+          href: completion_requirements.html
+        - text: "Datasets"
           href: course_data.html
         - text: "Literature"
           href: literature.html
