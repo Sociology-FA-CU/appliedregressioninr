@@ -1,0 +1,527 @@
+---
+title: "Voluntary assignment - example solution with some comments"
+author: "Jaromír Mazák & Aleš Vomáčka"
+date: "1. 7. 2021"
+output: word_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+# How to work with this document
+
+This is only an example solution. It does not mean that your different solution cannot be perfectly adequate, too. The text on grey background is the R code we used to produce our solution. It also includes additional comments which may be of interest.
+
+This is a *long version* which far exceeds what we expected you to submit, but it may be a welcome learning material. The added value of this longer version is that we show more of our thinking behind preparing the material. However, it may feel a bit cumbersome. Worry not, we also produced a *short version* which indicates the expected extent of your submission and is much more straightforward. 
+
+(Note: Detailed assignment instructions were provided in a separate document and are not repeated here.)
+
+# STEP 1: Preparation
+
+## Load libraries
+
+```{r libraries}
+
+# Always keep all libraries used in the script at the top of the script. 
+
+library(tidyverse) # for core tidyverse packages including dplyr and ggplot2
+library(here) # for smart path referencing
+library(patchwork) # for arranging graphs next to each other
+library(ggeffects) # for ggpredict, i.e. for plotting marginal effects
+
+options(scipen = 999) # turn off scientific notaiton (produces easier to read tables)
+
+```
+
+
+
+## Make sure you know and keep in mind what the task is
+
+Make sure you know what exactly is your task. In this case, it is answering the following question: Is the accuracy of polls (variable *error*) different depending on the methodology of data collection (variable *methodology*)? However, there have been specific requirements in the instructions as of what your solution should include. Keep that all in mind.
+
+
+## Data import
+
+```{r data-import}
+
+polls = read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw-polls.csv")
+
+polls %>% count(methodology) %>% arrange(desc(n)) # we only analyse "IVR", "Live Phone", "Online" becuase (a) they are most frequent, (b) the combination catgories would be harder to interpret.
+
+polls = subset(polls, methodology == c("IVR", "Live Phone", "Online"))
+
+polls = as_tibble(polls)
+
+# You can look at the variables description here - need to uncomment below:
+# browseURL("https://github.com/fivethirtyeight/data/tree/master/pollster-ratings")
+
+```
+
+
+
+# STEP 2: Variable selection
+
+### Dependent variable:
+
+- *error* ("Absolute value of the difference between the actual and polled result.")
+
+### Main independent variable:
+
+- *methodology* ("Methodology used to conduct this poll. One or more of the following values: ... only relevant values for us are *IVR*, i.e. Interactive voice response, otherwise known as automated polls or "robopolls"; *Live Phone*, i.e., Live telephone interviews, may or may not include calls to cell phones ; and *Online*, i.e., Poll conducted by Internet; generally this mean by web browser, or application-based polling of mobile phones ... see the filtering in data import section)
+
+### Other independent variables:
+
+This is part of your solution. Generally, we include other independent variables to control for them, i.e., we include those variables which we expect to have confounding influence on the relationship we are interested in. Below, you find our solution and arguments. Obviously, we first had to run a lot of simple descriptive analyses to get an ideas what each variable is about. We do not include those here, but that is something you should also do.  
+
+*In our view, you most likely should include the following:*
+
+- *year* - polling standards may have changed since 1998, so it makes good sense to include it
+- *type_simple* - it differentiates the following US elections: president primary, president general, senators general, house of representatives general, and governors general election. We think it makes good sense to expect that different election types are easier or more difficult to predict. So we should control for it. 
+- *polldate* and *electiondate* - by themselves, these variables are not very interesting. In additions, we already include the election year. But it could be very important to consider the difference between the two, i.e. the gap between the polling and the actual election as polling further away from the elections is expected to be less precise in terms of predicting the actual result. 
+- *samplesize* - Sample size is important for each individual poll's estimate (specifically, its precision), so we need to include it in the model. Otherwise, if any of the polling methods is associated with different sample sizes than the other two, the results could just be reflecting the different precision of different sample sizes, not the different perfomance of each method. 
+
+
+*We also think it could be good to include the following:*
+
+- *partisan* - on theoretical basis, it could make sense to include whether the poll is independent or commissioned by a specific party. However, the proportion of "partisan" polls is so small, that it is unlikely to influence the results very much. Also, the source webpage warns that the coding may be inconsistent here. Still, we include this variable as a control because it could help make a slightly better model and it should not cause any harm. 
+
+
+*Debatable are:*
+
+- *race* (or race_id) - it is very realistic that the context of actual race has effect. This statement would support the idea of controlling for it. However, this variable takes MANY different values, so including it would introduce a lot of dummy variables. It would be not only unpractical, but could also introduce computational issues. One solution would be using a hierarchical (i.e. multilevel) model. But since we did not cover this in our course, we will simply **ignore** this variable. If you are interested, we can briefly dicuss the rationale behind hierarchical models in class. 
+- *location* - it is very well possible that location plays some role, however, there are three different types of locations (state, district, national) and plenty of different specific locations (specific states and districts) in this variable. We think we cover some of the interesting variation already with the variable type_simple (type of elections). It could still make sense to try to include location in a multilevel model, but again, we are **not** doing this in this course.  
+- *type_detail* - if someone were interested in detailed analysis of this, it could make sense to include this instead of type_simple, but it has many categories, so many dummy variables would be produced. Probably only useful for specific goals, we are **not** including this one. 
+- *pollster* - there are plenty different pollsters, it could work in a multilevel or after some merging (if there is a good key to merge some pollsters together). For our analysis, we **disregard** this variable. 
+- all the *"_party"* variables - it could actually be an interesting research question to see how the errors differ in relation to whether a Republic or a Democrat or a member of other party is the leading runner, or based on how close the race is. However, these are all different research questions than ours. You can surely develop arguments to also control for these in our research design, but we decided to **disregard** these considerations from our example 
+
+
+*You should NOT include the following:*
+
+- *rightcall* - you should NOT include this variable in the model because it is a potential collider - whether or not the poll called the outcome correctly is likely influenced by the method (provided that any of the three methods really is better or worse, but we assume it is possible or we would not run this analysis). Yet it is also likely influenced by the error (polls with smaller errors are expected to call the outcome correctly more often). When both the dependent and the main independent variable may be reasonably argued to cause a third variable, this third variable should not be included in the model (should not be controlled for).
+- *bias* - you should also NOT include this variable in the model for similar reasons as rightcall. Again, polling method can likely influence bias. And bias can influence the value of error - indeed, error is computationally directly derived from the the bias. When a third variable is an intermediate between the main independent variable and the dependent variable, we should not control for it.
+
+
+*Also not to be included*
+- *pollno* - only a technical variable without substantive meaning
+- all the *"_name"* variables - unimportant for the goal of our analysis
+- all the *"_pct"* variables - all we need from them is already carried by the variable *error*, so we can disregard them.
+
+These latter two variables could be interesting for other research questions, though. We encourage you to think what they could be (example is there more error when Democractic / Republican candidate is leading the race etc.).
+
+
+### Comments related to your submitted assignments
+
+Most of you did not have problems with this part. The key thing in this part is to correctly recognize the nature of the model and select controlling variables correspondingly. The goal of our analysis is to estimate the effect of sampling methodology on the prediction error of the pre-election polls. Therefore, we should control for all variables we suspect to be confounders (and avoid controlling for those we suspect may be colliders).
+
+# STEP 3: Variables description
+
+Before we start modeling, we should always pay attention to getting to know our variables. We can do either tabular or graphical description of our variables. Or both.
+
+### Dependent variable
+
+```{r fig.width=7}
+
+sum(is.na(polls$error)) # no missing values here
+
+error_h <- 
+  polls %>% 
+  ggplot(aes(x=error)) +
+  geom_histogram(color = "white")
+
+error_b <-
+  polls %>% 
+  ggplot(aes(y=error)) +
+  geom_boxplot()
+
+error_p <-
+  polls %>% 
+  ggplot(aes(y=error, x=seq_along(error)))+
+  geom_point()+
+  labs(x="row numbers")
+
+error_h + error_b + error_p # this patchwork functionality enables to put multiple plot together
+  
+
+```
+
+As we see above, the *error* variable is skewed with large majority of polls having error between 0 and 10 percentage points. Some errors are extreme. Someone could consider leaving out the cases with extreme errors. That can be fine, but we will proceed with all observations (assuming extreme errors can happen as part of life rather than being glitches in the data). 
+
+### Main independent variable
+
+In the outputs below, we first look at the frequencies of methodology types in out data. We then look both visually and analytically at the bivariate relationship between the dependent and the main independent variable (i.e., without controlling for anything). There does not seem to be any significant difference among methodologies in the resulting error. However, this is no reason to stop the analysis. Some differences may be "hidden" due to confounders. So we still need to conduct the full analysis with controls to make sure.
+
+```{r}
+
+polls %>% count(methodology) # no missing values here
+
+
+# first, we can look at the raw differences of errors across different methodologies without controlling for anything...
+
+# ... visually
+
+polls %>% ggplot(aes(x=methodology, y=error))+
+  geom_boxplot()
+
+# ... or analytically
+
+m1 <- lm(error ~ methodology, data = polls)
+summary(m1, digits=3)
+
+```
+
+
+
+### Other independent variables
+
+Before we look at the individual independent variables in turns, we will check missingness for all of them at one go. This is where your dplyr skills come in handy.
+
+```{r}
+polls %>% select(year, type_simple, polldate, electiondate, samplesize, partisan) %>% 
+  summarise(across(.cols = everything(),
+                   .fns = ~sum(is.na(.))))
+```
+
+Oh, this is such non problematic data! No missing values! Thank you, Ales, for finding this dataset.
+
+Next, if we have time (which we should if we care about the analysis), it is best to start with understanding both univariate distribution of each independent variable (it helps us detect where we can expect problems) and bivariate distribution against the dependent variable (it helps as predict which of the variables we control for are likely to have big effect in the final model). However, the bivariate analysis is only indicative, it is no substitute for diagnostics of the final model.
+
+We think the best way to do this is visually. All the code to produce the visual analysis follows. Notice that the variable time_gap is not part of the dataset, it needs to be constructed.
+
+```{r}
+
+# year variable
+
+year_uni <-
+  polls %>% ggplot(aes(x=year))+
+  geom_bar()
+
+year_bi <-
+  polls %>% ggplot(aes(x=year, y=error))+
+  geom_point()+
+  geom_smooth()
+
+# type_simple
+
+type_uni <-
+  polls %>% ggplot(aes(x=type_simple))+
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+type_bi <- 
+  polls %>% ggplot(aes(x=type_simple, y=error))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+# time_gap - we first need to calculate time gap between the polls and the actual elections 
+
+polls$polldate %>% str() # the variables are character, not date, so we have to transform them before we can subtract them from each other
+
+# first, always check the transformations does what you want
+polls %>% 
+  mutate(polldate_d = as.Date(polldate, format = "%m/%d/%Y"),
+         electiondate_d = as.Date(electiondate, format = "%m/%d/%Y")) %>% 
+  select(polldate, polldate_d, electiondate, electiondate_d) %>% 
+  head()
+
+
+# only then proceed with the transformation 
+
+polls <- 
+  polls %>% 
+  mutate(polldate_d = as.Date(polldate, format = "%m/%d/%Y"),
+         electiondate_d = as.Date(electiondate, format = "%m/%d/%Y"),
+         time_gap = electiondate_d - polldate_d,
+         time_gap = as.numeric(time_gap))
+
+time_gap_uni <-
+  polls %>% ggplot(aes(y=time_gap, x=""))+
+  geom_boxplot()+
+  labs(x = "")
+
+time_gap_bi <-
+  polls %>% 
+  ggplot(aes(x=time_gap, y=error))+
+  geom_point()+
+  geom_smooth()
+
+# samplesize
+
+# oh, there is extreme skew here...
+samplesize_uni_raw <-
+  polls %>% ggplot(aes(y=samplesize, x=""))+
+  geom_boxplot()+
+  labs(x = "")
+
+# we shoudl consider some transformation such log
+samplesize_uni_log <-
+  polls %>% ggplot(aes(y=log10(samplesize),x=""))+
+  geom_boxplot()+
+  labs(x = "")
+
+samplesize_bi <-
+  polls %>% ggplot(aes(x=log10(samplesize), y=error))+
+  geom_point()+
+  geom_smooth()
+
+
+# partisan 
+
+partisan_uni <-
+  polls %>% ggplot(aes(x=partisan))+
+  geom_bar()
+
+partisan_bi <-
+  polls %>% ggplot(aes(x=partisan, y = error))+
+  geom_boxplot()
+
+```
+
+The plot composition below always look at one independent variable in one row. Normally, there is the univariate distribution to the left and bivariate to the right. For sample size, there is also the log-tranformed graph as the distribution is otherwise too extremely skewed. The bivarite graph for sample size also uses this log-transformed sample size. 
+
+For the *year* variable, it seems that the number of polls per year very much depends on how many and how important elections took place each year, i.e. the election cycle (plot A). However, there does not seem to be any eye-catching relationship between what year the polls took place and what the error was in terms of significant reduction or increase in error over time (plot B). 
+
+There is between ca 450 and 850 observations for each election type (considering the five types we decided to refer to, plot C). The type of elections seems to be associated with the error at least to some extent, for example, Presidential primaries tend to have the largest error, whereas Presidential general elections the smallest (plot D). 
+
+Noteworthy, time gap in all the polls in the sample is small, between 0 and 20 days or so. In addition, there seems to be no big relationship between the time gap between the polls and actual elections on the one hand and the error on the other hand (F)
+
+Sample size unsurprisingly plays some role, but in accordance with statistical theory, the relationship with error is not linear (plot I). The error is significantly bigger for very small samples, but goes down quickly and levels off. This could be a hint that we should use some tool to model non-linearity, but not necessarily, we cannot know ahead what will happen in the multidimensional world of multiple linear regression.
+
+Partisan polls are rare (plot J) and their effect on error seems to be small if any. The error for Republican commissioned polls seems slightly higher than the rest of the polls (plot K). 
+
+```{r, fig.height=9}
+
+(year_uni + year_bi) / (type_uni + type_bi) / (time_gap_uni + time_gap_bi) / 
+  (samplesize_uni_raw + samplesize_uni_log + samplesize_bi) /
+  (partisan_uni + partisan_bi) +
+   plot_annotation(tag_levels = 'A') & 
+  theme(plot.tag = element_text(size = 8))
+
+```
+
+
+### Comments related to your submitted assignments
+
+Again, most of you did not have problems with this part. You correctly plotted relevant variables, sometimes grouped using the methodology variable. For a heavily skewed variables, such as the sample size, it may be beneficial to use an appropriate transformation (such as taking the log).
+
+# STEP 4: Initial model presentation and interpretation
+
+First, we look at the model when we just let all independent variables in the model as untransformed main effects. We suspect this could be problematic (we saw the huge skew of sample size and the non-linear relationship between error and sample size), but we are going to use diagnostics to check if any serious problems appear, anyway.
+
+Looking at summary, we notice some statistically significant relationships (other than statistically significant differences can probably be disregarded straight away as we have a really big sample). 
+
+First and most importantly, Online method of polling produces 0.79 (0.8) percentage point greater errors than Interactive voice response (IVR, the reference category). Since we work within framework of multiple linear regression, we should stress what this means exactly: when comparing the errors of polls which are the same in terms of year, election type, the time gap between the polls and the elections, the sample size and the consideration whether or not the poll was commissioned as partisan, Online methodology produce errors bigger by 0.8 percentage points than IVR.   
+
+Life phone produces slightly smaller error (by 0.029 percentage point) than the IVR methodology, however the difference is negligible (and also not statistically significant). The conclusion is that polls comparable in all the other variables produce about the same error whether they are life phone interviews or IVRs. 
+
+We actually do not need to agonize too much about the other coefficients in the tables, they are just controls instrumental for answering our main research question. Yet it may be interesting to notice that there is relatively bigger error in the Presidental primaries and, in contrast, smaller error in Presidential general elections. Time gap, does, in fact, increases the error (it did not look so in the bivariate analysis), other things in the model being equal: polls taken 1 day further away from the election produce 0.06 percentage points worse estimates than comparable polls taken 1 day closer to the elections. In other words, 10 days difference correspondes to 0.6 percentage point difference in error (within the period we look at, this is, of course, something we should not be tempted to generalize beyond - it is unlikely that polls 1000 days from the election will have 60 % error on average). Sample size decreases error. Republican-commissioned polls display larger errors. 
+
+
+
+```{r}
+m2 <- lm(error ~ methodology + year + type_simple + time_gap + samplesize + partisan, data = polls)
+
+print(summary(m2), digits=1)
+
+```
+
+
+# STEP 5: Initial model fit and diagnostics
+
+We already could assess model fit in the summary above. With R-squared of 0.09, we know the predictive power of the model is modest, but not negligible. Knowing the values of all variables in the model, we predict 9 % of the variance in error across the models. 
+
+Next, we should see the diagnostic plot. 
+
+Maybe first remember the assumptions we make:
+
+* validity - as we saw in the variables selection section, there are some variables theoretically interesting (what if the pollster differ in quality and also their use of methodology? In multiple linear model, we are actual assuming that all the polls are independent, but they are not - they are clustered in the pollster or agencies. And also location.). However, we would need multilevel model to address this. Also the validity of the variable *partisan* is questioned by the authors of the data set. These things are boyond what we can tackle here, but we can still inquire in the model specification (also a matter of validity) using some diagnostic graphs.
+* representativeness - we did not dig into this, but we believe FiveThirtyEight have thought about it and the polls are a good image of the polling landscape in the US. It is probably sensible to look at the polls as a census of reasonable polls out there rather than a sample, but we actually did not go into detail about this. It is something we would have to investigate if we wanted to publish this analysis.
+* linearity - We will see using diagnostic plots to see if the relationship in the model to see if the residuals average around 0 for different levels of the predicted values of the dependent variable
+* independence of errors - well, like we said, we assume each poll is independent when, in fact, there is a limited number of polster, and *location* contexts ... so maybe the errors are not quite independent. We don't expect this to be a horrible issue here, but a multilevel model accounting for this could be better here.
+* homoscedasticity - we will see in the diagnotic plots
+* normality of errors - we will see in the diagnotic plots
+
+
+Now, let's see the diagnostic plots:
+
+```{r, fig.width=8, fig.height=7}
+par(mfrow = c(2,2)) #adjusts how plot are displayed in the plots pane of R
+# you can reset the above to default by either restarting R Studio or running par(mfrow = c(1,1))
+plot(m2)
+
+par(mfrow = c(1,1))
+```
+
+How can we interpret them?
+
+* the first (residuals vs fitted) is mainly used to assess linearity of the modeled relationships (can we reasonable model the dependent variable as a linear combination of our predictors?) - since the red line does not deviate much from the dotted and is straight rather than wiggly, we can say that our specification of the model does not violate the linearity assumption too much. However, we can also notice the discontinuity in the data - there is (almost) no fitted values of 7.5 - 8. This may look weird, but it can happen as we use categorical predictors. It is probably not a reason for serious concerns.  
+
+* the second (normal Q-Q) is used to assess the normality of residuals. We see some serious departure from normality (points should be around the dotted line if the assumption holds), so this assumption is violated. However, remember that this assumption is actually comparatively least important and is only relevant if we need to make predictions on individual level (for individual polls) or when we use small sample sizes. In case we are interested in predicting individual cases, we could try to make separate groups for different sample sizes or some transformations until we are satisfied. Since we are not interested in such exercise here, we will just let it be. 
+
+* the third (scale-location) is used to assess the assumption of homoscedasticity. Is the variance of residuals similar around across different levels of fitted values? This is a bit hard to say as the number of observations is very different across different levels of fitted values. Still it looks to us that there is or could be some funneling out of the errors indicating heteroscedasticity. Practically, this means that the p-values for the coefficients may be biased (i.e. incorrect p-values, incorrect confidence intervals). (If you want to, you can learn about robust standard errors and use them. We did not cover robust standard errors in the classes, but we provide some material on the course web page. However, since the sample size is large, we are not much worried about probably just a small inaccuracy in p-values.) 
+
+* the forth (residuals vs leverage) shows values with large Cook's distance. With our sample size, it is quite unlikely we would see any significant distortion of our model estimated due to a few influential cases, but we can still have a look at those which exert most influence. Anyway, the good news is that the cases with big leverage are close to the dotted line - do not exert much influence on the model estimates. 
+
+### After diagnostics - Cook's distance
+
+After looking at the "global" diagnostic charts, we can look at individual most influential cases. We can use the plot which identifies the three most influential and focus on them. There are many ways to do it, we will use *rownames_to_column* function to transform rownames to a variable which we can further use for filtering. When we tabulate the three cases (only variables used in the model - see the select command below), we see they are all polls with extreme errors, two of them presidential primaries. We will let it be at this point (we are not interested in individual observations in our exercise), but you could also consider removing these (and perhaps other) cases for some other purposes.
+
+```{r}
+plot(m2, which  =4)
+
+polls <- rownames_to_column(polls, var = "rownames")
+
+polls %>% 
+  filter(rownames %in% c(1694,2548,3021)) %>% 
+  as_tibble() %>% 
+  select(error, methodology, year, type_simple, time_gap, samplesize, partisan)
+
+```
+
+
+If you need more flexibility and focus on your-specified number of cases, not just three shown in the plot, you can do the following. 
+
+```{r}
+
+polls$cd <- cooks.distance(m2) # save cook's distance in the original data
+
+ # display all observations with cook's distance bigger than given value
+polls %>% filter(cd > 0.01) %>% 
+  select(error, methodology, year, type_simple, time_gap, samplesize, partisan, cd)
+
+ # display all observations with cook's distance bigger than given quantile, in this case 99.9%
+polls %>% filter(cd > quantile(cd, 0.999)) %>% 
+  select(error, methodology, year, type_simple, time_gap, samplesize, partisan, cd)
+
+```
+
+
+# STEP 6: Adjusting our model
+
+We can further try to make adjustments to our model specification. For example, we saw that the extreme skew of sample size could be causing problems. We could use log of sample size. One student in the class also noticed that the proportion of methodology over time was not constant. Very much on the contrary. Maybe, we should try to see if there is interaction between the two. 
+
+```{r}
+# First plot methodology by year (only for years with 50+ polls) to see the difference. Maybe we could make live phone the reference category as it is most stable across the years.
+polls %>% group_by(year) %>% mutate(year_n = length(year)) %>% filter(year_n > 50) %>% 
+  group_by(year, methodology) %>% 
+  summarise(n = n()) %>% 
+  mutate(prop = n/sum(n)) %>% 
+  ggplot(aes(y=as.factor(year), x=prop, fill=methodology))+
+  geom_col(position = "fill")
+
+# Changing reference category in methodology. 
+
+polls <-
+  polls %>% mutate(methodology = fct_relevel(methodology, "Live Phone")) # set as first level, i.e. reference category
+
+
+# We could also consider centering as we want to use interactions. In that case, centering helps to interpret the regression tables, specifically the main effects. However, since we are going to use plots of marginal effects for model interpretation, it would not be strictly necessary here (the required transformations also happen on the background of plotting marginal effects). Yet for the sake of exercise, we show how centering is done and you can look at how it influences the regression coefficients. Note that we have to log first and then center. The other order would not work - cannot log negative value.
+
+polls <-
+  polls %>% mutate(
+    year_c = year - mean(year),
+    time_gap_c = time_gap - mean(time_gap),
+    samplesize_log_c = log10(samplesize) - mean(log10(samplesize)))
+
+```
+
+
+```{r}
+# Now, run the newly specified model with raw and with centered variables (for the sake of illustration). 
+
+m3 <- lm(error ~ methodology*year + type_simple + time_gap + log10(samplesize) + partisan, data = polls)
+summary(m3)
+
+m3_c <- lm(error ~ methodology*year_c + type_simple + time_gap_c + samplesize_log_c + partisan, data = polls)
+summary(m3_c)
+
+
+```
+
+# STEP 7: Comparing our initial and new model
+
+Since we now have two candidate models for final interpretation, we should compare them formally.
+
+```{r}
+anova(m2, m3_c)
+```
+
+We see that the latter (more complicated) model has resulted in decrease of RSS by a statistically significant amount. It better fit does not seem to be caused simply by chance. 
+
+# STEP 7: New model diagnostics
+
+Similar to the initial model, the same limitations / interpretations apply.
+
+```{r, fig.width=8, fig.height=7}
+par(mfrow = c(2,2)) #adjusts how plot are displayed in the plots pane of R
+# you can reset the above to default by either restarting R Studio or running par(mfrow = c(1,1))
+plot(m3_c)
+
+par(mfrow = c(1,1))
+```
+
+
+# STEP 8: Final model presentation and interpretation
+
+First, we just look at marginal effects of different methodologies. Remember, marginal effects are expected values of the dependent variable for given values of selected independent variable while other independent variables are held constant. 
+
+```{r fig.width=8}
+main_effect_raw <- plot(ggpredict(m3, terms = c("methodology"))) + scale_y_continuous(limits = c(3,5.5)) + labs(title = "Model with raw predictors", subtitle = "Predicted values of error")
+main_effect_c <- plot(ggpredict(m3_c, terms = c("methodology")))  + scale_y_continuous(limits = c(3,5.5)) + labs(title = "Model with centred predictors", subtitle = "Predicted values of error")
+
+main_effect_raw + main_effect_c
+```
+
+If we plot marginal effects for both the model with centered and the model with raw variables, we notice a different result (the two plots above are different). Why is that? The answer is in the background transformations when ggpredict "holds other variables constant". There are actually two issues. The first is that year and year_c are saved as different kind of vector. While year is integer, it necessarily becomes "double" after centering (allowing for decimals). Ggpredict treats integers differently - it holds contant at its modus, in this case year 2008. Whereas it holds contant at the mean of a "double", see the "adjusted for" notes below. The second issue is with the log transformation. In model 3 (m3), we conducted the transformation in specifying the model, so ggpredict is able to undo the transformation and hold constant at the mean of the original variable. In contrast, the centred model (m3_c) uses a variable created elsewhere (samplesize_log_c), so ggpredict takes the mean of it, i.e. the mean of log, which is different from taking the mean of the orginal raw variables. For illustration purposes, see below how we could get the same result. Such small things can be pain when working, so it is good to kow about them and learn to estimate where problems could be happening. 
+
+```{r}
+
+# year and year_c are different 
+polls %>% select(year, year_c) %>% glimpse()
+
+# the the plots are based on different numbers, we can look at them here
+ggpredict(m3, terms = c("methodology"))
+ggpredict(m3_c, terms = c("methodology"))
+
+
+# we could recalculate model 3 so that the results after processing with ggpredict are the same
+polls <-
+  polls %>% mutate(
+    samplesize_log = log10(samplesize))
+
+m3.1 <- lm(error ~ methodology*as.numeric(year) + type_simple + time_gap + samplesize_log + partisan, data = polls)
+main_effect_raw <- plot(ggpredict(m3.1, terms = c("methodology"))) + scale_y_continuous(limits = c(3,5.5)) + labs(title = "Model with raw predictors", subtitle = "Predicted values of error")
+
+ggpredict(m3.1, terms = c("methodology"))
+ggpredict(m3_c, terms = c("methodology"))
+
+```
+
+
+Back to model interpretation. To fully use the information carried by the model, we want to show the effect of the significant interaction. We do so by plotting a *ggpredict* object with both predictors used in the interaction as *terms*. 
+
+Notice that the result is the same for both the model with raw predictors and the one with centered. Only the x axis is different - centered years are numbers around 0. For interpretability, we would pick the plot with years on x axis. 
+
+```{r fig.width=8}
+
+interaction_raw <- plot(ggpredict(m3.1, terms = c("year", "methodology")), colors = c("red", "orange", "blue")) + 
+  scale_y_continuous(limits = c(1,6.5))
+
+interaction_c <- plot(ggpredict(m3_c, terms = c("year_c", "methodology")), colors = c("red", "orange", "blue"))+ 
+  scale_y_continuous(limits = c(1,6.5))
+
+interaction_raw + interaction_c
+```
+
+Alternatively, you could prefer to plot methodology on x axis (as the main independent variable) and show year with color. We get a similar conclusion - while not much different on average, Live Phone methodology seems to be getting better and the the other two seem to be getting worse. If choosing one today, Live Phone seems preferable other things being equal.
+
+```{r fig.width=8}
+alternative_interaction_raw <- plot(ggpredict(m3, terms = c("methodology", "year [1998, 2002, 2006, 2010, 2014, 2018]")))
+
+alternative_interaction_raw
+```
+
+
+
