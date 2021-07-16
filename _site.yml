@@ -3,71 +3,71 @@ output_dir: "."
 navbar:
   title: "Applied Regression in R"
   left:
-        - text: "Lecture Notes"
-          menu:
-            - text: "Quick recap on selected concepts in statistics"
-              href: 00_quick_recap.html
-            - text: "Introduction - goals of regression analysis"
-              href: 01_intro.html
-            - text: "Simple linear regression"
-              href: 02_simple_linear_regression.html
-            - text: "Multiple linear regression"
-              href: 03_multiple_linear_regression.html
-            - text: "Ploting regression models, marginal effects"
-            - text: "Model fit"
-              href: 05_model_fit.html
-            - text: "Assumptions of linear models"
-              href: 06_assumptions.html
-            - text: "Regression diagnostics"
-              href: 06_diagnostics.html
-            - text: "Linearity and normality"
-              href: 07_linearity_and_normality.html
-            - text: "Homoscedasticity"
-              href: 08_heterscedasticity.html
-            - text: "Exporting results and multiple models"
-            - text: "Prediction and regularization"
-            - text: "Missing values imputations"
-        - text: "Slides"
-          menu:
-            - text: "Introduction - goals of regression analysis"
-              href: 01_slides_intro.html
-            - text: "Simple linear regression"
-              href: 02_slides_simple_linear_regression.html
-            - text: "Multiple linear regression"
-              href: 03_slides_multiple_linear_regression.html
-            - text: "Ploting regression models, marginal effects"
-              href: 04_slides_model_visualization.html
-            - text: "Model fit"
-              href: 05_slides_model_fit.html
-            - text: "Assumptions of linear models and diagnostics"
-              href: 06_slides_model_assumptions.html
-            - text: "Linearity"
-              href: 07_slides_nonlinearity.html
-            - text: "Homoscedasticity"
-            - text: "Exporting results and multiple models"
-            - text: "Prediction and regularization"
-            - text: "Missing values imputations"
-        - text: "Exercise"
-          menu:
-            - text: "Introduction - goals of regression analysis"
-              href: 01_intro_R_excercises.html
-            - text: "Simple linear regression"
-              href: 02_simple_linear_regression_excercises.html
-            - text: "Multiple linear regression"
-              href: 03_multiple_linear_regression_excercises.html
-            - text: "Interactions"
-              href: 035_multiple_linear_regression_excercises_2.html
-            - text: "Ploting regression models, marginal effects"
-              href: 04_model_visualization_exercises.html
-            - text: "Model fit"
-              href: 05_model_fit_exercises.html
-            - text: "Assumptions of linear models"
-            - text: "Regression diagnostics"
-            - text: "Linearity and normality"
-            - text: "Homoscedasticity"
-            - text: "Exporting results and multiple models"
-            - text: "Prediction and regularization"
-            - text: "Missing values imputations"
+    - text: "Lecture Notes"
+      menu:
+        - text: "Quick recap on selected concepts in statistics"
+          href: 00_quick_recap.html
+        - text: "Introduction - goals of regression analysis"
+          href: 01_intro.html
+        - text: "Simple linear regression"
+          href: 02_simple_linear_regression.html
+        - text: "Multiple linear regression"
+          href: 03_multiple_linear_regression.html
+        - text: "Ploting regression models, marginal effects"
+        - text: "Model fit"
+          href: 05_model_fit.html
+        - text: "Assumptions of linear models"
+          href: 06_assumptions.html
+        - text: "Regression diagnostics"
+          href: 06_diagnostics.html
+        - text: "Linearity and normality"
+          href: 07_linearity_and_normality.html
+        - text: "Homoscedasticity"
+          href: 08_heterscedasticity.html
+        - text: "Exporting results and multiple models"
+        - text: "Prediction and regularization"
+        - text: "Missing values imputations"
+    - text: "Slides"
+      menu:
+        - text: "Introduction - goals of regression analysis"
+          href: 01_slides_intro.html
+        - text: "Simple linear regression"
+          href: 02_slides_simple_linear_regression.html
+        - text: "Multiple linear regression"
+          href: 03_slides_multiple_linear_regression.html
+        - text: "Ploting regression models, marginal effects"
+          href: 04_slides_model_visualization.html
+        - text: "Model fit"
+          href: 05_slides_model_fit.html
+        - text: "Assumptions of linear models and diagnostics"
+          href: 06_slides_model_assumptions.html
+        - text: "Linearity"
+          href: 07_slides_nonlinearity.html
+        - text: "Homoscedasticity"
+        - text: "Exporting results and multiple models"
+        - text: "Prediction and regularization"
+        - text: "Missing values imputations"
+    - text: "Exercise"
+      menu:
+        - text: "Introduction - goals of regression analysis"
+          href: 01_intro_R_excercises.html
+        - text: "Simple linear regression"
+          href: 02_simple_linear_regression_excercises.html
+        - text: "Multiple linear regression"
+          href: 03_multiple_linear_regression_excercises.html
+        - text: "Interactions"
+          href: 035_multiple_linear_regression_excercises_2.html
+        - text: "Ploting regression models, marginal effects"
+          href: 04_model_visualization_exercises.html
+        - text: "Model fit"
+          href: 05_model_fit_exercises.html
+        - text: "Assumptions of linear models"
+        - text: "Regression diagnostics"
+        - text: "Linearity and normality"
+        - text: "Homoscedasticity"
+        - text: "Exporting results and multiple models"
+        - text: "Prediction and regularization"
+        - text: "Missing values imputations"
     - text: "Materials"
       menu:
         - text: "Syllabus"

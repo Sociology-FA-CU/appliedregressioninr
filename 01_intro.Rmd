@@ -1,8 +1,8 @@
 ---
 title: "Intro - different purposes of regression analysis"
 output: html_document
-bibliography: 01_intro.bib
 csl: apa.csl
+bibliography: 01_intro.bib
 ---
 
 ```{r setup, include=FALSE}
