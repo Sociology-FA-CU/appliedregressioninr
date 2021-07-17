@@ -19,7 +19,7 @@ library(here)
 countries <- read.csv(here("data", "countries.csv"))
 ```
 
-We encourage you to read through the following selected statistical concepts before taking the course. You can think of these concepts as informal prerequisite for taking the course. On purpose, we do not explain all the terms we use here, because you are already expected to know them on entering the course. If you are mostly familiar with what you read here, and perhaps only need to refresh on some details, chances are you are prepared to take the course. If not, consider taking some introduction to statistics first. For our students, Statistics I and Statistics II are prerequisites for this course.
+We encourage you to read through the following selected statistical concepts before taking the course. You can think of these concepts as informal prerequisite for taking the course. On purpose, we do not explain all the terms we use here, because you are already expected to know them on entering the course. If you are mostly familiar with what you read here, and perhaps only need to refresh on some details, chances are you are prepared to take the course. If not, consider taking some introduction to statistics first. For our students, Statistics I and Statistics II are prerequisites for this course. 
 
 # Variable and its distribution
 
