@@ -13,18 +13,25 @@
 
 <title>Heteroskedasticity</title>
 
-<script src="site_libs/header-attrs-2.5/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -36,11 +43,6 @@
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -53,30 +55,27 @@ if (window.hljs) {
 
 
 
+
 <style type="text/css">
-h1 {
-  font-size: 34px;
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
 }
-h1.title {
-  font-size: 38px;
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
 }
-h2 {
-  font-size: 30px;
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
 }
-h3 {
-  font-size: 24px;
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
 }
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
+div.csl-indent {
+  margin-left: 2em;
 }
 </style>
 
@@ -88,10 +87,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -108,40 +103,13 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
 <style type="text/css">
-/* padding for bootstrap navbar */
-body {
-  padding-top: 51px;
-  padding-bottom: 40px;
-}
-/* offset scroll position for anchor links (for fixed navbar)  */
-.section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
-.section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
-}
 .dropdown-submenu {
   position: relative;
 }
@@ -169,7 +137,7 @@ body {
   margin-right: -10px;
 }
 .dropdown-submenu:hover>a:after {
-  border-left-color: #ffffff;
+  border-left-color: #adb5bd;
 }
 .dropdown-submenu.pull-left {
   float: none;
@@ -181,7 +149,7 @@ body {
 }
 </style>
 
-<script>
+<script type="text/javascript">
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -192,10 +160,23 @@ $(document).ready(function () {
   var menuAnchor = $('a[href="' + href + '"]');
 
   // mark it active
-  menuAnchor.parent().addClass('active');
+  menuAnchor.tab('show');
 
   // if it's got a parent navbar menu mark it active as well
   menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
 });
 </script>
 
@@ -207,7 +188,6 @@ $(document).ready(function () {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -313,14 +293,11 @@ $(document).ready(function () {
       <a href="06_diagnostics.html">Regression diagnostics</a>
     </li>
     <li>
-      <a href="07_linearity_and_normality.html">Linearity and normality</a>
+      <a href="07_linearity_and_normality.html">Linearity</a>
     </li>
     <li>
       <a href="08_heterscedasticity.html">Homoscedasticity</a>
     </li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -351,10 +328,6 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
-    <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -384,11 +357,8 @@ $(document).ready(function () {
     </li>
     <li class="dropdown-header">Assumptions of linear models</li>
     <li class="dropdown-header">Regression diagnostics</li>
-    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Linearity</li>
     <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -419,7 +389,7 @@ $(document).ready(function () {
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -473,6 +443,7 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
 <p>The basic robust standard errors we already saw is called <em>HC0</em>. There are three other popular versions: <em>HC1</em> (which corrects using the degrees of freedom of the model), <em>HC2</em> (which is based on accounting for leverage) and <em>HC3</em> (which is similar to HC2, but puts bigger focus on observations with very high leverage).</p>
 <p>The exact nature of these corrections are beyond the scope of this course, but interested readers may refer to <span class="citation">Hayes &amp; Cai (2007)</span>. Also note that these are not the only corrections that exist, but they are the most prevalent.</p>
 <p>While the individual correction can perform slightly better or worse depending on the exact situation, generally speaking, the differences between them tend to be small. The table below shows estimated standard error of regression coefficient for total fertility rate from the model we saw above, i.e. <code>infantMortality ~ tfr</code>:</p>
+<div id="ojmgiijwug" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
@@ -484,6 +455,8 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   margin-right: auto;
   color: #333333;
   font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
   background-color: #FFFFFF;
   width: 400px;
   border-top-style: solid;
@@ -527,7 +500,7 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   font-size: 85%;
   font-weight: initial;
   padding-top: 0;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
@@ -599,7 +572,7 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   border-bottom-color: #D3D3D3;
   vertical-align: bottom;
   padding-top: 5px;
-  padding-bottom: 6px;
+  padding-bottom: 5px;
   overflow-x: hidden;
   display: inline-block;
   width: 100%;
@@ -640,10 +613,6 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
   vertical-align: middle;
-}
-
-#ojmgiijwug .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
 }
 
 #ojmgiijwug .gt_from_md > :first-child {
@@ -725,6 +694,10 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   border-top-color: #D3D3D3;
 }
 
+#ojmgiijwug .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
 #ojmgiijwug .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
@@ -804,10 +777,11 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
 
 #ojmgiijwug .gt_footnote_marks {
   font-style: italic;
+  font-weight: normal;
   font-size: 65%;
 }
 </style>
-<div id="ojmgiijwug" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+<table class="gt_table">
   
   <thead class="gt_col_headings">
     <tr>
@@ -816,30 +790,21 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
     </tr>
   </thead>
   <tbody class="gt_table_body">
-    <tr>
-      <td class="gt_row gt_left">classical</td>
-      <td class="gt_row gt_right">0.957</td>
-    </tr>
-    <tr>
-      <td class="gt_row gt_left">HC0</td>
-      <td class="gt_row gt_right">1.283</td>
-    </tr>
-    <tr>
-      <td class="gt_row gt_left">HC1</td>
-      <td class="gt_row gt_right">1.290</td>
-    </tr>
-    <tr>
-      <td class="gt_row gt_left">HC2</td>
-      <td class="gt_row gt_right">1.299</td>
-    </tr>
-    <tr>
-      <td class="gt_row gt_left">HC3</td>
-      <td class="gt_row gt_right">1.315</td>
-    </tr>
+    <tr><td class="gt_row gt_left">classical</td>
+<td class="gt_row gt_right">0.957</td></tr>
+    <tr><td class="gt_row gt_left">HC0</td>
+<td class="gt_row gt_right">1.283</td></tr>
+    <tr><td class="gt_row gt_left">HC1</td>
+<td class="gt_row gt_right">1.290</td></tr>
+    <tr><td class="gt_row gt_left">HC2</td>
+<td class="gt_row gt_right">1.299</td></tr>
+    <tr><td class="gt_row gt_left">HC3</td>
+<td class="gt_row gt_right">1.315</td></tr>
   </tbody>
   
   
-</table></div>
+</table>
+</div>
 <p>As we can see, the biggest differences is between the classical standard error (i.e. the one assuming homoscedasticity) and all variants of the robust standard error. While there are some small differences depending on the correction used, for all types of robust standard error it is clear that the robust standard error is about 33% larger than the classical one.</p>
 </div>
 </div>
@@ -852,6 +817,7 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
 <pre class="r"><code>mod2 = lm(infantMortality ~ tfr, data = un)
 
 plot(ggpredict(mod2, vcov.fun = &quot;vcovHC&quot;, vcov.type = &quot;HC2&quot;, terms = &quot;tfr&quot;))</code></pre>
+<pre><code>## Could not compute variance-covariance matrix of predictions. No confidence intervals are returned.</code></pre>
 <p><img src="08_heterscedasticity_files/figure-html/robust-marginal-1.png" width="672" /></p>
 <p>Note that we need to specify both the function used to compute the robust standard errors (<code>vcov.fun = "vcovHC"</code>) and the type of error to be computed (<code>vcov.type = "HC2"</code>). Otherwise, classical standard errors will be computed.</p>
 </div>
@@ -916,7 +882,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>

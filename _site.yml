@@ -20,13 +20,10 @@ navbar:
           href: 06_assumptions.html
         - text: "Regression diagnostics"
           href: 06_diagnostics.html
-        - text: "Linearity and normality"
+        - text: "Linearity"
           href: 07_linearity_and_normality.html
         - text: "Homoscedasticity"
           href: 08_heterscedasticity.html
-        - text: "Exporting results and multiple models"
-        - text: "Prediction and regularization"
-        - text: "Missing values imputations"
     - text: "Slides"
       menu:
         - text: "Introduction - goals of regression analysis"
@@ -43,10 +40,6 @@ navbar:
           href: 06_slides_model_assumptions.html
         - text: "Linearity"
           href: 07_slides_nonlinearity.html
-        - text: "Homoscedasticity"
-        - text: "Exporting results and multiple models"
-        - text: "Prediction and regularization"
-        - text: "Missing values imputations"
     - text: "Exercise"
       menu:
         - text: "Introduction - goals of regression analysis"
@@ -63,11 +56,8 @@ navbar:
           href: 05_model_fit_exercises.html
         - text: "Assumptions of linear models"
         - text: "Regression diagnostics"
-        - text: "Linearity and normality"
+        - text: "Linearity"
         - text: "Homoscedasticity"
-        - text: "Exporting results and multiple models"
-        - text: "Prediction and regularization"
-        - text: "Missing values imputations"
     - text: "Materials"
       menu:
         - text: "Syllabus"
