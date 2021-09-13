@@ -282,7 +282,9 @@ $(document).ready(function () {
     <li>
       <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
     </li>
-    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li>
+      <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
     <li>
       <a href="05_model_fit.html">Model fit</a>
     </li>
@@ -428,7 +430,6 @@ plot(mod_linear, which = 1)</code></pre>
 mod_interval = lm(vote ~ agea_interval, data = vote)
 
 plot(ggeffect(mod_interval))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_interval</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-interval-example-1.png" width="672" /></p>
 <p>As we can see, the age variable was cut into three groups, each with range of 24.65. Alternatively we can use the <code>cut_number()</code> function to categorize age into <code>n</code> groups with (aproximately) the same number of observations:</p>
@@ -437,7 +438,6 @@ plot(ggeffect(mod_interval))</code></pre>
 mod_number = lm(vote ~ agea_number, data = vote)
 
 plot(ggeffect(mod_number))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_number</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-number-example-1.png" width="672" /></p>
 <p>The third option is to discretise the metric variable into categories of equal <code>width</code>. This can be done using the <code>cut_width()</code> function. Notice that it will name the intervals so that they nominally have the same width even if the last interval does not have any observations higher than 90.</p>
@@ -446,7 +446,6 @@ plot(ggeffect(mod_number))</code></pre>
 mod_width = lm(vote ~ agea_width, data = vote)
 
 plot(ggeffect(mod_width))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_width</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-width-example-1.png" width="672" /></p>
 <p>The last option is to base the categorization of our data not on the properties of our sample, such as range or quantiles, but determine our the categories according to a theory. For example, in the context of political behavior, people are often categorized into three cohort: a) age 25 and younger b) 26 to 55 years and c) 56 or more.</p>
@@ -458,7 +457,6 @@ plot(ggeffect(mod_width))</code></pre>
 mod_theory = lm(vote ~ agea_theory, data = vote)
 
 plot(ggeffect(mod_theory))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea_theory</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/cut-theory-example-1.png" width="672" /></p>
 <p>While modeling nonlinear relationships using categorization of metric variables is conveniently easy, it also suffer from a number of problems. <span class="citation">Harrell (2001)</span> provides a list of major problems, among others:</p>
@@ -497,7 +495,6 @@ vote = \beta_0 + \beta_1*age + \beta_2*age^2
 <pre class="r"><code>mod_poly = lm(vote ~ poly(agea, 2), data = vote)
 
 plot(ggeffect(mod_poly))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <pre><code>## $agea</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/poly-example-1.png" width="672" /></p>
 <p>While polynomials are often a better option than the categorization approach, they are not without problems. The main problem is that polynomial functions are non local <span class="citation">Harrell (2001)</span>, which means that data in one region can strongly influence predicted values in other regions, especially those with small number of observations. This means that the polynomial regression curves often get “wiggly” and overly curved at the ends. Therefore, polynomial regression tend to provide a good fit only in the regions with most data and are often bad at extrapolation. Polynomials are also bad at modeling relationships that are nonlinear only in certain regions and linear in other. For example, a second order polynomial leads by definition to the shape of a parabola and the regression has to predict a curve along the entire range of data. This means that polynomials are bad at modeling relationship that tend to level of at same point. These problems are especially pronounced with higher degrees polynomials.</p>
@@ -558,7 +555,6 @@ summary(mod_ls)</code></pre>
 <p>The first of the regression coefficients after the intercept, called <code>lspline(agea, knots = c(25, 50, 75))1</code> tells us the slope of the regression line in the first bin, i.e. for the age of 25 or lower. In other words, for people who are 25 years old or younger, we we would expect on average for people one year older to have 0.044 points higher probability of attending elections. Analogously, the next regression terms refers to the slope in the second bin, i.e. between 25 and 50 year. This coefficient is approximately 0.007 percentage points, showing that the difference in voter turnout based on age are much bigger for the voters below 25 years, than for the middle aged group of people between 25 and 50 years.</p>
 <p>As always, we visualize the model using a marginal effects plot. However, the <code>ggeffect</code> package has some trouble correctly picking values of the independent variable to evaluate the model at, so we recommend specifying that all values of the independent variable should be evaluated using <em>[all]</em> as follows:</p>
 <pre class="r"><code>plot(ggeffect(mod_ls, terms = &quot;agea [all]&quot;))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/ls-marginal-plot-1.png" width="672" /></p>
 <p>In the example above, each of the regression coefficients represents the slope of regression line in a given bin.</p>
 <p>There is however another way how linear splines can be specified. Instead of the slope itself, the regression coefficients may represent the difference between slopes of two neighboring bins. This can be done by setting argument <code>marginal</code> to <code>TRUE</code>:</p>
@@ -688,7 +684,6 @@ mod_ns_manual = lm(vote ~ ns(agea, knots = 53, Boundary.knots = c(25.8, 80.2)), 
 <pre class="r"><code>mod_ns_df = lm(vote ~ ns(agea, df = 3), data = vote)
 
 plot(ggeffect(mod_ns_df, terms = &quot;agea [all]&quot;))</code></pre>
-<pre><code>## Package `effects` is not available, but needed for `ggeffect()`. Either install package `effects`, or use `ggpredict()`. Calling `ggpredict()` now.FALSE</code></pre>
 <p><img src="07_linearity_and_normality_files/figure-html/ns-example-df-1.png" width="672" /></p>
 <p>It is worth mentioning that the <code>splines</code> package places knots by default at slightly different positions than that recommended by <span class="citation">Harrell (2001)</span>. For example, the boundary knots are placed at the maximum and the minimum of the data, when specified by the <code>df</code> argument. However, the differences in the final model are generally speaking minimal. This can be seen in the graph below, where the differences between the models fitted according to the recommendation by Harrel and the default of the splines package are minimal :</p>
 <pre class="r"><code>ggplot(aes(x = agea, y = vote), data = vote) +

@@ -14,6 +14,7 @@ navbar:
         - text: "Multiple linear regression"
           href: 03_multiple_linear_regression.html
         - text: "Ploting regression models, marginal effects"
+          href: 04_model_visualization.html
         - text: "Model fit"
           href: 05_model_fit.html
         - text: "Assumptions of linear models"
