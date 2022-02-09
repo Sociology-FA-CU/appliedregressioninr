@@ -13,25 +13,21 @@
 
 <title>Linearity and normality</title>
 
-<script src="site_libs/header-attrs-2.9/header-attrs.js"></script>
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
+<link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -371,9 +367,6 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="completion_requirements.html">Syllabus</a>
-    </li>
-    <li>
       <a href="course_data.html">Datasets</a>
     </li>
     <li>
@@ -381,10 +374,22 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
+<li>
+  <a href="completion_requirements.html">Completion requirements</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://ksoc.ff.cuni.cz/">Department website</a>
+  <a href="https://ksoc.ff.cuni.cz/">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Sociology-FA-CU/appliedregressioninr">
+    <span class="fa fa-github"></span>
+     
+  </a>
 </li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -673,7 +678,7 @@ Natural splines fit polynomials in the inner bins and lines in the outer ones
 </tbody>
 </table>
 <p>For example, if we decide to use three knots (which would divide the data into four bins), we would place the first knot at the 10th quantile, the second at the 50th quantile and the last one at the 90th quantile. More than seven knots are rarely needed (in fact three knots are most often satisfactory), but if more are needed, the logic stays the same.</p>
-<p>To fit a natural cubic splines in R, we can use the <code>ns()</code> function from the <code>splines</code> package. The number of knots can be specified in two ways. First, we can select position of the knots manualy through the <code>knots</code> and <code>Boundary.knots</code> arguments. The <code>knots</code> argument is a vector representing the position of the inner knots, while <code>Boundary.knots</code> is a vector representing the position of the "boundary knots, i.e. the very first and the very last one.</p>
+<p>To fit a natural cubic splines in R, we can use the <code>ns()</code> function from the <code>splines</code> package. The number of knots can be specified in two ways. First, we can select position of the knots manualy through the <code>knots</code> and <code>Boundary.knots</code> arguments. The <code>knots</code> argument is a vector representing the position of the inner knots, while <code>Boundary.knots</code> is a vector representing the position of the “boundary knots, i.e. the very first and the very last one.</p>
 <p>To place three knots manually according to Harrel’s recommendation:</p>
 <pre class="r"><code>quantile(vote$agea, probs = 0.5) # returns value of 53
 quantile(vote$agea, probs = c(0.1, 0.9)) # returns values of 25.8 and 80.2
@@ -737,6 +742,14 @@ Harrell, F. (2001). <em>Regression Modeling Strategies: With Applications to Lin
 </div>
 </div>
 
+<br>
+  <footer class="bg-white fixed-bottom border">
+    <!-- Copyright -->
+    <div class="text-center p-1">
+      <a class="text-dark" color="black" href="https://ksoc.ff.cuni.cz/">Department of Sociology, Faculty of Arts </br> Charles University </a>
+    </div>
+    <!-- Copyright -->
+  </footer>
 
 
 

@@ -61,15 +61,27 @@ navbar:
         - text: "Homoscedasticity"
     - text: "Materials"
       menu:
-        - text: "Syllabus"
-          href: completion_requirements.html
         - text: "Datasets"
           href: course_data.html
         - text: "Literature"
           href: literature.html
+    - text: "Completion requirements"
+      href: completion_requirements.html      
   right:
-    - text: "Department website"
+    - icon: fa-home
       href: https://ksoc.ff.cuni.cz/
+    - icon: fa-github
+      href: https://github.com/Sociology-FA-CU/appliedregressioninr
 output:
   html_document:
-    theme: united
+    theme:
+      bootswatch: united
+      primary: "#BB5C37"
+      heading_font:
+        google: "Fira Sans"
+      base_font:
+        google: "Fira Sans"
+      code_font:
+        google: "Fira Code"
+    include:
+      after_body: footer.html
