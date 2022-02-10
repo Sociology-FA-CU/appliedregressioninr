@@ -28,7 +28,7 @@ navbar:
     - text: "Slides"
       menu:
         - text: "Introduction - goals of regression analysis"
-          href: 01_slides_intro.html
+          href: 01_slides_purpose.html
         - text: "Simple linear regression"
           href: 02_slides_simple_linear_regression.html
         - text: "Multiple linear regression"
