@@ -9,6 +9,9 @@ css: ../css/slides-style.css
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
+
+library(dagitty)
+library(ggdag)
 library(tidyverse)
 
 countries <- read.csv("../data/countries.csv")
@@ -104,4 +107,81 @@ countries %>%
 - **Inferential models**: How many people are going to vote?
 
 <br>
+
+- Which model are you aiming for?
+
 - We are going to be mainly interested in explanative models.
+
+
+# Variable selection
+
+## Variable selection
+
+- A researcher is interested in the relationship between intelligence and work self-discipline among adults, but is short on funding.
+
+- Their collegue suggests using university students as their sample.
+
+<br>
+
+- Is this a valid design decision?
+
+## Variable selection
+
+- Goal of analysis matters
+
+<div style="float: left; width: 48%; background-color: #ececec;">
+<p style="text-align:center">**Predictive models**</p>
+
+- Goal: Estimate unseen observations as best as possible.
+
+- Training vs testing set, crossvalidation
+</div>
+
+<div style="float: right; width: 48%; background-color: #ececec;">
+<p style="text-align:center">**Explanative models**</p>
+
+- Goal: Estimate model parameters as best as possible.
+
+
+- Adjusting for interferring variables, randomization, DAGs
+
+</div>
+
+## Directed acyclic graphs
+
+- Some fields can rely on randomization of treatmeant (e.g. drug testing). Social sciences generally can't.
+
+- Strong focus on theory, with help of Directed Acyclic Graphs.
+
+
+```{r dag-example, fig.cap="DAG example", fig.height=3}
+dagify(y ~ x + z,
+       x ~ z) %>% 
+  ggdag(layout = "circle") +
+  theme_void()
+```
+
+
+## Knowledge and vaccination rates
+
+Does increasing **knowledge about vaccines** raise the **probability a person gets vaccinated**?
+
+<br>
+
+- Should we control for:
+    - socio-economic status?
+    - trust in public institutions?
+    - past hospitalization?
+
+<br>
+
+- What if we only have cross-sectional data?
+
+## Types of interfering variables
+
+- We need to thing about 4 types of interfering variables
+    - Confounders (common parent)
+    - Colliders (common child)
+    - Mediators
+    - Moderators
+
