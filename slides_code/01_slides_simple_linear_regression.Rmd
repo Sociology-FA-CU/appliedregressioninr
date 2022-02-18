@@ -27,7 +27,7 @@ countries <- read.csv(here("data", "countries.csv"))
 
 ## Goals for today
 
--   Basic concepts and building blocks for regression analysis
+-   Regression as a tool: Basic concepts and building blocks for regression analysis
 -   Centering variables for better interpretation
 -   Building and interpreting simple linear regression in R (yay, we are gonna work in R!)
 -   Quick recap on some basic concepts in statistics and their relationship with linear regression
