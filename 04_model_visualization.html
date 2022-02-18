@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Ploting regression models, marginal effects</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
+<link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture Notes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00_quick_recap.html">Quick recap on selected concepts in statistics</a>
+    </li>
+    <li>
+      <a href="01_intro.html">Introduction - goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression.html">Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_model_fit.html">Model fit</a>
+    </li>
+    <li>
+      <a href="06_assumptions.html">Assumptions of linear models</a>
+    </li>
+    <li>
+      <a href="06_diagnostics.html">Regression diagnostics</a>
+    </li>
+    <li>
+      <a href="07_linearity_and_normality.html">Linearity</a>
+    </li>
+    <li>
+      <a href="08_heterscedasticity.html">Homoscedasticity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Slides
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_slides_purpose.html">Introduction - goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_slides_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_slides_model_fit.html">Model fit</a>
+    </li>
+    <li>
+      <a href="06_slides_model_assumptions.html">Assumptions of linear models and diagnostics</a>
+    </li>
+    <li>
+      <a href="07_slides_nonlinearity.html">Linearity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_intro_R_excercises.html">Introduction - goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression_excercises.html">Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression_excercises.html">Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="035_multiple_linear_regression_excercises_2.html">Interactions</a>
+    </li>
+    <li>
+      <a href="04_model_visualization_exercises.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_model_fit_exercises.html">Model fit</a>
+    </li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="course_data.html">Datasets</a>
+    </li>
+    <li>
+      <a href="literature.html">Literature</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="completion_requirements.html">Completion requirements</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://ksoc.ff.cuni.cz/">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Sociology-FA-CU/appliedregressioninr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Ploting regression models, marginal effects</h1>
+
+</div>
+
+
+<p>In this part, we will focus on visual interpretation of regression models, using packages <code>ggeffects</code> and <code>broom</code>.</p>
+<div id="marginal-effects" class="section level1">
+<h1>Marginal effects</h1>
+<p>One of the major steps in statistical modelling is the interpertation of an estimated model. For some models, this is a fairly easy task. Consider for example the following model:</p>
+<pre class="r"><code>mod1 &lt;- lm(life_exp ~ dem_index, data = countries)
+coef(mod1)</code></pre>
+<pre><code>## (Intercept)   dem_index 
+##   67.191591    1.621479</code></pre>
+<p>Our model suggests that the life expectancy in countries with a the democratic index of zero is 67.2 years. Countries with one more point on the democratic index have on average 1.6 years higher life expectancy. So far so easy.</p>
+<p>Now consider a more complicated more complicated model, involing a quadratic term and an interaction:</p>
+<pre><code>##                       (Intercept)               poly(dem_index, 2)1 
+##                         80.981531                          8.327868 
+##               poly(dem_index, 2)2                     postsovietyes 
+##                         -3.296518                         -1.995878 
+## poly(dem_index, 2)1:postsovietyes poly(dem_index, 2)2:postsovietyes 
+##                          5.085355                         12.699062</code></pre>
+<p>This model is much harder to interpret. Technicaly speaking, countries whose quadratic democratic index is higher by 1, while their base democratic index is zero and if they are post soviet, have on average 12.7 years higher life expectancy. While technicaly correct, this information is also completely undecipherable.</p>
+<p>Generally speaking, once our models contains transformed variables or interactions, interpreting regression coefficients becomes very hard, if not impossible. Fortunately, we have another way and that is to interpret our models visualy. This can be done through the so called marginal effects plots. Marginal effect is an expected value of the dependent variable for given values of selected independent variable while other independent variables are held constant (preferably at some reasonable value such as mean).</p>
+<p>In R, there several packages for computing marginal effects, with <code>ggeffects</code> being especialy suited for the <code>tidyverse</code> environment. We can visualize our model using the following code:</p>
+<pre class="r"><code>plot(ggpredict(mod2, terms = c(&quot;dem_index&quot;, &quot;postsoviet&quot;)), add.data = TRUE)</code></pre>
+<p><img src="04_model_visualization_files/figure-html/ggeffects-example-1.png" width="672" /></p>
+<p>Now we can clearly see what our model is telling us. Our model has only two independent variables, so it is possible to plot them both onto a single graph. Alternatively, we could plot only a specific independent variable against the dependent one:</p>
+<pre class="r"><code>plot(ggpredict(mod2, terms = &quot;postsoviet&quot;), add.data = TRUE)</code></pre>
+<p><img src="04_model_visualization_files/figure-html/single-example-1.png" width="672" /></p>
+<p>The graph above shows the the expected life expectancy for postsoviet and western countries with <em>average</em> democratic index. It is important to recognize that the plot doesn’t merely show the average life expectancy of postsoviet and western countries, but average life expectancy of said types of countries <em>conditional</em> on democratic index.</p>
+<p><code>ggpredict()</code> itself returns the marginal effects returns a data frame in the tidy format, which can be used for plotting:</p>
+<pre class="r"><code>ggpredict(mod2, terms = &quot;postsoviet&quot;) %&gt;% 
+  ggplot(aes(x = x, y = predicted, ymin = conf.low, ymax = conf.high)) +
+  geom_pointrange() +
+  theme_light()</code></pre>
+<p><img src="04_model_visualization_files/figure-html/dataframe-example-1.png" width="672" /></p>
+<div id="ggeffects-options" class="section level2">
+<h2>ggeffects options</h2>
+<p>The <code>ggeffects</code> package offers three options for computing marginal effects. The first one we have already seen, that is <code>ggpredict()</code>. This functions is based on the <code>predict()</code> function from the base R and will work out of the box. The second options is <code>ggeffect()</code>, which requires the <code>effects</code> package. The main difference between it and the previous option is how categorical predictors are treated. <code>ggpredict()</code> fixes categorical at the reference category when computing marginal effects, while <code>ggeffect()</code> computes a “sort of average of the categorical predictors” (as it is stated in the manual). The last option, <code>ggemmeans()</code>, treats categorical predictors in the same vein as <code>ggeffect()</code> and is mostly used for various contrasts encoding (i.e. various encoding of differences between categories). It also require the <code>emmeans</code> package.</p>
+</div>
+</div>
+<div id="pointragne-plots" class="section level1">
+<h1>Pointragne plots</h1>
+<p>Even when regression coefficients are easily interpretable, it may be beneficial to plot them on a graph. This is especially useful when the number of predictors is high and the difference between them may not be immediately apparent from a table. For example, consider a following model:</p>
+<pre class="r"><code>mod3 &lt;- lm(life_exp ~ dem_index + hdi + uni_prc + poverty_risk + material_dep, data = countries)
+coef(mod3)</code></pre>
+<pre><code>##  (Intercept)    dem_index          hdi      uni_prc poverty_risk material_dep 
+##   38.9120025    0.1797816   45.0303693   -6.2845411   14.9125690  -10.4917121</code></pre>
+<p>This is still a relatively very small model, but we can use it to demonstrate how pointrange plots can be useful. Pointrange plots visualize regression estimates as points along with confidence intervals. For pointrange plot work the best, it’s useful to standardize variables beforehand:</p>
+<pre class="r"><code>countries &lt;- mutate(.data = countries,
+                    across(.cols = c(&quot;life_exp&quot;, &quot;dem_index&quot;, &quot;hdi&quot;, &quot;uni_prc&quot;, &quot;poverty_risk&quot;, &quot;material_dep&quot;),
+                           .fns  = scale,
+                           .names = &quot;{.col}_s&quot;))
+
+mod3 &lt;- lm(life_exp_s ~ dem_index_s + hdi_s + uni_prc_s + poverty_risk_s + material_dep_s, data = countries)</code></pre>
+<p>First step in creating a pointrange plot is to extract regression coefficients and their standard errors in a tidy format. This can be done using <code>broom</code> package. This package allows us to easily extract various information about our model. To extract regression coefficients as a data frame, we can use the <code>tidy</code> function:</p>
+<pre class="r"><code>tidy(mod3)</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   term           estimate std.error statistic p.value
+##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 (Intercept)     -0.0263     0.114    -0.231  0.819 
+## 2 dem_index_s      0.0829     0.303     0.274  0.786 
+## 3 hdi_s            0.859      0.364     2.36   0.0257
+## 4 uni_prc_s       -0.172      0.174    -0.990  0.331 
+## 5 poverty_risk_s   0.424      0.291     1.46   0.157 
+## 6 material_dep_s  -0.465      0.343    -1.36   0.186</code></pre>
+<p>With this data frame, plotting the regression coefficients is straightforward:</p>
+<pre class="r"><code>tidy(mod3) %&gt;% 
+  ggplot(aes(x = estimate, xmin = estimate - 1.96*std.error, xmax = estimate + 1.96*std.error, y = term)) +
+  geom_pointrange()</code></pre>
+<p><img src="04_model_visualization_files/figure-html/pointrange-plot-1.png" width="672" /></p>
+<p>The plot above shows the regression coefficients for each predictor, we can also improve the graph by ordering the predictors by effect size:</p>
+<pre class="r"><code>tidy(mod3) %&gt;% 
+  mutate(term = fct_reorder(term, estimate)) %&gt;% 
+  ggplot(aes(x = estimate, xmin = estimate - 1.96*std.error, xmax = estimate + 1.96*std.error, y = term)) +
+  geom_pointrange()</code></pre>
+<p><img src="04_model_visualization_files/figure-html/pointrange-plot-arranged-1.png" width="672" /></p>
+<p>From the graph above, we can easily see the biggest differences in life expectancy are based on human development index (which is positively associated with life expectancy) and on material deprivacy (which is negatively asssociated with life expectancy). Furthermore, we can see that regression coefficient for percentage of people with university education (uni_prc_s) is estimated much more precisely than the coefficients for human development index or material deprivation.</p>
+</div>
+
+<br>
+  <footer class="bg-white fixed-bottom border">
+    <!-- Copyright -->
+    <div class="text-center p-1">
+      <a class="text-dark" color="black" href="https://ksoc.ff.cuni.cz/">Department of Sociology, Faculty of Arts </br> Charles University </a>
+    </div>
+    <!-- Copyright -->
+  </footer>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

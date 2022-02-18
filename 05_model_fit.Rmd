@@ -149,9 +149,9 @@ Now that we know how the two tools for assessing model fit work, we will talk ab
 We already said that ANOVA can be used for comparing nested models only. 
 In addition, all the classic limitations of null hypothesis testing apply:
 
-    -   It is extremely unlikely for two models to "explain" the exact same amount of variance -\> null hypothesis is almost always false by definition. 
-    -   Differences do not matter, if they are practically unimportant -\> rejecting null hypothesis is by itself not particularly interesting.
-    -   Power matters, just like with any other test -\> not rejecting null hypothesis does not necessarily mean the two models predict the same amount of variance. We may just not have enough precision to identify the difference. In other words, we would be able to reject the null hypothesis if we had a bigger sample. 
+-   It is extremely unlikely for two models to "explain" the exact same amount of variance -> null hypothesis is almost always false by definition. 
+-   Differences do not matter, if they are practically unimportant -> rejecting null hypothesis is by itself not particularly interesting.
+-   Power matters, just like with any other test -> not rejecting null hypothesis does not necessarily mean the two models predict the same amount of variance. We may just not have enough precision to identify the difference. In other words, we would be able to reject the null hypothesis if we had a bigger sample. 
     
 When assessing ANOVA results, it is a good idea to consider the size of the difference in RSS of the two models compared to their original RSSs. It the difference is only a tiny fraction, then perhaps we should not neccessarily opt for the more complicated model, even if p-value is smaller than 0.05.
 

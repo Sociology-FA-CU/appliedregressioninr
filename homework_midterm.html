@@ -15,6 +15,7 @@
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<<<<<<< HEAD
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -32,6 +33,21 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+=======
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
+<link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+>>>>>>> 83ceaeea25d17af59889934dc0ecf2d06212c8d1
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -260,7 +276,9 @@ $(document).ready(function () {
     <li>
       <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
     </li>
-    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li>
+      <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
     <li>
       <a href="05_model_fit.html">Model fit</a>
     </li>
@@ -271,14 +289,11 @@ $(document).ready(function () {
       <a href="06_diagnostics.html">Regression diagnostics</a>
     </li>
     <li>
-      <a href="07_linearity_and_normality.html">Linearity and normality</a>
+      <a href="07_linearity_and_normality.html">Linearity</a>
     </li>
     <li>
       <a href="08_heterscedasticity.html">Homoscedasticity</a>
     </li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -289,7 +304,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_slides_intro.html">Introduction - goals of regression analysis</a>
+      <a href="01_slides_purpose.html">Introduction - goals of regression analysis</a>
     </li>
     <li>
       <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
@@ -309,10 +324,6 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
-    <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -342,11 +353,8 @@ $(document).ready(function () {
     </li>
     <li class="dropdown-header">Assumptions of linear models</li>
     <li class="dropdown-header">Regression diagnostics</li>
-    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Linearity</li>
     <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -357,9 +365,12 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+<<<<<<< HEAD
       <a href="syllabus.html">Syllabus</a>
     </li>
     <li>
+=======
+>>>>>>> 83ceaeea25d17af59889934dc0ecf2d06212c8d1
       <a href="course_data.html">Datasets</a>
     </li>
     <li>
@@ -367,10 +378,22 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
+<li>
+  <a href="completion_requirements.html">Completion requirements</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://ksoc.ff.cuni.cz/">Department website</a>
+  <a href="https://ksoc.ff.cuni.cz/">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Sociology-FA-CU/appliedregressioninr">
+    <span class="fa fa-github"></span>
+     
+  </a>
 </li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -388,20 +411,61 @@ $(document).ready(function () {
 
 <div id="úvod" class="section level1">
 <h1>Úvod</h1>
-<p>V rámci našeho dobrovolnéh úkolu se podíváme na téma, které se pravidelně stává populární každých pár let: přesnost předvolenbních průzkumů. Konkrétně budeme pracovat s daty poskytnutými organizací <a href="https://fivethirtyeight.com/">FiveThirtyEight</a>. FiveThirtyEight je americkou organizací zabývající se datovou žurnalistikou, a to zejména tématy politiky a sportu. Spravuja také jeden z nejpopulárnějších agregátorů průzkumů veřejného mínění s politickou tématikou.</p>
+<p>V rámci našeho dobrovolného úkolu se podíváme na téma, které se pravidelně stává populární každých pár let: přesnost předvolebních průzkumů. Konkrétně budeme pracovat s daty poskytnutými organizací <a href="https://fivethirtyeight.com/">FiveThirtyEight</a>. FiveThirtyEight je americkou organizací zabývající se datovou žurnalistikou, a to zejména tématy politiky a sportu. Spravuje také jeden z nejpopulárnějších agregátorů průzkumů veřejného mínění s politickou tématikou.</p>
 <p>My budeme pracovat s daty o jednotlivých předvolebních průzkumech v USA za posledních zhruba 20 let.</p>
 </div>
 <div id="zadání" class="section level1">
 <h1>Zadání</h1>
 <p>V rámci domácího úkolů se pokuste zodpovědět následující otázku:</p>
-<p><em>Liší se přesnost předvolebních průzkumů (proměnná <code>error</code>) v závislosti na metodologii sběru dat (<code>methodology</code>)?</em></p>
+<p><em>Liší se přesnost předvolebních průzkumů (proměnná <strong>error</strong>) v závislosti na metodologii sběru dat (<strong>methodology</strong>)?</em></p>
 <p>Data k analýze si stáhněte pomocí následujícího kódu:</p>
-<pre class="r"><code>polls = read.csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw-polls.csv&quot;)
-
-polls = subset(polls, methodology == c(&quot;IVR&quot;, &quot;Live Phone&quot;, &quot;Online&quot;))</code></pre>
-<p>(Z dat si také pro zjednodušení vyfiltrujeme pouze určité kategorie <code>methodology</code>. Za malé bezvýznamné plus se můžete podívat na celková data a zamyslet se nad tím, proč jsem vybral jen tyhle tři.)</p>
+<pre class="r"><code>polls =  read.csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw-polls.csv&quot;)
+polls =  subset(polls, methodology ==  c(&quot;IVR&quot;, &quot;Live Phone&quot;, &quot;Online&quot;))</code></pre>
+<p>(Z dat si také pro zjednodušení vyfiltrujeme pouze určité kategorie methodology. Za malé bezvýznamné plus se můžete podívat na celková data a zamyslet se nad tím, proč jsem vybral jen tyhle tři.)</p>
+<p>Popis dat najdete v tabulce zde: <a href="https://github.com/fivethirtyeight/data/tree/master/pollster-ratings">https://github.com/fivethirtyeight/data/tree/master/pollster-ratings</a></p>
+<p>Pro inspiraci a pro kontext si můžete přečíst následující článek: <a href="https://fivethirtyeight.com/features/the-death-of-polling-is-greatly-exaggerated/">The Death Of Polling Is Greatly Exaggerated</a>.</p>
+</div>
+<div id="co-by-měla-vaše-práce-obsahovat" class="section level1">
+<h1>Co by měla vaše práce obsahovat</h1>
+<div id="diskuze-o-výběru-relevantních-proměnných" class="section level2">
+<h2>Diskuze o výběru relevantních proměnných</h2>
+<p>Předtím, než se pustíte do modelování, zamyslete se nad tím, jestli by náš model měl obsahovat ještě nějaké další proměnné. Jsou nějaké jiné proměnné, pro které bychom měli kontrolovat, abychom získali lepší/přesnější odpověď na naši otázku? Jsou nějaké proměnné, kterým bychom se naopak měli vyhnout? A může se se vztah mezi závislou a nezávislou proměnnou lišit v závislosti na třetí proměnné (tj. vyplatí se přidat do našeho modelu nějakou interakci)?</p>
+<p>Věnujte výběru proměnných jeden až dva odstavce.</p>
+</div>
+<div id="základní-popis-proměnných-se-kterými-pracujeme" class="section level2">
+<h2>Základní popis proměnných, se kterými pracujeme</h2>
+<p>Až si vyberete své proměnné, krátce si je prohlédněte, abyste získali představu o datech, se kterými pracujete. Podívejte se na jejich rozdělení a popisné statistiky, a poznamenejte si vše, co vám přijde zajímavé nebo potenciálně důležité. Např. jaká je průměrná chyba předvolebních průzkumů a jak vypadá jejich rozdělení? Kolik průzkumů využívá každou z metod sběru dat? Podívejte se i na další relevantní proměnné, které jste vybrali v předchozím kroku.</p>
+<p>Věnujte téhle části znovu jeden až dva odstavce. Nebojte se připojit graf, pokud vám přijde relevantní</p>
+</div>
+<div id="vytvoření-a-interpretace-modelu" class="section level2">
+<h2>Vytvoření a interpretace modelu</h2>
+<p>Na základě předchozích kroků vytvořte model, pomocí kterého budeme moct zodpovědět naši výzkumnou otázku.</p>
+<p>Zkuste model interpretovat pomocí tabulky regresních koeficientů, i pomocí grafů marginálních efektů (balíček ggeffects, který jste si ukazovali s Járou). Nezapomeňte, že vizuální interpretace je často jednoduší! Interpretujte jak bodové odhady (regresní koeficienty nebo predikované hodnoty), tak i míru nejistoty s nimi spojenou (standardní chyba nebo intervaly spolehlivosti).</p>
+<p>Nebojte se v této části více rozepsat a napsat vše, co vás k interpretaci napadne. Přidejte grafy marginálních efektů, pokud vám přijdou relevantní.</p>
+</div>
+<div id="hodnocení-modelu-a-diagnostika" class="section level2">
+<h2>Hodnocení modelu a diagnostika</h2>
+<p>Zhodnoťte model jako celek. Začněte tím, jak moc náš model sedí na data. V jakém ohledu je tato informace relevantní vzhledem k naší výzkumné otázce? Dále se podívejte na předpoklady modelu.</p>
+<p>Zamyslete se nad všemi předpoklady, které s vaším modelem souvisí. Tam, kde to bude možné, je zkontrolujte pomocí diagnostických grafů. Klidně si s daty pohrajte (např. pokud vám bude připadat, že nějaké pozorování je přehnaně vlivné, zkuste model spočítat bez něj). Nestresujte se ovšem, pokud váš model nebude vypadat učebnicově a splňovat předpoklady do puntíku. Zaměřte se se spíše na jejich zhodnocení a kriticky se zamyslete, k čemu může vést jejich porušení.</p>
+</div>
+<div id="celkové-zhodnocení" class="section level2">
+<h2>Celkové zhodnocení</h2>
+<p>Na základě všeho předchozího odpovězte naši výzkumnou otázku. Zamyslete se nad tím, jak moc jste se svojí odpovědí spokojení. Získali jste jednoznačnou odpověď nebo zůstávají ještě nějaké dílčí otázky. Jak moc důvěřujete svému modelu? Napadá vás něco dalšího, čím by se dal model potencionálně vylepšit (např. nechybí nám v datech nějaká důležité proměnná? Má model nějakou slabinu, kterou byste chtěli podchytit, ale nenapadá vás jak?)?</p>
+</div>
+</div>
+<div id="formát-a-termín-odevzdání" class="section level1">
+<h1>Formát a termín odevzdání</h1>
+<p>Text, obsahující všechny výše zmíněné body, odevzdejte jako Word nebo PDF soubor. Přiložte i R skript, který bude obsahovat postup analýzy. Celý skript by měl být samostatně funkční, tzn. mělo by možné ho spustit celý najedou a replikovat všechny vaše výsledky. Úkoly posílejte na <a href="mailto:alesvomacka@seznam.cz" class="email">alesvomacka@seznam.cz</a></p>
 </div>
 
+<br>
+  <footer class="bg-white fixed-bottom border">
+    <!-- Copyright -->
+    <div class="text-center p-1">
+      <a class="text-dark" color="black" href="https://ksoc.ff.cuni.cz/">Department of Sociology, Faculty of Arts </br> Charles University </a>
+    </div>
+    <!-- Copyright -->
+  </footer>
 
 
 

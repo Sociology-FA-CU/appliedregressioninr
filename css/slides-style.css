@@ -1,0 +1,36 @@
+/* Presentations style sheet */
+
+@import "../site_libs/_Fira Sans-0.4.0/font.css"; /* Imports the same font the rest
+                                                  of the website uses */
+
+blockquote {
+  font-family: "Fira Sans", sans-serif;
+  background: #f9f9f9;
+  border-left: 5px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 1.5em;
+} /* Quotes and such */
+
+h1, h2, h3, h4 {
+  font-family: "Fira Sans", sans-serif;
+} /* Titles */
+
+article { 
+ font-family: "Fira Sans", sans-serif;
+} /* All text except titles and title slides */
+
+.title-slide hgroup h1 {
+  font-family: "Fira Sans", sans-serif;
+} /*Main title of the presentation */
+
+.title-slide hgroup p {
+  font-family: "Fira Sans", sans-serif;
+} /*Author of the presentation */
+
+.segue h2 {
+  font-family: "Fira Sans", sans-serif;
+} /* Chapter title */
+
+a {
+  font-family: "Fira Sans", sans-serif;
+} /* hypertext links */

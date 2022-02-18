@@ -312,18 +312,16 @@ This can inform our decision regarding potential transformation of variable or s
 # Note on using tests to check model assumptions
 
 Some researchers prefer to use statistical tests to judge whether the assumptions of linear regression has been met, rather than rely on diagnostic plots, such as @ghasemiNormalityTestsStatistical2012 .
-Such tests include Shapiro-Wilk's test and Kolmogorov-Smirnov's test for testing normality or Levene's test for testing the quality of variances.
-However, use of such tests is not recommended for two reasons.
+These tests include Shapiro-Wilk's test and Kolmogorov-Smirnov's test for testing normality or Levene's test for testing the quality of variances.
+However, use of tests is not recommended for two reasons.
 
-Firstly, the null hypotheses tested by such tests are highly unrealistic.
-The normal distribution is a purely theoretical construct, that arises in circumstances not possible in real world, such as in infinity large samples.
-No real data will follow data the normal distribution and because of that, any test will reject such hypothesis with large enough sample size [@wellsDealingAssumptionsUnderlying2007; @ruxtonAdviceTestingNull2015].
-Because of this, some authors argue that normality tests should be used only with small or medium sample, as the tests are "too sensitive" when the sample size is large.
+Firstly, the null hypotheses tested by the aformentioned tests are highly unrealistic.
+The normal distribution is a purely theoretical construct, that arises in circumstances not possible in real world, such as in infinitely large samples.
+No real data will follow data the normal distribution and because of that, any normality test will reject this hypothesis with large enough sample size [@wellsDealingAssumptionsUnderlying2007; @ruxtonAdviceTestingNull2015].
+For these reasons, some authors argue that normality tests should be used only with small or medium sample, as the tests are "too sensitive" when the sample size is large.
 However, such advice misunderstands the nature of the problem, as the problem is not with the tests themselves.
-In fact their performance is consistent no matter the size of the sample.
-The problem lies in the inherent implausibility of the null hypothesis.
-While negative results are more likely to occur when the sample size is low, due to the lower power, any and all of these negative results are false negatives by default.
-This is universally true for every test of normality.
+In fact their performance is consistent no matter the size of the sample, the problem lies in the inherent implausibility of the null hypothesis.
+While negative results are more likely to occur when the sample size is low, due to the lower power, any and all of these negative results are false negatives by default and this is universally true for every normality test.
 Tests of equal variance are somewhat more plausible, as we could for example expect two groups in an experimental study to have same variance, as long they come from the same population and the treatment was assigned at random.
 Still, there is little reason to expect equal variance in observation studies.
 
@@ -331,7 +329,7 @@ On second, related note, it is not required to fulfill the assumptions of the li
 While the tests and techniques are derived under the assumptions of perfect normality, homoscedasticity and linearity, the models are to some extent robust to deviations and this robustness increases with sample size [@lumleyImportanceNormalityAssumption2002; @rochonTestNotTest2012].
 Because of this, we do not require the assumptions to be met perfectly, but only to the extend it is necessary in the context of our analysis.
 In other words, while the assumptions of linear regression can never be met exactly, we only require them to be met be met approximately.
-What is "approximately" means, depends on the context.
+What "approximately" means, depends on the context.
 
 For these reasons, using statistical tests for assessing whether the assumptions of linear regression are met is at best pointless and at worst misleading.
 Consequently, the use of diagnostic graphs are preferred.

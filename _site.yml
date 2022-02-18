@@ -14,23 +14,21 @@ navbar:
         - text: "Multiple linear regression"
           href: 03_multiple_linear_regression.html
         - text: "Ploting regression models, marginal effects"
+          href: 04_model_visualization.html
         - text: "Model fit"
           href: 05_model_fit.html
         - text: "Assumptions of linear models"
           href: 06_assumptions.html
         - text: "Regression diagnostics"
           href: 06_diagnostics.html
-        - text: "Linearity and normality"
+        - text: "Linearity"
           href: 07_linearity_and_normality.html
         - text: "Homoscedasticity"
           href: 08_heterscedasticity.html
-        - text: "Exporting results and multiple models"
-        - text: "Prediction and regularization"
-        - text: "Missing values imputations"
     - text: "Slides"
       menu:
         - text: "Introduction - goals of regression analysis"
-          href: 01_slides_intro.html
+          href: 01_slides_purpose.html
         - text: "Simple linear regression"
           href: 02_slides_simple_linear_regression.html
         - text: "Multiple linear regression"
@@ -43,10 +41,6 @@ navbar:
           href: 06_slides_model_assumptions.html
         - text: "Linearity"
           href: 07_slides_nonlinearity.html
-        - text: "Homoscedasticity"
-        - text: "Exporting results and multiple models"
-        - text: "Prediction and regularization"
-        - text: "Missing values imputations"
     - text: "Exercise"
       menu:
         - text: "Introduction - goals of regression analysis"
@@ -63,22 +57,36 @@ navbar:
           href: 05_model_fit_exercises.html
         - text: "Assumptions of linear models"
         - text: "Regression diagnostics"
-        - text: "Linearity and normality"
+        - text: "Linearity"
         - text: "Homoscedasticity"
-        - text: "Exporting results and multiple models"
-        - text: "Prediction and regularization"
-        - text: "Missing values imputations"
     - text: "Materials"
       menu:
+<<<<<<< HEAD
         - text: "Syllabus"
           href: syllabus.html
+=======
+>>>>>>> 83ceaeea25d17af59889934dc0ecf2d06212c8d1
         - text: "Datasets"
           href: course_data.html
         - text: "Literature"
           href: literature.html
+    - text: "Completion requirements"
+      href: completion_requirements.html      
   right:
-    - text: "Department website"
+    - icon: fa-home
       href: https://ksoc.ff.cuni.cz/
+    - icon: fa-github
+      href: https://github.com/Sociology-FA-CU/appliedregressioninr
 output:
   html_document:
-    theme: united
+    theme:
+      bootswatch: united
+      primary: "#BB5C37"
+      heading_font:
+        google: "Fira Sans"
+      base_font:
+        google: "Fira Sans"
+      code_font:
+        google: "Fira Code"
+    include:
+      after_body: footer.html
