@@ -82,9 +82,9 @@ Furthermore, it is possible to say that while explanatory (i.e., causal inferenc
 
 ## Should social scientist care more about predictive modeling?
 
-Shmueli [-@shmueli2010] thinks they should. For one thing, theory-free predictive modeling can use automation to generate new hypotheses about causal mechanisms which have not yet been considered by existing theory. Second, predictive modeling helps assess usefulness of explanatory theories for practical application. Finally, "[a]n explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development" [\@shmueli2010, pp.6].
+Shmueli [-@shmueli2010] thinks they should. For one thing, theory-free predictive modeling can use automation to generate new hypotheses about causal mechanisms which have not yet been considered by existing theory. Second, predictive modeling helps assess usefulness of explanatory theories for practical application. Finally, "[a]n explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development" [@shmueli2010, pp.6].
 
-Further examination of the differences between explanatory and predictive modeling can be found in \@shmueli2010.
+Further examination of the differences between explanatory and predictive modeling can be found in @shmueli2010.
 
 ## Information, assumptions, interpretation (inference)
 
