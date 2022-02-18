@@ -15,23 +15,19 @@
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
-<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
-<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
-<style>h1 {font-size: 34px;}
-       h1.title {font-size: 38px;}
-       h2 {font-size: 30px;}
-       h3 {font-size: 24px;}
-       h4 {font-size: 18px;}
-       h5 {font-size: 16px;}
-       h6 {font-size: 12px;}
-       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
+<link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -260,7 +256,9 @@ $(document).ready(function () {
     <li>
       <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
     </li>
-    <li class="dropdown-header">Ploting regression models, marginal effects</li>
+    <li>
+      <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
     <li>
       <a href="05_model_fit.html">Model fit</a>
     </li>
@@ -271,14 +269,11 @@ $(document).ready(function () {
       <a href="06_diagnostics.html">Regression diagnostics</a>
     </li>
     <li>
-      <a href="07_linearity_and_normality.html">Linearity and normality</a>
+      <a href="07_linearity_and_normality.html">Linearity</a>
     </li>
     <li>
       <a href="08_heterscedasticity.html">Homoscedasticity</a>
     </li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -289,7 +284,7 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_slides_intro.html">Introduction - goals of regression analysis</a>
+      <a href="01_slides_purpose.html">Introduction - goals of regression analysis</a>
     </li>
     <li>
       <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
@@ -309,10 +304,6 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
-    <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -342,11 +333,8 @@ $(document).ready(function () {
     </li>
     <li class="dropdown-header">Assumptions of linear models</li>
     <li class="dropdown-header">Regression diagnostics</li>
-    <li class="dropdown-header">Linearity and normality</li>
+    <li class="dropdown-header">Linearity</li>
     <li class="dropdown-header">Homoscedasticity</li>
-    <li class="dropdown-header">Exporting results and multiple models</li>
-    <li class="dropdown-header">Prediction and regularization</li>
-    <li class="dropdown-header">Missing values imputations</li>
   </ul>
 </li>
 <li class="dropdown">
@@ -367,10 +355,22 @@ $(document).ready(function () {
     </li>
   </ul>
 </li>
+<li>
+  <a href="completion_requirements.html">Completion requirements</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://ksoc.ff.cuni.cz/">Department website</a>
+  <a href="https://ksoc.ff.cuni.cz/">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Sociology-FA-CU/appliedregressioninr">
+    <span class="fa fa-github"></span>
+     
+  </a>
 </li>
       </ul>
     </div><!--/.nav-collapse -->
@@ -392,10 +392,18 @@ $(document).ready(function () {
 <li>Formulate a research problem related to the data. This research problem can be either predictive or inferential in nature (e.g. Can we predict the popularity of a song on Spotify based on its characteristics? Does the gender wage gap in the US depend on the proportion of women in the field? Are more expensive video games rated better?).</li>
 <li>Analyze the data using a linear regression model and write a report on your findings. This report should include clear definition of your research problems, description of your data (including descriptive statistics), description of your regression model (both tables and graphs where appropriate), diagnostics of your regression model and overall conclusion. You can transform and filter data as necessary, but clearly describe all data transformations.</li>
 <li>Prepare two documents for submission: (1) a script which must be fully operational: it has to run without error from start (including downloading data from TidyTuesday website) to finish without any need for outside interference and produce all analytic outputs (models, charts) used for the assignment, (2) final report (e.g. Word or Pdf) as described above.</li>
-<li>Send both document to <a href="mailto:alesvomacka@seznam.cz" class="email">alesvomacka@seznam.cz</a></li>
+<li>Send both document to <a href="mailto:ales@vomacka.io" class="email">ales@vomacka.io</a>.</li>
 </ol>
 <p>The due date for the report is 5th September so that we can grade it till 20th September (the last day when SIS is open for entries for the summer semester). We recommend that you try to submit (much) earlier. If you get stuck don’t be afraid to ask for a consultation.</p>
 
+<br>
+  <footer class="bg-white fixed-bottom border">
+    <!-- Copyright -->
+    <div class="text-center p-1">
+      <a class="text-dark" color="black" href="https://ksoc.ff.cuni.cz/">Department of Sociology, Faculty of Arts </br> Charles University </a>
+    </div>
+    <!-- Copyright -->
+  </footer>
 
 
 

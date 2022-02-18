@@ -61,11 +61,8 @@ navbar:
         - text: "Homoscedasticity"
     - text: "Materials"
       menu:
-<<<<<<< HEAD
         - text: "Syllabus"
           href: syllabus.html
-=======
->>>>>>> 83ceaeea25d17af59889934dc0ecf2d06212c8d1
         - text: "Datasets"
           href: course_data.html
         - text: "Literature"
