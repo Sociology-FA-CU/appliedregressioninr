@@ -1,5 +1,5 @@
 ---
-title: "Purposes of regression analysis - Excercises "
+title: "Goals of regression analysis - Excercise"
 output:
   html_document:
     code_foldin: hide

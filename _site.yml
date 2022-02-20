@@ -45,7 +45,7 @@ navbar:
       menu:
         - text: "1 Goals of regression analysis"
           href: 01_goals_excercises.html
-        - text: "Simple linear regression"
+        - text: "2 Simple linear regression"
           href: 02_simple_linear_regression_excercises.html
         - text: "Multiple linear regression"
           href: 03_multiple_linear_regression_excercises.html

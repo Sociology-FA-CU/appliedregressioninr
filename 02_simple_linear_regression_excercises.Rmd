@@ -10,12 +10,17 @@ knitr::opts_chunk$set(echo = TRUE, eval = F)
 ```
 
 ```{r data}
+
+library(tidyverse)
 countries = read.csv("data/countries.csv")
 ```
 
-1) Using the `countries` data, create a regression model predicting the percentage of people at risk of poverty (`poverty_risk`) by using the democratic index (`dem_index`).
+1) Using the `countries` data, create a regression model predicting the percentage of people at risk of poverty (`poverty_risk`) by using the democracy index (`dem_index`).
 
 ```{r}
+
+countries %>% ggplot(aes(x=dem_index, y=poverty_risk))+geom_point()+geom_smooth(method = "lm") # remember to visualize before modeling 
+
 mod1 = lm(poverty_risk ~ dem_index, data = countries)
 ```
 
@@ -24,19 +29,19 @@ mod1 = lm(poverty_risk ~ dem_index, data = countries)
 ```{r}
 summary(mod1)
 
-"Intercept - the expected proportion of people at the risk of poverty in a country with democratic index of zero. In such country, we would expect to see 63% (0.63) of people at the risk of poverty."
+"Intercept - the expected proportion of people at the risk of poverty in a country with the democracy index of zero. In such country, we would expect to see 63% (0.63) of people at the risk of poverty."
 
-"dem_index - the difference in the expected proportion of people at the risk of povery when the democratic index raises by one. According to our model, countries with 1 additional point on the democratic index have on average 5 percentage points smaller proportion of people at the risk of poverty"
+"dem_index - the difference in the expected proportion of people at the risk of povery when the democracy index raises by one. According to our model, countries with 1 additional point on the democracy index have on average 5 percentage points smaller proportion of people at the risk of poverty"
 ```
 
-3) Is the interpretation of the intercept in our model (as stated in solution to task 2) meaningful?
+3) Is the interpretation of the intercept in our model (as stated in previous solution) meaningful?
 
 ```{r}
-"No, it is only technical. On inspection of the data, you will notice there are no countries in the sample even close to democratic index of 0. So the interpetation is, in fact, a wild extrapolation to an area for which we have no data."
+"No, it is only technical. On inspection of the data, you will notice there are no countries in the sample even close to the democracy index of 0. So the interpetation is, in fact, a wild extrapolation to an area for which we have no data."
 ```
 
 
-4) Center the democratic index variable and fit the model again. How does the interpretation of the coefficients changes?
+4) Center the democracy index variable and fit the model again. How does the interpretation of the coefficients changes?
 
 ```{r}
 countries$dem_index_c = countries$dem_index - mean(countries$dem_index, na.rm = TRUE)
@@ -44,5 +49,22 @@ countries$dem_index_c = countries$dem_index - mean(countries$dem_index, na.rm = 
 mod2 = lm(poverty_risk ~ dem_index_c, data = countries)
 summary(mod2)
 
-"The intercept now represents the proportion of people at the risk of poverty in a country with average democratic index (average within our sample, of course). The interpretation of the slope coefficient does not change."
+"The intercept now represents the proportion of people at the risk of poverty in a country with average democracy index (average within our sample, of course). This is much more useful. The interpretation of the slope coefficient does not change."
 ```
+
+5) Use the categorized democracy index instead, i.e., the variable di_cat as predictor. What do you need to do to include a categorical predictor in linear regression analysis? Interpret your model.
+
+
+```{r}
+library(tidyverse) # for pipes, count function and ggplot
+
+str(countries$di_cat) # check that the variable is not coded as numeric
+countries %>% count(di_cat) # out of curiosity, we look at a basic frequency table
+
+mod3 = lm(poverty_risk ~ di_cat, data = countries)
+summary(mod3)
+
+"We did not have to do anything special before running the model, just check that that the di_cat variable is not coded as numeric. Since it is not, R automatically transforms it into factor (if it is not a factor yet) and then to dummies. It automatically includes only k-1 of the dummies in the model. We see, looking at the intercepts, that full democracy have 6 percentage points less people living in poverty, on average, compared to Flawed democracies. Hybrid democracies, on the other hand, have 16 percentage points higher povery rate the Flawed democracies, on average. But what is the poverty rate of Flawed democracies to begin with? It is the intercept, i.e. 25.5 %."
+```
+
+
