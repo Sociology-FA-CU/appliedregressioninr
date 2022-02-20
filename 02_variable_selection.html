@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Variable selection</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
+<link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture Notes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00_quick_recap.html">0. Quick recap before you enroll</a>
+    </li>
+    <li>
+      <a href="01_goals.html">1. Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_variable_selection.html">2. Variable selection</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression.html">3. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_model_fit.html">Model fit</a>
+    </li>
+    <li>
+      <a href="06_assumptions.html">Assumptions of linear models</a>
+    </li>
+    <li>
+      <a href="06_diagnostics.html">Regression diagnostics</a>
+    </li>
+    <li>
+      <a href="07_linearity_and_normality.html">Linearity</a>
+    </li>
+    <li>
+      <a href="08_heterscedasticity.html">Homoscedasticity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Slides
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_slides_goals.html">1 Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_slides_simple_linear_regression.html">2 Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_slides_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_slides_model_fit.html">Model fit</a>
+    </li>
+    <li>
+      <a href="06_slides_model_assumptions.html">Assumptions of linear models and diagnostics</a>
+    </li>
+    <li>
+      <a href="07_slides_nonlinearity.html">Linearity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_goals_excercises.html">1 Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression_excercises.html">2 Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression_excercises.html">Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="035_multiple_linear_regression_excercises_2.html">Interactions</a>
+    </li>
+    <li>
+      <a href="04_model_visualization_exercises.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_model_fit_exercises.html">Model fit</a>
+    </li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="syllabus.html">Syllabus</a>
+    </li>
+    <li>
+      <a href="course_data.html">Datasets</a>
+    </li>
+    <li>
+      <a href="literature.html">Literature</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="completion_requirements.html">Completion requirements</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://ksoc.ff.cuni.cz/">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Sociology-FA-CU/appliedregressioninr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Variable selection</h1>
+
+</div>
+
+
+<p>In both statistical and theoretical models, we tend to work with a larger number of variables as once. A question, that will every researcher have to face very early on, is which variables to use in their models and which to leave out.</p>
+<p>The answer to this question is far from easy. The appropriate way to determine which variables include depends on the goal of the analysis. In this section, we briefly mention techniques for predictive modeling and dedicate the rest of this chapter to variable selection for explanative models.</p>
+<div id="predictive-model" class="section level1">
+<h1>Predictive model</h1>
+<p>The main goal of predictive models is to achieve the best out-of-sample prediction. Consequently, variables in these models should be selected to maximize predictions for observations that were <em>not</em> used to compute the model.</p>
+<p>The basic approach, best used for big data sets, is to split your data into three parts: training set, calibration set and testing set. The training set are the data used to estimate models. You can try estimating models with varying number of variables on them. Then you can compare their predictive performance on the calibration. Since the data in the calibration set haven’t been used for model estimation, it will give you an idea how will your model perform in the future. Once you picked one of the models, you can check its performance on the testing set, to get the final estimate of its usefulness.</p>
+<p>More advanced approaches, often employed when data is too small to divide into three separate sets, are also available. The most common technique is called cross-validation. In this approach, the data are divided into <em>k</em> parts (called “folds”). Each model is then on the data from all folds except for one and the last of the folds is used as the calibration set to asses performance. This is done repeatedly with of the folds serving as the “calibration set” in turn and the performance is then averaged. For example, a 3 fold cross-validation would mean randomly splitting the data into three parts (folds). A model is then estimated on the data from fold 1 and 2, then checked on data from fold 3. In the next step, the model is estimated on data from folds 1 and 3, then checked on fold 2. Lastly, the very same model is computed on folds 2 and 3, then checked on fold 2. All three estimates from the “calibration” folds are then averaged, which gives us the idea of prediction performance of said model.</p>
+<p>Lastly, we can use fit indices that takes model complexity into accounts. Popular choices are adjusted R squared or Akaike’s Information criterion. These indices penalize models with predictors, which offers little in terms of predictive power. While simple to implement, this approach tells us little about performance on unobserved data.</p>
+<p>Variable selection for predictive models is a vast topic and we cannot do it justice in this course. Readers interested into learning more are encouraged to read books <a href="https://bookdown.org/max/FES/">Feature Engineering and Selection: A Practical Approach for Predictive Models</a> and <a href="https://www.tmwr.org/">Tidy Modeling with R</a>, which are both freely available online.</p>
+</div>
+<div id="explanative-models" class="section level1">
+<h1>Explanative models</h1>
+<p>The goal of explanative models is the get the best possible estimate of regression parameters, which are representation of real life relationships. The fundamental problem in variable selection for explanative models is that the data itself doesn’t contain enough information to tell which variables are important and which are not. The missing information has to be supplied by theory and logics.</p>
+<div id="directed-acyclic-graphs" class="section level2">
+<h2>Directed Acyclic Graphs</h2>
+<p>Many fields can investigate causal relationships by utilizing experimental design, that is by directly manipulating inputs and observing changes in the outputs. Sociology is not one of these fields. Therefore, we must rely on other approaches.</p>
+<p>Researchers in sociology generally lean heavily on theory to decide. A useful formal framework that can help connect theory with data analysis are the so called Directed Acyclic Graphs, or DAG <span class="citation">(Pearl et al., 2016)</span>. The DAG is network based approach to determine which variables should and shouldn’t be included in a model.</p>
+<p>DAG are made up of two basic components. Nodes represent variables of potential interest. The connections between nodes, called edges, represent causal relationships. The relationship can be in any form, positive or negative, linear or nonlinear, etc. The edge merely denotes the existence of relationship, not its shape. An example of DAG can be seen in figure below.</p>
+<div class="figure">
+<img src="02_variable_selection_files/figure-html/dag-example-1.png" alt="DAG example" width="672" />
+<p class="caption">
+DAG example
+</p>
+</div>
+<p>In this figure, we have three variables, <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span> and <span class="math inline">\(z\)</span>. We can see that according to the plot, variable <span class="math inline">\(z\)</span> causes variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>, and variable <span class="math inline">\(x\)</span> also causes variable <span class="math inline">\(y\)</span>. In the DAG jargon, we call the variables that cause other variables “parents” and the variables caused by others “children.” In our example, variable <span class="math inline">\(z\)</span> is parent to variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span>. Variable <span class="math inline">\(y\)</span> is a child of <span class="math inline">\(z\)</span> and <span class="math inline">\(x\)</span>. Notice that the DAG doesn’t say anything about the nature of the relationships, it is merely a formal representation of their (presumed) existence.</p>
+</div>
+<div id="types-of-interferring-variables" class="section level2">
+<h2>Types of interferring variables</h2>
+<p>DAGs are useful for many things, one of which is that they allow us to develop a typology of interfering variables, which in turn allows us made an argument about which variables to control for in our analysis. Formally, we recognize four types of interfering variables:</p>
+<ol style="list-style-type: decimal">
+<li>Counfounders</li>
+<li>Colliders</li>
+<li>Mediators</li>
+<li>Moderators</li>
+</ol>
+<p>For example, consider we are interested in the relationship between knowledge about Covid and the probability a persons gets vaccinated. Does educating the public about Covid increases the number of people who get a vaccine shot and if so, by how much? Naively, we could just look the correlation between level of knowledge and the probability of vaccination.</p>
+<div class="figure">
+<img src="02_variable_selection_files/figure-html/dag-minimal-1.png" alt="Knowledge leads to behavior?" width="672" />
+<p class="caption">
+Knowledge leads to behavior?
+</p>
+</div>
+<p>However, as the readers probably know, the reality is not that simple. The well-known phrase “correlation doesn’t imply causation” warns us that merely observing that people with more knowledge are more often vaccinated isn’t by itself enough to conclude that one leads to the other. For us to make this argument, we need to control for other variables of interest, to eliminate potential spurious relationships from our estimates. DAGs can help us choose which variables to control for.</p>
+<div id="confounders" class="section level3">
+<h3>Confounders</h3>
+<p>The first type of interfering variables are confounders, also known as the common parents or common causes. Consider our example of Covid knowledge and vaccination probability. On variable, that may also play a role in this relationship is socio-economic status of individuals in the study. Assume that higher socio-economic status leads to higher Covid knowledge, as people with higher status are better educated and more likely to watch news. Also assume that socio-economic status positively influences vaccination rate, perhaps because people with higher socio-economic status have more trust in public institutions and more need for travel, for which a vaccination is necessary. We could formaly visualize this in the following DAG.</p>
+<div class="figure">
+<img src="02_variable_selection_files/figure-html/confounder-example-1.png" alt="Socio-economic status as a confounder" width="672" />
+<p class="caption">
+Socio-economic status as a confounder
+</p>
+</div>
+<p>What would this mean for our estimate of the relationship between knowledge and vaccination probability? If socio-economic status really raises both knowledge and vaccination rate, then there will be a positive correlation between both of them, as a raise in status will lead to a raise in both of its children. Consequently, if we want to get a good estimate of the true relationship between Covid knowledge and vaccination probability, we need to control for socio-economic status. In other words, we need to look at the relationship between the two variables only among people with the value of the confounder.</p>
+<p>Readers will be probably familiar with other examples of confounding. One of the most popular is the relationship between the monthly number of drownings and the amount of ice cream sold, where the average temperature servers as a confounder. Generally speaking, we always want to control for all confounders, otherwise our results will be biased.</p>
+</div>
+</div>
+<div id="colliders" class="section level2">
+<h2>Colliders</h2>
+<p>Since not controlling for confounders leads to biased estimate of the relationship between our variables of interest, we may be tempted to control for as many variables as possible. Unfortunately, this isn’t a good strategy, as controlling for some variables may actualy make our model worse. These variables are called colliders.</p>
+<p>Colliders are common children of two variables. Because the issue with colliders is not imminently obvious, we will look into a simple case first.</p>
+<p>Imagine you are throwing two six sided dice. Both dice are fair and the throws are independent of each other. Knowing what is the value on the first die, can you the value of the second one?</p>
+<div class="figure">
+<img src="02_variable_selection_files/figure-html/die-unknown-1.png" alt="Throwing die" width="672" />
+<p class="caption">
+Throwing die
+</p>
+</div>
+<p>Since the two dice are independent, knowing the outcome of the first die doesn’t give us any information about the second. This translates in zero correlation between the values of the two dice, as expected.</p>
+<p>Now let’s try this thought experiment again, but this time, we will know the sum of the values on both dice.</p>
+<div class="figure">
+<img src="02_variable_selection_files/figure-html/die-known-1.png" alt="Throwing die again" width="672" />
+<p class="caption">
+Throwing die again
+</p>
+</div>
+<p>Now we have more information. If the total number is 6, and the value on the first die is 2, then the number on the second die must be 4. Similarly, if the total is 6 and the value on the first die is 4, then the values on the second one must be 2. And so one. Quite logicaly, if the outcome of the throws is fixed, higher numbers on the first die must be compensated by lower numbers on the second. In other words, by controlling for the common outcome, we have created a negative correlation between two causally independent events.</p>
+<p>Now we are ready to go back to our previous example. In the quest to estimate the effect of knowledge on vaccination probability, a researcher may want to control for whether an individual was previously hospitilized with Covid symptoms. This idea may be motivated by a desire to “filter out” the effect of hospitalization on vaccination acceptence or simply because controlling for hospitalization will greatly increase predictive power of the model. However, doing so would be inadvisable. First, let’s look at the DAG representation of the collider.</p>
+<p><img src="02_variable_selection_files/figure-html/collider-example-1.png" width="672" /></p>
+<p>We may assume, as represented in the DAG, that hospitalization is the common outcome (common child) of both Covid knowledge and Vaccination probability. This is perhaps because being vaccinated makese the symptom of Covid less acute, which in turns lessens the need for hospitalization. At the same time, knowledge of Covid may also lower hospitalization rate, as more informed people are more likely to avoid situations where transmition is possible.</p>
+<p>If these two assumptions are true, we encounter a variant of the dice problem. If a person belongs among the previously hospitalized and also among people with high Covid knowledge, the must almost surely haven’t been vaccinated. In the same vein, if a person belongs among previously hospitalized and also among people with high vaccination rate, they are almost surely among people with low Covid knowledge. Lastly, people with low knowledge and low vaccination probability are most likely to be hospitalized. The one combination we would almost never see is a person who was hospitalized, and yet has high Covid knowledge and high vaccination probability.</p>
+<p>Looking only at the hospitalized people, i.e. controlling for hospitalization, could be potentionaly disasterous. In fact, it could be that by controlling for hospitalization, we would observe a strong negative correlation between knowledge and vaccination probability, even if the true causal relationship is strongly positive!</p>
+<div class="figure">
+<img src="02_variable_selection_files/figure-html/collider-plot-1.png" alt="Don't control for colliders" width="672" />
+<p class="caption">
+Don’t control for colliders
+</p>
+</div>
+<p>As the figure above shows, by controlling for hospitalization we would completely miss the true relationship between the two variables, represented by the dashed line. This illustrates that if our goal is explanative modeling, we must never control for colliders.</p>
+<div id="mediators" class="section level3">
+<h3>Mediators</h3>
+<p>Confounders and colliders are quite strict types of interfering variables, as their correct (not) inclusion is mandatory. Not including a confounder will always make our model worse, just as would including a collider. The next type of variables we are going to talk about, mediators, differs from them in the sense that adding them into our model may or may not be appropriate, depending on our research question.</p>
+<p>Mediators are “intermediate steps” in the causal relationships between variables of interest. Causal effects are rarely direct, instead they often work through intermediates. A well known example would be the effect of gender on wages. While women have lower wages than men, it doesn’t mean that all men magically find more money in their accounts at the end of the month simply because they are men. Instead, the effect of gender is indirect. Gender may influence selection of the work industry, the probability of being a primary homemaker or behavior during job interviews. All these then determine persons wages.</p>
+<p>In our Covid example, we may think about how exactly could knowledge of Covid influence the probability of vaccination. Perhaps increasing knowledge leads to perceive Covid as a bigger threat, essentially scaring them into getting vaccinated. This may be not the only causal pathway between knowledge and vaccination probability, but it may be a pathway of a special theoretical interest. We can represent mediators in our DAG as follows.</p>
+<div class="figure">
+<img src="02_variable_selection_files/figure-html/mediators-example-1.png" alt="3" width="672" />
+<p class="caption">
+3
+</p>
+</div>
+<p>Notice that in the figure above, there are two paths through which knowledge influences vaccination probability. The first path is the direct one, straight from knowledge to vaccination. The other one is indirect, going through perceived threat of Covid. Whether we are interested in this indirect path depends on the goal of our analysis.</p>
+<p>It is important to realize that by not adding perceived threat to our model, we are not necessarily making any error. Our estimate will simply be the <em>total</em> effect of knowledge on vaccination probability, including the effect of perceived threat as well as all other intermediate steps. If our research question was “What is the effect of knowledge on vaccination probability?” then adding mediators is simply not necessary. On the other hand, adding perceived threat allows to disentangle the effect of this specific intermediate step from all the others. This would be useful if our research question was “Does knowledge increase vaccination probability by raising perceived threat?” or “Are there other causal pathways between knowledge and vaccination probability other than perceived threat?”</p>
+<p>In the context of linear regression, it’s important to remember that adding a mediator into our model changes the interpretation of regression coefficients. If the mediator is not present, we can interpret the regression coefficient as the total effect between variables. If the mediators is present, we interpret the coefficient as the direct effect, i.e. the effect not going through this specific indirect pathway. There are also more complex models, such as Structural equation models, that allows to examine indirect relationships in greater detail, but these are beyond the scope of this course.</p>
+</div>
+<div id="moderators" class="section level3">
+<h3>Moderators</h3>
+<p>The last type of interfering variables are moderators. Moderators are not actualy part of the original DAG framework and their special in the sense that they don’t influence other variables, but the relationships between them.</p>
+<p>Assume for example, that the accessibility of vaccination shots is not the same in all regions. In some regions, there may be fewer vaccination shots per person or fewer vaccination centers. In these regions, raising knowledge may not have much of an effect on vaccination probability, as the main limiting factor is supply. In other words, the effect of Covid knowledge on vaccination proability will be different depending on region. We can draw this fact into our DAG in the following way.</p>
+<p><img src="02_variable_selection_files/figure-html/moderators-example-1.png" width="672" /></p>
+<p>In context of linear regression, moderators are simply interactions between variables. Whether we want to consider adding an interaction to our model depends on our research question. If our goal is to estimate the average effect of knowledge on vaccination probability, no interaction is necessary. On the other hand, if we have a suspicion that there a great differences between regions and want to examine them, adding interaction (or moderator) between region and Covid knowledge would be appropriate.</p>
+</div>
+</div>
+<div id="final-dag" class="section level2">
+<h2>Final DAG</h2>
+<p>By combining all the previous examples together, we will get the following DAG.</p>
+<p><img src="02_variable_selection_files/figure-html/dag-final-1.png" width="672" /></p>
+<p>While maybe complicated at the first glance, DAGs like this can be a great help in deciding which variables to control for. We can identify confounder by the fact that they are common parents of our main variables of interest. Similarly, colliders will be common children. Mediators will lay somewhere between our two variables and moderators will point arrows to other arrows.</p>
+<p>The main takeaway of this chapter is that you should always control for as many confounders as possible, while avoiding any colliders. Depending on your research question, you may want to add a mediator, to see if the direct effect persists even with it present. Lastly, if you are interested not only in the average effect, but also in sub populations, add moderator as an interaction.</p>
+<p>Finaly, while drawing <em>a</em> DAG may be easily, drawing a good DAG may be very hard. Any specific DAG shouldn’t be based merely on how you guess the world works, but should be based on literature review and good knowledge of theory. DAGs are not a magic technique that would allow us to always draw causal inferences from observational data, but they are extremely useful due to the ability more clearly things about what exactly our models assume about the world.</p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="ref-pearl2016" class="csl-entry">
+Pearl, J., Glymour, M., &amp; Jewell, N. P. (2016). <em>Causal inference in statistics - a primer</em> (1st edition). Wiley.
+</div>
+</div>
+</div>
+
+<br>
+  <footer class="bg-white fixed-bottom border">
+    <!-- Copyright -->
+    <div class="text-center p-1">
+      <a class="text-dark" color="black" href="https://ksoc.ff.cuni.cz/">Department of Sociology, Faculty of Arts </br> Charles University </a>
+    </div>
+    <!-- Copyright -->
+  </footer>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

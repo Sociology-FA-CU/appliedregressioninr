@@ -20,9 +20,9 @@
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -245,13 +245,16 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="00_quick_recap.html">0 Quick recap before you enroll</a>
+      <a href="00_quick_recap.html">0. Quick recap before you enroll</a>
     </li>
     <li>
-      <a href="01_goals.html">1 Goals of regression analysis</a>
+      <a href="01_goals.html">1. Goals of regression analysis</a>
     </li>
     <li>
-      <a href="02_simple_linear_regression.html">2 Simple linear regression</a>
+      <a href="02_variable_selection.html">2. Variable selection</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression.html">3. Simple linear regression</a>
     </li>
     <li>
       <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
@@ -438,7 +441,7 @@ coef(mod3)</code></pre>
 mod3 &lt;- lm(life_exp_s ~ dem_index_s + hdi_s + uni_prc_s + poverty_risk_s + material_dep_s, data = countries)</code></pre>
 <p>First step in creating a pointrange plot is to extract regression coefficients and their standard errors in a tidy format. This can be done using <code>broom</code> package. This package allows us to easily extract various information about our model. To extract regression coefficients as a data frame, we can use the <code>tidy</code> function:</p>
 <pre class="r"><code>tidy(mod3)</code></pre>
-<pre><code>## # A tibble: 6 x 5
+<pre><code>## # A tibble: 6 × 5
 ##   term           estimate std.error statistic p.value
 ##   &lt;chr&gt;             &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
 ## 1 (Intercept)     -0.0263     0.114    -0.231  0.819 

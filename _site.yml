@@ -5,11 +5,13 @@ navbar:
   left:
     - text: "Lecture Notes"
       menu:
-        - text: "0 Quick recap before you enroll"
+        - text: "0. Quick recap before you enroll"
           href: 00_quick_recap.html
-        - text: "1 Goals of regression analysis"
+        - text: "1. Goals of regression analysis"
           href: 01_goals.html
-        - text: "2 Simple linear regression"
+        - text: "2. Variable selection"
+          href: 02_variable_selection.html
+        - text: "3. Simple linear regression"
           href: 02_simple_linear_regression.html
         - text: "Multiple linear regression"
           href: 03_multiple_linear_regression.html
