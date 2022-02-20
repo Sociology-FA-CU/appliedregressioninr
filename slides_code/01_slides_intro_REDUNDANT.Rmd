@@ -1,0 +1,316 @@
+---
+title: "Lesson 1: Introduction to the course and regression"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in February 2021"
+output:
+  ioslides_presentation:
+    widescreen: true
+    incremental: true
+csl: "../apa.csl"
+bibliography: references_lecture_01.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(here)
+library(polynom)
+
+countries <- read.csv(here("data", "countries.csv"))
+```
+
+# About the course
+
+## Context
+
+Cluster on quantitative methods (taught mostly in R and English), under development.
+
+-   Clusters: facilitate specialization.
+-   Cluster = 1 core course + a few complementary courses. 
+
+## Cluster on quantitative methods:
+
+Already taught:
+
+-   Introduction to data analysis in R (recommended first)
+-   **Applied regression in R** (this course, CORE)
+
+Planned:
+
+-   Generalized linear models in R
+-   Automated data collection and quantitative text analysis in R
+-   Social network analysis in R
+-   Statistical modeling for network data in R
+-   Design and evaluation of experimental studies
+
+## Cluster proposition
+
+Designed to be suitable for social scientists and their needs.
+
+-   conceptual understanding + practical skills
+-   little math (but we provide reference to literature)
+
+## Goals
+
+Students after this course:
+
+-   good conceptual understanding of linear regression for various purposes
+-   command terminology
+-   understand assumptions
+-   make well-argued and defensible decisions when conducting their own regression analysis
+-   smart reporting
+
+## Materials
+
+-   The course syllabus in the Student Information System [HERE](https://is.cuni.cz/studium/predmety/index.php?id=9638927780309b18b9e8f2d1c9c0e203&tid=&do=predmet&kod=ASGV00995)
+-   Dedicated webpage with course materials at <https://sociology-fa-cu.github.io/appliedregressioninr/>
+
+## Software and hardware
+
+- You will need a computer with administor rights (rights to install)
+- R, download [here](https://cran.r-project.org/) or the Czech mirror of the same thing [here](https://mirrors.nic.cz/R/)
+- RStudio, download [here](https://rstudio.com/products/rstudio/download/#download)
+
+
+## About us
+
+<div style="float: left; width: 40%;">
+```{r, out.width = "90%", fig.cap= "Jaromír Mazák"}
+knitr::include_graphics(here("images", "lyzar3.jpg"))
+```
+</div>
+
+```{r, fig.cap="Aleš Vomáčka (the less presentable of the two)"}
+knitr::include_graphics(here("images", "ales_spatnym_prikladem_s.jpg"))
+```
+
+# Introduction to linear regression
+
+## Goals for today
+
+-   Understanding different usage of regression analysis (and the thinking behind it)
+
+## What is linear regression?
+
+<div style="float: left; width: 50%;">
+
+Regression is a method that allows researchers to summarize how predictions or average values of an *outcame* vary across individuals defined by a set of *predictors* [@gelman2020, pp. 4]
+</div>
+
+<div style="float: right; width: 50%;">
+```{r anonymous-regression, message=FALSE, warning=FALSE, fig.width=4.5}
+
+countries %>%
+  ggplot(aes(x= dem_index, y = life_exp)) +
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
+       y = "response variable on y axis\nhere: life expectancy") 
+
+  
+```
+</div>
+
+
+## List of all the things regression does:
+
+-   Detect relationships that can be expressed as linear combination of our predictors (but only those you tell it to look for!)
+- END OF LIST
+
+## So you better be sure the model is specified correctly...
+
+It is always possible to estimate a linear model, it does not mean it fits the data.
+
+```{r anscombe, message=FALSE}
+
+dat <- datasets::anscombe
+datLong <- data.frame(
+    group  = rep(1:4, each = 11),
+    x = unlist(dat[,c(1:4)]),
+    y = unlist(dat[,c(5:8)])
+    )
+rownames(datLong) <- NULL
+
+datLong %>% 
+  ggplot(aes(x=x, y=y))+
+  geom_point()+
+  geom_smooth(method = "lm", se = FALSE, fullrange = TRUE)+
+  facet_wrap(~group)+
+  labs(caption = "Anscombe quartet")
+
+```
+
+## So it does just the one thing, but it is used for many things
+
+1.  Descriptive modeling
+2.  Sample-to-population inference modeling
+3.  Predictive modeling
+4.  Causal inference modeling (aka explanatory modeling)
+
+
+- Computationally, all of these are the same. 
+- But different goals = different implications for our assumptions and for what we report.
+- See @shmueli2010 for details.
+
+# Different purposes of modeling
+
+## Descriptive modeling
+
+-   Goal: Summarizing or representing the data structure in a compact manner (capturing association)
+
+-   Focus on the measurable level (properties of the actually observed data)
+
+-   Few assumptions (but remember Anscombe)
+
+-   Example: Is the voter turnout across administrative regions associated with the level of unemployment? What is the average height of people in this class?
+
+## Sample-to-population inference modeling
+
+-   Goal: Inferring from a sample properties of a population (too large to observe as a whole)
+
+-   Assumption that the data are sampled from a larger population in a representative manner (or that the data can be adjusted to make inference valid)
+
+-   Example: What is the relationship between age and voter turnout in the Czech Republic? What is the average height of people in the Czech Republic?
+
+## Explanatory modeling (causal inference)
+
+-   Strong role of theory (the theory (not the data) justifies causality)
+-   Understand the underlying causal process, the true model
+-   The worst fear: bias (to be systematically wrong)
+-   Two ways of use: (1) estimating relationship, (2) adjusting for background variables
+
+-   Example: Does exposure to political advertising increase citizens' willingness to vote? Does vegetarian diet in childhood affect height?
+
+## Explanatory modeling: estimating relationship
+
+```{r, out.width='80%', fig.cap= "Simplest scenario - comparing treatment and control group", echo=FALSE}
+
+knitr::include_graphics(here("images","estimating_effect.png"))
+```
+<font size="1">Source: [@gelman2020] </font>
+
+
+## Explanatory modeling: adjusting for background variables
+
+```{r, out.width='70%', fig.cap= "Note: x-axis is a pre-treatment predictor, not the treatment level", echo=FALSE}
+
+knitr::include_graphics(here("images","adjusting_pre-treatment.png"))
+```
+<font size="1">Source: [@gelman2020] </font>
+
+
+
+## Predictive modeling
+
+-   Predicting new or future observations
+
+-   Rare in social science academic papers
+
+-   Important in business, but also some other disciplines (epidemiology)
+
+-   Theory often less important, or not at all (data mining, machine learning)
+
+-   "Applied science" (practicality) as opposed to "Basic science"
+
+-   The worst fear: large estimation variance (big uncertainty)
+
+-   Example: Predicting likely voters in pre-election survey
+
+## Summary on different types of modeling
+
+-   Descriptive modeling is about association(s): when using linear regression, check linearity of the association
+-   Sample-to-population inference modeling also makes use of confidence intervals and statistical hypothesis testing (and related assumptions), it is also important how the data was collected
+-   Explanatory and predictive modeling will be further contrasted against each other (while not incompatible, they are different strategies)
+
+## Summary comparison of predictive and explanatory modeling 1/2
+
+|                     | Explanatory                     | Predictive                                         |
+|---------------------|---------------------------------|----------------------------------------------------|
+| Goal                | Explanation                     | Prediction                                         |
+| Design              | RCT as gold standard            | Observational data with noise                      |
+| Choice of variables | Defined by causal structure     | Freestyle (eg. interaction without main effect OK) |
+| Number of variables | Parsimony                       | Possibly many                                      |
+| Operacionalization  | Triangulation across studies    | Same for training and predicting                   |
+| Dimension reduction | Interpretability (eg. rotation) | Freestyle                                          |
+
+See @shmueli2010.
+
+## Summary comparison of predictive and explanatory modeling 2/2
+
+|                    | Explanatory                     | Predictive                      |
+|--------------------|---------------------------------|---------------------------------|
+| Measurement        | Instrument validity (FA, IRT)   | Measurement quality             |
+| N. of observations | Enough (statistical power)      | As much as possible             |
+| Data preparation   | Partitioning rare               | Partitioning common practice    |
+| Validation         | Model fit, residual diagnostics | Overfitting                     |
+| Reporting          | Inference                       | Comparison of predictive models |
+
+For more differences, see @shmueli2010.
+
+
+------------------------------------------------------------------------
+
+![Similar to reliability vs validity or effectiveness vs unbiasedness](../images/accuracy_vs_precision.png)
+
+<font size="1">Source: <https://flyingdonv.com/2016/03/07/get-your-geek-on-accuracy-precision-and-resolution-whats-the-difference-1/></font>
+
+## Conclusions on explanatory vs. predictive
+
+-   explanatory modeling focuses on causation, is theory-driven, retrospective, and its priority is minimizing bias
+-   predictive modeling focuses on prediction, is data-driven (interpretability is not neccessary for good predictions), prospective (practicality), and can accept some bias when this reduces variance (i.e. uncertainty)
+-   explanatory modeling is more developed within the field of statistics, predictive modeling within computer science
+
+## What Shmueli (2010) thinks
+
+-   Predictive modeling should be used more in science because it can
+
+    -   Generate new hypotheses about causal mechanisms (theory-free exploration)
+    -   Help assess usefulness of explanatory theories for practical application
+
+-   In addition, understanding predictability also means understanding un-predictability, which is theoretically important [@taleb2007b].
+
+- "An explanatory model that is close to the predictive benchmark may suggest that our understanding of that phenomenon can only be increased marginally. On the other hand, an explanatory model that is very far from the predictive benchmark would imply that there are substantial practical and theoretical gains to be had from further scientific development." [@shmueli2010]
+
+## Different meanings of the word prediction
+
+Note that the authors of Regression and Other Stories [@gelman2020] frame all statistical inference as problems of prediction in the introduction chapter. Words are often used differently... Common distinction in data science is between prediction and classification which puts regression in the prediction category.
+
+
+## Three ingredients of regression
+
+- Information
+- Assumptions
+- Interpretation (inference) 
+
+## Information
+
+- Data itself (visualize before your model)
+- Information related to data collection (e.g. mode of survey, sampling, measurement issues)
+- Prior knowledge (theory)
+
+## Assumptions
+
+- Functional form 
+- Sampling-related assumptions (what population is actually covered, random treatment assignment,...)
+- Real-world relevance of the data (accurate responses, responses stable in time, meaningful constructs,...)
+
+
+## Prior knowledge: Two schools of inference 
+
+We (almost) always use prior knowledge from existing theory. But there are two schools of inference with different view of incorporating prior knowledge directly in the modeling process.  
+
+- Classical inference (Error statistics, NHT, Frequentist approach): clear ("objective") path from data to inferences without relying on external information (estimate from data + confidence interval). Probability of data given hypothesis.
+- Bayesian inference: incorporates prior information into inference. Probability of hypothesis given data and prior belief. Enables incorporate relevant information that is not in the model (e.g. publication bias, prior information on average effect size, etc.)
+
+
+## Message for this course
+
+"A challenge in serious applied work is how to be critical without being nihilistic, to accept that
+we can learn from statistical analysis—we can generalize from sample to population, from treatment
+to control, and from observed measurements to underlying constructs of interest—even while these
+inferences can be flawed." [@gelman2020, pp. 13]
+
+
+## References

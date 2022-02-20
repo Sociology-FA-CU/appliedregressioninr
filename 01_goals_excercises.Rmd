@@ -1,0 +1,51 @@
+---
+title: "Purposes of regression analysis - Excercises "
+output:
+  html_document:
+    code_foldin: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = F)
+```
+
+We distinguish four types of modeling approaches, differentiated by the purpose of our analysis:
+
+- Descriptive modeling
+- Sample-to-population inferential modeling
+- Explanatory modeling
+- Predictive modeling
+
+What type of modeling strategies best apply for the following questions? To see the correct answer click the `CODE` button.
+
+
+
+1) What is the (causal) effect of raising the minimum wage on the unemployment rate?
+
+```{r question-1}
+"Explanatory"
+```
+
+2) How much revenue can we expect the upcoming advertisement campaign to generate?
+
+```{r question-2}
+"Predictive"
+```
+
+3) Are single mothers in the Czech Republic more likely to be at the risk of poverty than mothers with husbands?
+  
+```{r question-3}
+"Sample-to-population inference"
+```
+
+4) Do regions in the Czech Republic with high unemployment rate also have higher children mortality?
+
+```{r question-4}
+"Descriptive"
+```
+
+5) Is there a relationship between education and pro-environmental attitudes in the population of Czech adults?
+
+```{r question-5}
+"Sample-to-population inference"
+```

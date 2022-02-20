@@ -7,10 +7,10 @@ navbar:
       menu:
         - text: "0 Quick recap before you enroll"
           href: 00_quick_recap.html
-        - text: "1 Simple linear regression"
-          href: 01_simple_linear_regression.html
-        - text: "Goals of regression analysis"
-          href: 01_intro.html
+        - text: "1 Goals of regression analysis"
+          href: 01_goals.html
+        - text: "2 Simple linear regression"
+          href: 02_simple_linear_regression.html
         - text: "Multiple linear regression"
           href: 03_multiple_linear_regression.html
         - text: "Ploting regression models, marginal effects"
@@ -27,8 +27,8 @@ navbar:
           href: 08_heterscedasticity.html
     - text: "Slides"
       menu:
-        - text: "Introduction - goals of regression analysis"
-          href: 01_slides_purpose.html
+        - text: "1 Goals of regression analysis"
+          href: 01_slides_goals.html
         - text: "Simple linear regression"
           href: 02_slides_simple_linear_regression.html
         - text: "Multiple linear regression"
@@ -43,8 +43,8 @@ navbar:
           href: 07_slides_nonlinearity.html
     - text: "Exercise"
       menu:
-        - text: "Introduction - goals of regression analysis"
-          href: 01_intro_R_excercises.html
+        - text: "1 Goals of regression analysis"
+          href: 01_goals_excercises.html
         - text: "Simple linear regression"
           href: 02_simple_linear_regression_excercises.html
         - text: "Multiple linear regression"
