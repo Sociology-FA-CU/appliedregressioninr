@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = F)
 
 ```{r data}
 
-library(tidyverse)
+library(tidyverse) # for pipes, count function and ggplot
 countries = read.csv("data/countries.csv")
 ```
 
@@ -56,7 +56,6 @@ summary(mod2)
 
 
 ```{r}
-library(tidyverse) # for pipes, count function and ggplot
 
 str(countries$di_cat) # check that the variable is not coded as numeric
 countries %>% count(di_cat) # out of curiosity, we look at a basic frequency table

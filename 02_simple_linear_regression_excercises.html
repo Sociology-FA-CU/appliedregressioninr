@@ -291,7 +291,7 @@ $(document).ready(function () {
       <a href="01_slides_goals.html">1 Goals of regression analysis</a>
     </li>
     <li>
-      <a href="02_slides_simple_linear_regression.html">Simple linear regression</a>
+      <a href="02_slides_simple_linear_regression.html">2 Simple linear regression</a>
     </li>
     <li>
       <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
@@ -321,7 +321,7 @@ $(document).ready(function () {
       <a href="01_goals_excercises.html">1 Goals of regression analysis</a>
     </li>
     <li>
-      <a href="02_simple_linear_regression_excercises.html">Simple linear regression</a>
+      <a href="02_simple_linear_regression_excercises.html">2 Simple linear regression</a>
     </li>
     <li>
       <a href="03_multiple_linear_regression_excercises.html">Multiple linear regression</a>
@@ -398,32 +398,47 @@ $(document).ready(function () {
 </div>
 
 
-<pre class="r"><code>countries = read.csv(&quot;data/countries.csv&quot;)</code></pre>
+<pre class="r"><code>library(tidyverse)
+countries = read.csv(&quot;data/countries.csv&quot;)</code></pre>
 <ol style="list-style-type: decimal">
-<li>Using the <code>countries</code> data, create a regression model predicting the percentage of people at risk of poverty (<code>poverty_risk</code>) by using the democratic index (<code>dem_index</code>).</li>
+<li>Using the <code>countries</code> data, create a regression model predicting the percentage of people at risk of poverty (<code>poverty_risk</code>) by using the democracy index (<code>dem_index</code>).</li>
 </ol>
-<pre class="r"><code>mod1 = lm(poverty_risk ~ dem_index, data = countries)</code></pre>
+<pre class="r"><code>countries %&gt;% ggplot(aes(x=dem_index, y=poverty_risk))+geom_point()+geom_smooth(method = &quot;lm&quot;) # remember to visualize before modeling 
+
+mod1 = lm(poverty_risk ~ dem_index, data = countries)</code></pre>
 <ol start="2" style="list-style-type: decimal">
 <li>Interpret regression coefficients of the model.</li>
 </ol>
 <pre class="r"><code>summary(mod1)
 
-&quot;Intercept - the expected proportion of people at the risk of poverty in a country with democratic index of zero. In such country, we would expect to see 63% (0.63) of people at the risk of poverty.&quot;
+&quot;Intercept - the expected proportion of people at the risk of poverty in a country with the democracy index of zero. In such country, we would expect to see 63% (0.63) of people at the risk of poverty.&quot;
 
-&quot;dem_index - the difference in the expected proportion of people at the risk of povery when the democratic index raises by one. According to our model, countries with 1 additional point on the democratic index have on average 5 percentage points smaller proportion of people at the risk of poverty&quot;</code></pre>
+&quot;dem_index - the difference in the expected proportion of people at the risk of povery when the democracy index raises by one. According to our model, countries with 1 additional point on the democracy index have on average 5 percentage points smaller proportion of people at the risk of poverty&quot;</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Is the interpretation of the intercept in our model (as stated in solution to task 2) meaningful?</li>
+<li>Is the interpretation of the intercept in our model (as stated in previous solution) meaningful?</li>
 </ol>
-<pre class="r"><code>&quot;No, it is only technical. On inspection of the data, you will notice there are no countries in the sample even close to democratic index of 0. So the interpetation is, in fact, a wild extrapolation to an area for which we have no data.&quot;</code></pre>
+<pre class="r"><code>&quot;No, it is only technical. On inspection of the data, you will notice there are no countries in the sample even close to the democracy index of 0. So the interpetation is, in fact, a wild extrapolation to an area for which we have no data.&quot;</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Center the democratic index variable and fit the model again. How does the interpretation of the coefficients changes?</li>
+<li>Center the democracy index variable and fit the model again. How does the interpretation of the coefficients changes?</li>
 </ol>
 <pre class="r"><code>countries$dem_index_c = countries$dem_index - mean(countries$dem_index, na.rm = TRUE)
 
 mod2 = lm(poverty_risk ~ dem_index_c, data = countries)
 summary(mod2)
 
-&quot;The intercept now represents the proportion of people at the risk of poverty in a country with average democratic index (average within our sample, of course). The interpretation of the slope coefficient does not change.&quot;</code></pre>
+&quot;The intercept now represents the proportion of people at the risk of poverty in a country with average democracy index (average within our sample, of course). This is much more useful. The interpretation of the slope coefficient does not change.&quot;</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Use the categorized democracy index instead, i.e., the variable di_cat as predictor. What do you need to do to include a categorical predictor in linear regression analysis? Interpret your model.</li>
+</ol>
+<pre class="r"><code>library(tidyverse) # for pipes, count function and ggplot
+
+str(countries$di_cat) # check that the variable is not coded as numeric
+countries %&gt;% count(di_cat) # out of curiosity, we look at a basic frequency table
+
+mod3 = lm(poverty_risk ~ di_cat, data = countries)
+summary(mod3)
+
+&quot;We did not have to do anything special before running the model, just check that that the di_cat variable is not coded as numeric. Since it is not, R automatically transforms it into factor (if it is not a factor yet) and then to dummies. It automatically includes only k-1 of the dummies in the model. We see, looking at the intercepts, that full democracy have 6 percentage points less people living in poverty, on average, compared to Flawed democracies. Hybrid democracies, on the other hand, have 16 percentage points higher povery rate the Flawed democracies, on average. But what is the poverty rate of Flawed democracies to begin with? It is the intercept, i.e. 25.5 %.&quot;</code></pre>
 
 <br>
   <footer class="bg-white fixed-bottom border">
