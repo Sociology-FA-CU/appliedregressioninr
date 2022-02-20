@@ -365,7 +365,8 @@ colliders_sim %>%
   annotate(geom = "curve", x = 3, xend = 2.8, y = 0.82, yend = 0.67,
            arrow = arrow(length=unit(0.20,"cm")), color = "green4") +
   scale_color_manual(values = c("tomato", "black")) +
-  labs(color = element_blank()) +
+  labs(color = element_blank(),
+       caption = "Simulated data") +
   theme_classic() +
   theme(legend.position = "bottom")
 ```
@@ -469,3 +470,13 @@ dagify(y ~ x + z + q ,
   theme_dag() 
 
 ```
+
+## Variable selection
+
+- A researcher is interested in the relationship between intelligence and work self-discipline among adults, but is short on funding.
+
+- Their collegue suggests using university students as their sample.
+
+<br>
+
+- Is this a valid design decision?
