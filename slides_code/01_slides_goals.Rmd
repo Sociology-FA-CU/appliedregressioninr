@@ -2,7 +2,9 @@
 title: "Goals of Regression models"
 subtitle: "Jaromír Mazák & Aleš Vomáčka"
 author: "Dpt. of Sociology, Faculty of Arts, Charles University"
-output: ioslides_presentation
+output:
+  ioslides_presentation:
+    widescreen: true
 css: ../css/slides-style.css
 ---
 
@@ -13,18 +15,21 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(dagitty)
 library(ggdag)
 library(tidyverse)
+library(patchwork)
 
 countries <- read.csv("../data/countries.csv")
 ```
 
 ## Goals for today
 
-- Understand goals of various regression models
-- Learn ho to select variables for explanative modeling
+- Understand what can regression be used for
+- Learn ho to select variables for explanative models
 
-## Previously on Applied Regression in R
+# What is regression?
 
-```{r anonymous-regression, message=FALSE, warning=FALSE, fig.width=4.5}
+## What is regression?
+
+```{r anonymous-regression, message=FALSE, warning=FALSE, fig.width=4.5, fig.pos="center"}
 
 countries %>%
   ggplot(aes(x= dem_index, y = life_exp)) +
@@ -35,6 +40,40 @@ countries %>%
 
   
 ```
+
+
+## What is regression?
+
+```{r, fig.width=10}
+
+nonlinear <- countries %>%
+  ggplot(aes(x= dem_index, y = life_exp)) +
+  geom_point()+
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(x = "predictor variabel on x axis\nhere: democratic index 1-10",
+       y = "response variable on y axis\nhere: life expectancy") 
+
+binary <- countries %>%
+  mutate(postsoviet_n = if_else(postsoviet == "yes",
+                                1, 0)) %>% 
+  ggplot(aes(x= postsoviet_n, y = life_exp)) +
+  geom_jitter(height = 0, width = 0.1)+
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_x_continuous(breaks = c(0,1),
+                     labels = c("No", "Yes")) +
+  labs(x = "predictor variabel on x axis\nhere: Is country postsoviet?",
+       y = element_blank()) 
+
+nonlinear + binary
+```
+
+## What is regresion?
+
+```{r, out.width="650px"}
+knitr::include_graphics("../images/regression-plane-example.png")
+```
+
+# What is Regression good for?
 
 ## What is Regression good for?
 
