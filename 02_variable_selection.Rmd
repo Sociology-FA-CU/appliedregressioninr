@@ -1,6 +1,6 @@
 ---
 title: "Variable selection"
-output: bookdown::html_document2
+output: html_document
 csl: apa.csl
 bibliography: 02_variable_selection.bib
 ---

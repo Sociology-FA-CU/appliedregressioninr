@@ -1,6 +1,6 @@
 ---
-title: "Dobrovolný úkol - Přesnost předvoleních průzkům v USA"
-output: word_document
+title: "Přesnost předvoleních průzkům v USA"
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -66,4 +66,4 @@ Na základě všeho předchozího odpovězte naši výzkumnou otázku. Zamyslete
 
 # Formát a termín odevzdání
 
-Text, obsahující všechny výše zmíněné body, odevzdejte jako Word nebo PDF soubor. Přiložte i R skript, který bude obsahovat postup analýzy. Celý skript by měl být samostatně funkční, tzn. mělo by možné ho spustit celý najedou a replikovat všechny vaše výsledky. Úkoly posílejte na alesvomacka@seznam.cz
+Text, obsahující všechny výše zmíněné body, odevzdejte jako Word nebo PDF soubor. Přiložte i R skript, který bude obsahovat postup analýzy. Celý skript by měl být samostatně funkční, tzn. mělo by možné ho spustit celý najedou a replikovat všechny vaše výsledky. Úkoly posílejte na ales@vomacka.io.

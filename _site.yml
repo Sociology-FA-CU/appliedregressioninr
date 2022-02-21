@@ -63,14 +63,14 @@ navbar:
         - text: "Homoscedasticity"
     - text: "Materials"
       menu:
-        - text: "Syllabus"
-          href: syllabus.html
+        - text: "Final homework"
+          href: homework_midterm.html
         - text: "Datasets"
           href: course_data.html
         - text: "Literature"
           href: literature.html
     - text: "Completion requirements"
-      href: completion_requirements.html      
+      href: syllabus.html      
   right:
     - icon: fa-home
       href: https://ksoc.ff.cuni.cz/

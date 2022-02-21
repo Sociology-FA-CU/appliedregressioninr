@@ -1,5 +1,5 @@
 ---
-title: "Intro - different purposes of regression analysis"
+title: "Purposes of regression analysis"
 output: html_document
 csl: apa.csl
 bibliography: 01_intro.bib
