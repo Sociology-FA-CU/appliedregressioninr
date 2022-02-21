@@ -1,0 +1,70 @@
+---
+title: "Accuracy of preelection polls"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+In this homework, we will focus on a topic that has been periodicaly reappearing in the media for the past few year: the accuracy of preelection polls. We will work with data from [FiveThirtyEight](https://fivethirtyeight.com/). FiveThirtyEight is an american news organization focused on data journalism, politics and sports. They also mantain one of the biggest poll aggregators in the USA with focus on public opinion and politics.
+
+We are going to work with data on the USA preelection polls from the last 20 years.
+
+## Reseach question
+
+Your goal is to answer the following question:
+
+*Do polls with different data gathering methods (variable **methodology**`) differ in their accuracy (variable **error**)? If so, how?*
+
+The data can be downloaded using the following code:
+
+```{r eval=FALSE, echo=TRUE}
+polls =  read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw-polls.csv")
+polls =  subset(polls, methodology ==  c("IVR", "Live Phone", "Online"))
+```
+
+(To make our job easier, we will only work with three types of methodology. For a small, inconsequential bonus, you can look into the full data set and think about why I selected only these three.)
+
+Description of the data set is available here: [https://github.com/fivethirtyeight/data/tree/master/pollster-ratings](https://github.com/fivethirtyeight/data/tree/master/pollster-ratings)
+
+For context and inspiration, you may read FiveThirtyEight's article [The Death Of Polling Is Greatly Exaggerated](https://fivethirtyeight.com/features/the-death-of-polling-is-greatly-exaggerated/).
+
+## What should be included in your report
+
+### Discussion on variable selection
+
+Before you start with modeling, think about whether it would be beneficial to add additional variables into your model. Are there variable that you should control for to get better/more accurate answer to our question? Are there any variables we should avoid? Can the relationship between methodology and accuracy differ based on another variable (i.e. should we add an interaction term)?
+
+Spend one or two paragraphs of text to this chapter.
+
+### Basic descriptives
+
+After you select all appropriate variables, briefly examine them to get a sense of the data you are working with. Check how they are distributed, as well as their summary statistics, and write down everything you find interesting or important. For exaple, what is the average error and what does its distribution look like. How popular is each data gathering method? Don't forget to check other variables you have selected in the previous step.
+
+Spend one or two paragraphs of text to this chapter. Don't forget to add relevant plots.
+
+
+### Model construction and interpretation
+
+Based on the previous steps, construct a model that will allow you to answer our research question.
+
+Interpret the model using both regression coefficients and marginal effects/conditional means plots (you can use the ggeffects package you have learned about). Don't forget that visual interpretation is often easier than trying to decipher coefficients table! Don't forget to interpret not only the point estimates, but also their uncertainity (through standard error or confidence intervals).
+
+Don't hesitate to write about anything you find interesting and important and don't forget about adding marginal effects plots.
+
+### Model fit and diagnostics
+
+Start with examining model fit. How well your model predicts the data? How relevant is this in the context of our research question? After that, check the assumption of your model.
+
+Think about all the assumptions your model makes. When possible, check the assumptions empiricaly using diagnostic plots. Don't stress too much if your model doesn't look perfect. Focus more on evaluating the quality of your model and think what could violating of a specific assumption mean for the results of your analysis.
+
+### Answer the research question
+
+Based on your previous work, answer the original research question. Think about how satisfied are you with your answer. Did you a straightforward answer or are some particular questions left? How much do you trust your model? Can you of anything that could potentially improve your model (e.g. a variable that wasn't included in the dataset)? Does your model a have weak spot you would like to fix, but don't know how?
+
+## Submission format and date
+
+Submit a text file (Word or PDF), which includes all the aforementioned information, together with functional R script. The script should work with any further work needed. Send your to ales@vomacka.io.

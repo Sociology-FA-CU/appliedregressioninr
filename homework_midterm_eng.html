@@ -11,7 +11,7 @@
 
 
 
-<title>Multiple linear regression - Excercises</title>
+<title>Accuracy of preelection polls</title>
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -24,7 +24,6 @@
 <script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
 <script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
@@ -212,9 +211,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -386,69 +382,60 @@ $(document).ready(function () {
 
 <div id="header">
 
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">Multiple linear regression - Excercises</h1>
+<h1 class="title toc-ignore">Accuracy of preelection polls</h1>
 
 </div>
 
 
-<pre class="r fold-show"><code>library(tidyverse)
-countries = read.csv(&quot;data/countries.csv&quot;)</code></pre>
-<p>We will be using the ‘countries’ data set for this set of exercises. Before you start, look at the overview of the variables. If you cannot lookup the course webpage, use the following command in R to open it. You will need to understand how GDP is measured in the data.</p>
-<pre class="r fold-show"><code>browseURL(&quot;https://sociology-fa-cu.github.io/appliedregressioninr/course_data.html&quot;) 
-# browseURL function enables to save and quickly open webpages from your script</code></pre>
-<div id="tasks" class="section level1">
-<h1>Tasks</h1>
-<ol style="list-style-type: decimal">
-<li>Using the <code>countries</code> data, regress per-capita gdp on eu_membership. Interpret the results. Note the terminology. We sometimes say regress Y on X. This means use Y as dependent and X as independent variable.</li>
-</ol>
-<pre class="r"><code>countries &lt;-
-  countries %&gt;% mutate(percapita_gdp = (gdp*1000000) / population)
-
-mod1  = lm(percapita_gdp ~ eu_member, data = countries)
-summary(mod1)
-
-&quot;The average per-capita GDP in countries which are not EU members is 36 432 EUR. The average per-capita income in countries which are EU members is 5956 EUR less, that is 30476. However, the precision of the estimate of the difference is poor. Standard error is huge and p value is very far from the standard significance treshold of 0.05. Hence the result is purely descriptive for the sample. Also remember that regression estimates for one binary predictor are just a form of expressing the group means. Compare with the code below.&quot;
-
-countries %&gt;% group_by(eu_member) %&gt;% summarise(mean = mean((gdp*1000000) / population, na.rm=TRUE))</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>You may be surprised by the result of the previous task. Try to plot the data to get some additional insights.</li>
-</ol>
-<pre class="r"><code>countries %&gt;% 
-  mutate(eu_member = as.numeric(eu_member==&quot;yes&quot;)) %&gt;%
-  ggplot(aes(x=eu_member, y = (gdp*1000000) / population)) + geom_point() + geom_smooth(method = &quot;lm&quot;, se = FALSE)
-
-&quot;There are many ways to plot data and get insights. Our solution shows that the countries which are not in EU are of two distinct kinds. They either have very low per-capita GDP, or very high per-capita GDP. On avarage, they have a little higher per-capita GDP than EU members, but there are actually no &#39;average&#39; non-EU countries.&quot;</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Given that Czech Republic is in the EU, by how much is its per-capita GDP bigger or smaller than that predicted by the model?</li>
-</ol>
-<pre class="r"><code>countries %&gt;% filter(code == &quot;CZ&quot;) # Czechia is the 3rd row (variable X is the row number)
-
-mod1$residuals[3] # this is the answer, Czechia&#39;s per-capita GDP is almost 11 000 EUR smaller than the mean of EU countries 
-mod1$fitted.values[3] # this is the predicted values, i.e. the mean of EU countries
-mod1$model[3,] # this is the actual value of Czechia&#39;s per-capita GDP</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Regress per-capita GDP on the percentage of university educated (‘uni_prc’). Then regress per-capita GDP on both percentage of university educated (‘uni_prc’) and democratic index (‘dem_index’) in a single multiple regression model. Interpret the results.</li>
-</ol>
-<pre class="r"><code>mod2 &lt;- lm(percapita_gdp ~ uni_prc, data = countries)
-summary(mod2)
-
-&quot;This model is not very nice to intepret at its face value. It says that percapita GDP of a country with no university educated people is -26404 EUR. A non-sensical value which result from the fact that there are no countries without university educated people (yet we extrapolate to such hypothetical countires). It further says that the difference between the hypothetical countries with no uni educated and countries with all people having university degree is 197313 EUR. But we can easily calculate that the difference in percapita GDP between two countries which differ by 1 percentage point in their proportion of uni educated people is 1973 EUR (197313 / 100). The difference is statistically significant from 0.&quot;
-
-
-mod3 &lt;- lm(percapita_gdp ~ uni_prc + dem_index, data = countries)
-summary(mod3)
-
-&quot;The difference in per-capita GDP between countries which differ by one point in their democratic index AND have the same proportion of university educated is 16310 EUR on average. This is a huge difference substantially and it is also statistically significant. Notice that the coefficient for &#39;uni_prc&#39; went down dramatically to only 34543 EUR. In other words, for two countries with the same democratic index and differing by 1 percentage point in their proportion of university educated, the difference in per capita GDP only 345 EUR, a number which is likely random noise given the broad standard errors.&quot;</code></pre>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>In this homework, we will focus on a topic that has been periodicaly reappearing in the media for the past few year: the accuracy of preelection polls. We will work with data from <a href="https://fivethirtyeight.com/">FiveThirtyEight</a>. FiveThirtyEight is an american news organization focused on data journalism, politics and sports. They also mantain one of the biggest poll aggregators in the USA with focus on public opinion and politics.</p>
+<p>We are going to work with data on the USA preelection polls from the last 20 years.</p>
+</div>
+<div id="reseach-question" class="section level2">
+<h2>Reseach question</h2>
+<p>Your goal is to answer the following question:</p>
+<p><em>Do polls with different data gathering methods (variable <strong>methodology</strong>`) differ in their accuracy (variable <strong>error</strong>)? If so, how?</em></p>
+<p>The data can be downloaded using the following code:</p>
+<pre class="r"><code>polls =  read.csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw-polls.csv&quot;)
+polls =  subset(polls, methodology ==  c(&quot;IVR&quot;, &quot;Live Phone&quot;, &quot;Online&quot;))</code></pre>
+<p>(To make our job easier, we will only work with three types of methodology. For a small, inconsequential bonus, you can look into the full data set and think about why I selected only these three.)</p>
+<p>Description of the data set is available here: <a href="https://github.com/fivethirtyeight/data/tree/master/pollster-ratings">https://github.com/fivethirtyeight/data/tree/master/pollster-ratings</a></p>
+<p>For context and inspiration, you may read FiveThirtyEight’s article <a href="https://fivethirtyeight.com/features/the-death-of-polling-is-greatly-exaggerated/">The Death Of Polling Is Greatly Exaggerated</a>.</p>
+</div>
+<div id="what-should-be-included-in-your-report" class="section level2">
+<h2>What should be included in your report</h2>
+<div id="discussion-on-variable-selection" class="section level3">
+<h3>Discussion on variable selection</h3>
+<p>Before you start with modeling, think about whether it would be beneficial to add additional variables into your model. Are there variable that you should control for to get better/more accurate answer to our question? Are there any variables we should avoid? Can the relationship between methodology and accuracy differ based on another variable (i.e. should we add an interaction term)?</p>
+<p>Spend one or two paragraphs of text to this chapter.</p>
+</div>
+<div id="basic-descriptives" class="section level3">
+<h3>Basic descriptives</h3>
+<p>After you select all appropriate variables, briefly examine them to get a sense of the data you are working with. Check how they are distributed, as well as their summary statistics, and write down everything you find interesting or important. For exaple, what is the average error and what does its distribution look like. How popular is each data gathering method? Don’t forget to check other variables you have selected in the previous step.</p>
+<p>Spend one or two paragraphs of text to this chapter. Don’t forget to add relevant plots.</p>
+</div>
+<div id="model-construction-and-interpretation" class="section level3">
+<h3>Model construction and interpretation</h3>
+<p>Based on the previous steps, construct a model that will allow you to answer our research question.</p>
+<p>Interpret the model using both regression coefficients and marginal effects/conditional means plots (you can use the ggeffects package you have learned about). Don’t forget that visual interpretation is often easier than trying to decipher coefficients table! Don’t forget to interpret not only the point estimates, but also their uncertainity (through standard error or confidence intervals).</p>
+<p>Don’t hesitate to write about anything you find interesting and important and don’t forget about adding marginal effects plots.</p>
+</div>
+<div id="model-fit-and-diagnostics" class="section level3">
+<h3>Model fit and diagnostics</h3>
+<p>Start with examining model fit. How well your model predicts the data? How relevant is this in the context of our research question? After that, check the assumption of your model.</p>
+<p>Think about all the assumptions your model makes. When possible, check the assumptions empiricaly using diagnostic plots. Don’t stress too much if your model doesn’t look perfect. Focus more on evaluating the quality of your model and think what could violating of a specific assumption mean for the results of your analysis.</p>
+</div>
+<div id="answer-the-research-question" class="section level3">
+<h3>Answer the research question</h3>
+<p>Based on your previous work, answer the original research question. Think about how satisfied are you with your answer. Did you a straightforward answer or are some particular questions left? How much do you trust your model? Can you of anything that could potentially improve your model (e.g. a variable that wasn’t included in the dataset)? Does your model a have weak spot you would like to fix, but don’t know how?</p>
+</div>
+</div>
+<div id="submission-format-and-date" class="section level2">
+<h2>Submission format and date</h2>
+<p>Submit a text file (Word or PDF), which includes all the aforementioned information, together with functional R script. The script should work with any further work needed. Send your to <a href="mailto:ales@vomacka.io" class="email">ales@vomacka.io</a>.</p>
 </div>
 
 <br>
@@ -492,11 +479,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("hide" === "show");
-});
-</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

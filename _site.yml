@@ -64,7 +64,7 @@ navbar:
     - text: "Materials"
       menu:
         - text: "Final homework"
-          href: homework_midterm.html
+          href: homework_midterm_eng.html
         - text: "Datasets"
           href: course_data.html
         - text: "Literature"
