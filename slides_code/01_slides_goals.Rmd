@@ -519,3 +519,92 @@ dagify(y ~ x + z + q ,
 <br>
 
 - Is this a valid design decision?
+
+# DAGs in R
+
+## DAGs in R
+
+- While drawing DAGs can be easily done by hand, R can make them pretty
+- It can also tell you what variables to control for, assuming your DAG is correct.
+
+<br>
+
+- We need to packages to work with DAGS in ggplot2 framework:
+
+```{r dag-packages, echo=TRUE, eval=FALSE}
+install.packages("dagitty") # for drawing DAGs in R
+install.packages("ggdag") # For making them in ggplot2
+```
+
+## Basic DAG in R
+
+```{r dag-simple-example, echo=TRUE, fig.height=3}
+dagify(y ~ x + z + q ,
+       x ~ z,
+       q ~ x,
+       w ~ y + x) %>% 
+  ggdag() +
+  theme_void() # to get rid of the backround
+```
+
+## Basic DAG in ggplot2 syntax
+
+- Same result as previously, more control over the looks
+
+```{r dag-ggplo2-example, echo=TRUE, eval=FALSE}
+dagify(y ~ x + z + q ,
+       x ~ z,
+       q ~ x,
+       w ~ y + x) %>% 
+  ggplot(aes(x = x, xend = xend, y = y, yend = yend)) +
+  geom_dag_edges() +
+  geom_dag_point() +
+  geom_text(aes(label = name), color = "white") +
+  theme_void()
+
+```
+
+## Custom labels and position
+
+```{r dag-custom-name-position, echo=TRUE, eval=FALSE}
+dagify(y ~ x + z + q ,
+       x ~ z,
+       q ~ x,
+       w ~ y + x,
+       labels = c(y = "Vaccination\nProbability", x = "Covid\nKnowledge",
+                  z = "Soc-econ. status", q = "Perceived threat", w = "Hospitalization"),
+       coords = list(x = c(y = 2, x = 1, z = 1.5, w = 1.5, q = 1.5),
+                     y = c(y = 1, x = 1, z = 1.15, w = 0.85, q = 0.94))) %>% 
+  ggplot(aes(x = x, xend = xend, y = y, yend = yend)) +
+  geom_dag_edges() +
+  geom_dag_point() +
+  geom_text(aes(label = label), color = "red") +
+  theme_void()
+```
+
+## Check for confounders
+
+```{r echo=TRUE, eval=FALSE}
+our_dag <- dagify(y ~ x + z + q ,
+                  x ~ z,
+                  q ~ x,
+                  w ~ y + x,
+                  exposure = "x",
+                  outcome = "y")
+
+ggdag_adjustment_set(our_dag, shadow = T) + theme_void() # red ones are confounders
+```
+
+
+## Check for confounders graphically
+
+```{r colliders-graphically, echo=TRUE, eval=FALSE}
+our_dag <- dagify(y ~ x + z + q ,
+                  x ~ z,
+                  q ~ x,
+                  w ~ y + x,
+                  exposure = "x",
+                  outcome = "y")
+
+ggdag_collider(our_dag) + theme_void()
+```
