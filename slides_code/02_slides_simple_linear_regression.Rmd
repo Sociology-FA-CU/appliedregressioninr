@@ -39,7 +39,7 @@ countries <- read.csv(here("data", "countries.csv"))
 The simple (i.e., bivariate) regression line has the following formula:
 
 $$
-y = \alpha + \beta*x
+Y = \alpha + \beta*X
 $$
 
 -   where $\alpha$ is the intercept, and $\beta$ is the slope. (What does it mean?)
@@ -49,10 +49,10 @@ $$
 
 <div class="columns-2">
 
--   The formula $y = \alpha + \beta*x$  represents the line.
+-   The formula $Y = \alpha + \beta*X$  represents the line.
 -   But the actual value of Y is usually below or above the line.
 -   The actual value of Y = linear model + random error term
--   $y = \alpha + \beta*x + \epsilon_i$
+-   $y_i = \alpha + \beta*x_i + \epsilon_i$
 
 <div>
 
@@ -63,9 +63,9 @@ $$
 ## Error vs. Residual
 
 -   Error (theoretical) = difference between the real value of Y and the real average value of Y for given X
--   Residual (computational) = difference between our observed value of Y and its expected value (expected by our model)
+-   Residual (empirical) = difference between our observed value of Y and its expected value (expected by our model)
 
-## Ordinary least square (OLS)
+## Ordinary least square (OLS) {.smaller}
 
 <div class="columns-2">
 
@@ -137,7 +137,9 @@ Categorical variables among predictors are usually treated as dummies:
 -   Multivariate factors: transformed into set of binary dummy variables (n-1)
 -   Regression coefficients identify differences in group means compared to one reference group
 
-## Sets of binary dummy variables
+## Sets of binary dummy variables {.smaller}
+
+Example of a piece of data matrix. Each row represents one observation. 
 
 ```{r}
 set.seed(41)

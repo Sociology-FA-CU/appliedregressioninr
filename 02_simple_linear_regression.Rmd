@@ -23,7 +23,7 @@ countries <- read.csv(here("data", "countries.csv")) # for show of reg output
 In this lecture, we will introduce basic building blocks for regression analysis (something like regression blue print or basic plan) and we will try building and interpreting simple linear regression in R.
 
 
-The first part of the simple (i.e., bivariate, i.e. one predictor and one outcome variable) regression model a line, which has the following formula:
+The first part of the simple (i.e., bivariate, i.e. one predictor and one outcome variable) regression model is a line, which has the following formula:
 
 $$
 Y = \alpha + \beta*X
@@ -41,7 +41,7 @@ $$
 
 The line represent an expectation for the value of Y, given the value of X (conditional expectation). Notice, we usually use capital X to refer to a random variable, and a lowercase x to refer to its value.
 
-The idea of conditional expectation is quite illuminating: We can think of regression as conditional mean. Consider this: When we do not know the value of variable X, our expectation of a random observation of the variable Y is simply its mean, i.s. $E(Y) = \bar{Y}$. When we do know the value of X, we change our expectation of Y based on the regression line: $E(Y) = \beta_0 + \beta_1*X. 
+The idea of conditional expectation is quite illuminating: We can think of regression as conditional mean. Consider this: When we do not know the value of variable X, our expectation of a random observation of the variable Y is simply its mean, i.s. $E(Y) = \bar{Y}$. When we do know the value of X, we change our expectation of Y based on the regression line: $E(Y) = \beta_0 + \beta_1*X$. 
 
 However, the line is not all there is to the simple linear regression. As on the figure below, the actual observations usually do not fall exactly on the line (they deviate from the expectation). The difference between the blue regression line and each actual observation is called the error term or residual (more about the difference between the two below) and is shown as red line the figure.
 
@@ -61,15 +61,15 @@ $$
 y_i = \alpha + \beta*x_i + \epsilon_i
 $$
 
-Now for the distinction between "error term" and "residual". In line with the convention, we use "error term" to refer to the (theoretical) difference between the real value of Y and the real average value of Y for given X. We use "residual" for the difference between our observed value of Y (which can be distorted by measurement error) and our regression model (the model can deviate from the real relationship due to sampling error). This means that error term is a theoretical concept while a residual is the value available in our data when we do statistical modeling. 
+Now for the distinction between "error term" and "residual". In line with the convention, we use "error term" to refer to the (theoretical) difference between the real value of Y and the real average value of Y for given X. We use "residual" for the difference between our observed value of Y (which can be distorted by measurement error) and our regression model (the model can deviate from the real relationship due to sampling error). This means that error term is a theoretical concept while a residual is the value available in our data when we do statistical modeling (i.e., an empirical concept). 
 
 The idea of the error terms says: even in theory, we expect the linear relationship of interest between two variables to be just a model, just a simplification of the reality. We do not expect it to describe the reality precisely. 
 
 The reason why we distinguish the term "residual" is to make clear that we acknowledge that the regression model we compute in our software on our sample is just an estimate of the real relationship. And residuals are deviations from this estimate, not from the real relationship. 
 
-In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean (from the theoretical regression line). Residuals are the deviations of the actual observations we have from the conditional mean computed on our sample (i.e., from the regression line we actually computed). 
+In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean (from the theoretical regression line). Residuals are the deviations of the actual observations we have from the conditional expectation computed on our sample (i.e., from the regression line we actually computed). 
 
-As this distinction is theoretical, we often see the terms used interchangeably in practice. This is fine as long as you conceptually understand the difference. 
+As this distinction is theoretical, people often see and use the terms used interchangeably in practice. This is fine as long as you conceptually understand the difference. 
 
 ## Ordinary least square
 
@@ -105,7 +105,7 @@ $$
 
 ## Regression and t-test
 
-We now elaborate on the idea that the line in the linear regression model can be perceived as conditional mean by showing that a t-test is simply a special case of regression. Yes, simple linear regression with one binary predictor is equivalent to the t-test. The regression coefficient of one binary predictor coded as 0 and 1 represents the difference of means of the two groups.
+We now elaborate visually on the idea that the line in the linear regression model can be perceived as conditional mean by showing that a t-test is simply a special case of regression. Yes, simple linear regression with one binary predictor is equivalent to the t-test. The regression coefficient of one binary predictor coded as 0 and 1 represents the difference of means of the two groups.
 
 
 ```{r message=FALSE, warning=FALSE, fig.width=5, fig.align="center"}

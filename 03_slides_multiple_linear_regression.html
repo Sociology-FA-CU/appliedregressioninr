@@ -109,7 +109,7 @@ slide:not(.current) .plotly.html-widget{
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">Last updated in February 2021</p>
+            <p style="margin-top: 6px; margin-left: -2px;">Last updated in March 2022</p>
           </hgroup>
   </slide>
 
@@ -118,7 +118,6 @@ slide:not(.current) .plotly.html-widget{
 <ul>
 <li>Understanding the concept of multiple linear regression</li>
 <li>Building and interpreting multiple linear regression in R</li>
-<li>Coding categorical predictors as dummy variables</li>
 <li>Using and interpreting interactions</li>
 </ul>
 
@@ -126,8 +125,8 @@ slide:not(.current) .plotly.html-widget{
 
 <ul>
 <li>More than one predictor term</li>
-<li>Simple linear regression: \(y = \alpha + \beta*x + \epsilon_i\)</li>
-<li>Multiple linear regression: \(y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i\)</li>
+<li>Simple linear regression: \(Y = \alpha + \beta*X + \epsilon\)</li>
+<li>Multiple linear regression: \(Y = \beta_0 + \beta_1*X_1 + + \beta_2*X_2 + ... + \epsilon\)</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Multiple = more predictor terms</h2></hgroup><article  id="multiple-more-predictor-terms">
@@ -147,16 +146,16 @@ slide:not(.current) .plotly.html-widget{
 <ul>
 <li>Descriptive modeling: See effects of individual variables net of the effects of other variables in the model (AKA „when all the other variables are held constant&quot;)</li>
 <li>Predictive modeling: Improve prediction, more variables = more information on the entry = usually better predictions (but risk of overfitting!)</li>
-<li>Modeling for causal inference: adjusting for background variables, discovering potentially spurious relationships</li>
+<li>Modeling for causal inference: adjusting for background variables based on theory, discovering potentially spurious relationships, isolating potentially causal effects</li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Interpreting coefficients in multivariate regression 1/2</h2></hgroup><article  id="interpreting-coefficients-in-multivariate-regression-12">
+</article></slide><slide class=""><hgroup><h2>Interpreting coefficients in multivariate regression</h2></hgroup><article  id="interpreting-coefficients-in-multivariate-regression">
 
 <ul>
 <li>&ldquo;The coefficient \(\beta_k\) is the average or expected difference in outcome \(y_k\), comparing two people who differ by one unit in the predictor \(x_k\) while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in \(x_k\) with all the other predictors held constant&rdquo; <span class="cite">(Gelman et al., 2020, p. 131)</span></li>
 </ul>
 
-</article></slide><slide class=""><hgroup><h2>Interpreting coefficients in multivariate regression 2/2</h2></hgroup><article  id="interpreting-coefficients-in-multivariate-regression-22">
+</article></slide><slide class=""><hgroup><h2>MLR coefficients as conditional (or additional)</h2></hgroup><article  id="mlr-coefficients-as-conditional-or-additional">
 
 <ul>
 <li>Conditional effect: contingent on the other variables in the model</li>
@@ -168,7 +167,6 @@ slide:not(.current) .plotly.html-widget{
 <ul>
 <li>Difference-based: &ldquo;how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors&rdquo;</li>
 <li>Change-based: &ldquo;the coefficient is the expected change in y caused by adding 1 to the relevant predictor&rdquo; (i.e. changes within individuals, rather than comparisons between individuals)</li>
-<li>Note, <span class="cite">Gelman et al. (2020)</span>, pp. 134 use the &ldquo;predictive interpretation&rdquo; for difference-based and &ldquo;counterfactual&rdquo; for change-based interpretation.</li>
 </ul>
 
 </article></slide><slide class=""><hgroup><h2>Difference-based interpretation is more cautious</h2></hgroup><article  id="difference-based-interpretation-is-more-cautious">
@@ -191,13 +189,13 @@ slide:not(.current) .plotly.html-widget{
 <ul>
 <li>bivariate association (simple regression) or</li>
 <li>conditional/additional effects (multiple regression)</li>
-<li>main effects in equation: \(... + \beta_i*x_i +...\)</li>
+<li>main effects in equation: \(... + \beta_i*X_i +...\)</li>
 </ul></li>
-<li><p>Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable</p>
+<li><p>Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable. Interaction effects as &ldquo;it depends&rdquo; effects.</p>
 
 <ul>
 <li>e.g. interaction between smoking and inhaling asbestos in their effect on lung cancer risk</li>
-<li>interactions in equation: \(... + \beta_1*x_1 + \beta_2*x_2 + \beta_3*x_1*x2 + ...\)</li>
+<li>interactions in equation: \(... + \beta_1*X_1 + \beta_2*X_2 + \beta_3*X_1*X_2 + ...\)</li>
 </ul></li>
 </ul>
 
@@ -205,19 +203,13 @@ slide:not(.current) .plotly.html-widget{
 
 <p>For an interaction of continuous variable with a binary variable, we could also run two separate models. So why not? - one model with interaction term = one fit - one model with interaction term = statistical significance test of the difference of slopes</p>
 
-</article></slide><slide class=""><hgroup><h2>Interaction effects as &ldquo;it depends effects&rdquo;</h2></hgroup><article  id="interaction-effects-as-it-depends-effects">
-
-<p>What is the effect of X on Y? If the answer is &ldquo;it depends,&rdquo; there is interaction.</p>
-
-<p><font size="1">Source: Jim Frost &ldquo;Statistics by Jim&rdquo; <a href='https://cutt.ly/HkXcMY4' title=''>https://cutt.ly/HkXcMY4</a></font></p>
-
 </article></slide><slide class=""><hgroup><h2>Interpreting interaction coefficients</h2></hgroup><article  id="interpreting-interaction-coefficients">
 
 <p>This can be tricky, we will go through it in the lab part of this session. Also see <span class="cite">(Gelman et al., 2020, pp. 134–136)</span> for general comments and <span class="cite">(Gelman et al., 2020, pp. 185–187)</span> for the effect of centering variables in models with interactions.</p>
 
 </article></slide><slide class=""><hgroup><h2>References</h2></hgroup><article  id="references" class="unnumbered">
 
-<div id="refs" line-spacing="2" class="references csl-bib-body hanging-indent">
+<div line-spacing="2" id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-gelman2020" class="csl-entry">
 <p>Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href='https://doi.org/10.1017/9781139161879' title=''>https://doi.org/10.1017/9781139161879</a></p></div></div></article></slide>
 

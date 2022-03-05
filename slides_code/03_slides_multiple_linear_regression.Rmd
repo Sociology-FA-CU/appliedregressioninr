@@ -2,7 +2,7 @@
 title: "Lesson 3: Multiple linear regression and interactions"
 subtitle: "Jaromír Mazák & Aleš Vomáčka"
 author: "Dpt. of Sociology, Faculty of Arts, Charles University"
-date: "Last updated in February 2021"
+date: "Last updated in March 2022"
 output:
   ioslides_presentation:
     widescreen: true
@@ -23,14 +23,13 @@ countries <- read.csv(here("data", "countries.csv"))
 
 -   Understanding the concept of multiple linear regression
 -   Building and interpreting multiple linear regression in R
--   Coding categorical predictors as dummy variables
 -   Using and interpreting interactions
 
 ## Multiple linear regression
 
 -   More than one predictor term
--   Simple linear regression: $y = \alpha + \beta*x + \epsilon_i$
--   Multiple linear regression: $y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i$
+-   Simple linear regression: $Y = \alpha + \beta*X + \epsilon$
+-   Multiple linear regression: $Y = \beta_0 + \beta_1*X_1 + + \beta_2*X_2 + ... + \epsilon$
 
 ## Multiple = more predictor terms
 
@@ -65,14 +64,14 @@ countries %>%
 
 -   Descriptive modeling: See effects of individual variables net of the effects of other variables in the model (AKA „when all the other variables are held constant")
 -   Predictive modeling: Improve prediction, more variables = more information on the entry = usually better predictions (but risk of overfitting!)
--   Modeling for causal inference: adjusting for background variables, discovering potentially spurious relationships
+-   Modeling for causal inference: adjusting for background variables based on theory, discovering potentially spurious relationships, isolating potentially causal effects
 
-## Interpreting coefficients in multivariate regression 1/2
+## Interpreting coefficients in multivariate regression
 
 -   "The coefficient $\beta_k$ is the average or expected difference in outcome $y_k$, comparing two people who differ by one unit in the predictor $x_k$ while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in $x_k$ with all the other predictors held constant" [@gelman2020, pp. 131]
 
 
-## Interpreting coefficients in multivariate regression 2/2
+## MLR coefficients as conditional (or additional)
 
 - Conditional effect: contingent on the other variables in the model
 - Additional effect: each coefficient represents additional effect of adding the variable in the model (all the other variables in the model are already accounted for)
@@ -81,8 +80,6 @@ countries %>%
 
 -   Difference-based: "how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors"
 -   Change-based: "the coefficient is the expected change in y caused by adding 1 to the relevant predictor" (i.e. changes within individuals, rather than comparisons between individuals)
-- Note, @gelman2020, pp. 134 use the "predictive interpretation" for difference-based and "counterfactual" 
-for change-based interpretation.
 
 
 ## Difference-based interpretation is more cautious 
@@ -102,12 +99,12 @@ To be on the save side, interpret regression coefficients as comparisons between
 
     -   bivariate association (simple regression) or
     -   conditional/additional effects (multiple regression)
-    -   main effects in equation: $... + \beta_i*x_i +...$
+    -   main effects in equation: $... + \beta_i*X_i +...$
 
--   Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable
+-   Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable. Interaction effects as "it depends" effects.
 
     -   e.g. interaction between smoking and inhaling asbestos in their effect on lung cancer risk
-    -   interactions in equation: $... + \beta_1*x_1 + \beta_2*x_2 + \beta_3*x_1*x2 + ...$
+    -   interactions in equation: $... + \beta_1*X_1 + \beta_2*X_2 + \beta_3*X_1*X_2 + ...$
     
     
 ## Model with interactions vs. two separate models
@@ -116,11 +113,6 @@ For an interaction of continuous variable with a binary variable, we could also 
 - one model with interaction term = one fit
 - one model with interaction term = statistical significance test of the difference of slopes 
 
-## Interaction effects as "it depends effects"
-
-What is the effect of X on Y? If the answer is "it depends", there is interaction.
-
-<font size="1">Source: Jim Frost "Statistics by Jim" <https://cutt.ly/HkXcMY4></font>
 
 ## Interpreting interaction coefficients
 

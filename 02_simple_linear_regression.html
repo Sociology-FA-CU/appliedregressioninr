@@ -20,9 +20,9 @@
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -279,7 +279,7 @@ $(document).ready(function () {
       <a href="02_simple_linear_regression.html">3. Simple linear regression</a>
     </li>
     <li>
-      <a href="03_multiple_linear_regression.html">Multiple linear regression</a>
+      <a href="03_multiple_linear_regression.html">4. Multiple linear regression</a>
     </li>
     <li>
       <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
@@ -309,13 +309,13 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_slides_goals.html">1 Goals of regression analysis</a>
+      <a href="01_slides_goals.html">1. Goals of regression analysis</a>
     </li>
     <li>
-      <a href="02_slides_simple_linear_regression.html">2 Simple linear regression</a>
+      <a href="02_slides_simple_linear_regression.html">2. Simple linear regression</a>
     </li>
     <li>
-      <a href="03_slides_multiple_linear_regression.html">Multiple linear regression</a>
+      <a href="03_slides_multiple_linear_regression.html">3. Multiple linear regression</a>
     </li>
     <li>
       <a href="04_slides_model_visualization.html">Ploting regression models, marginal effects</a>
@@ -412,7 +412,7 @@ $(document).ready(function () {
 
 
 <p>In this lecture, we will introduce basic building blocks for regression analysis (something like regression blue print or basic plan) and we will try building and interpreting simple linear regression in R.</p>
-<p>The first part of the simple (i.e., bivariate, i.e. one predictor and one outcome variable) regression model a line, which has the following formula:</p>
+<p>The first part of the simple (i.e., bivariate, i.e. one predictor and one outcome variable) regression model is a line, which has the following formula:</p>
 <p><span class="math display">\[
 Y = \alpha + \beta*X
 \]</span></p>
@@ -425,7 +425,7 @@ Y = \beta_0 + \beta_1*X
 <li><p><span class="math inline">\(\beta\)</span> or <span class="math inline">\(\beta_1\)</span> in the generalized version is the slope, i.e. rate of change in Y when X changes by 1 unit.</p></li>
 </ul>
 <p>The line represent an expectation for the value of Y, given the value of X (conditional expectation). Notice, we usually use capital X to refer to a random variable, and a lowercase x to refer to its value.</p>
-<p>The idea of conditional expectation is quite illuminating: We can think of regression as conditional mean. Consider this: When we do not know the value of variable X, our expectation of a random observation of the variable Y is simply its mean, i.s. <span class="math inline">\(E(Y) = \bar{Y}\)</span>. When we do know the value of X, we change our expectation of Y based on the regression line: $E(Y) = _0 + _1*X.</p>
+<p>The idea of conditional expectation is quite illuminating: We can think of regression as conditional mean. Consider this: When we do not know the value of variable X, our expectation of a random observation of the variable Y is simply its mean, i.s. <span class="math inline">\(E(Y) = \bar{Y}\)</span>. When we do know the value of X, we change our expectation of Y based on the regression line: <span class="math inline">\(E(Y) = \beta_0 + \beta_1*X\)</span>.</p>
 <p>However, the line is not all there is to the simple linear regression. As on the figure below, the actual observations usually do not fall exactly on the line (they deviate from the expectation). The difference between the blue regression line and each actual observation is called the error term or residual (more about the difference between the two below) and is shown as red line the figure.</p>
 <p><img src="images/linear-regression.png" width="50%" style="display: block; margin: auto;" /></p>
 <center>
@@ -435,11 +435,11 @@ Y = \beta_0 + \beta_1*X
 <p><span class="math display">\[
 y_i = \alpha + \beta*x_i + \epsilon_i
 \]</span></p>
-<p>Now for the distinction between “error term” and “residual.” In line with the convention, we use “error term” to refer to the (theoretical) difference between the real value of Y and the real average value of Y for given X. We use “residual” for the difference between our observed value of Y (which can be distorted by measurement error) and our regression model (the model can deviate from the real relationship due to sampling error). This means that error term is a theoretical concept while a residual is the value available in our data when we do statistical modeling.</p>
+<p>Now for the distinction between “error term” and “residual.” In line with the convention, we use “error term” to refer to the (theoretical) difference between the real value of Y and the real average value of Y for given X. We use “residual” for the difference between our observed value of Y (which can be distorted by measurement error) and our regression model (the model can deviate from the real relationship due to sampling error). This means that error term is a theoretical concept while a residual is the value available in our data when we do statistical modeling (i.e., an empirical concept).</p>
 <p>The idea of the error terms says: even in theory, we expect the linear relationship of interest between two variables to be just a model, just a simplification of the reality. We do not expect it to describe the reality precisely.</p>
 <p>The reason why we distinguish the term “residual” is to make clear that we acknowledge that the regression model we compute in our software on our sample is just an estimate of the real relationship. And residuals are deviations from this estimate, not from the real relationship.</p>
-<p>In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean (from the theoretical regression line). Residuals are the deviations of the actual observations we have from the conditional mean computed on our sample (i.e., from the regression line we actually computed).</p>
-<p>As this distinction is theoretical, we often see the terms used interchangeably in practice. This is fine as long as you conceptually understand the difference.</p>
+<p>In other words, errors are the deviations of the theoretical (i.e. measured without measurement error) observations from the real population conditional mean (from the theoretical regression line). Residuals are the deviations of the actual observations we have from the conditional expectation computed on our sample (i.e., from the regression line we actually computed).</p>
+<p>As this distinction is theoretical, people often see and use the terms used interchangeably in practice. This is fine as long as you conceptually understand the difference.</p>
 <div id="ordinary-least-square" class="section level2">
 <h2>Ordinary least square</h2>
 <p>The algorithm used to estimate the regression line works so as to minimize the sum of squares of residuals (Residual Sum of Squares, RSS). Hence linear regression is sometimes also referred to as ordinary least square regression or just OLS. For details on how OLS is calculated, see Fox <span class="citation">(2015, p. 83)</span>.</p>
@@ -452,7 +452,7 @@ y_i = \alpha + \beta*x_i + \epsilon_i
 </div>
 <div id="regression-and-t-test" class="section level2">
 <h2>Regression and t-test</h2>
-<p>We now elaborate on the idea that the line in the linear regression model can be perceived as conditional mean by showing that a t-test is simply a special case of regression. Yes, simple linear regression with one binary predictor is equivalent to the t-test. The regression coefficient of one binary predictor coded as 0 and 1 represents the difference of means of the two groups.</p>
+<p>We now elaborate visually on the idea that the line in the linear regression model can be perceived as conditional mean by showing that a t-test is simply a special case of regression. Yes, simple linear regression with one binary predictor is equivalent to the t-test. The regression coefficient of one binary predictor coded as 0 and 1 represents the difference of means of the two groups.</p>
 <p><img src="02_simple_linear_regression_files/figure-html/unnamed-chunk-3-1.png" width="480" style="display: block; margin: auto;" /></p>
 </div>
 <div id="centering-predictors-for-better-interpretation" class="section level2">

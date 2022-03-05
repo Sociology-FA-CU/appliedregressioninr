@@ -13,7 +13,7 @@ navbar:
           href: 02_variable_selection.html
         - text: "3. Simple linear regression"
           href: 02_simple_linear_regression.html
-        - text: "Multiple linear regression"
+        - text: "4. Multiple linear regression"
           href: 03_multiple_linear_regression.html
         - text: "Ploting regression models, marginal effects"
           href: 04_model_visualization.html
@@ -29,11 +29,11 @@ navbar:
           href: 08_heterscedasticity.html
     - text: "Slides"
       menu:
-        - text: "1 Goals of regression analysis"
+        - text: "1. Goals of regression analysis"
           href: 01_slides_goals.html
-        - text: "2 Simple linear regression"
+        - text: "2. Simple linear regression"
           href: 02_slides_simple_linear_regression.html
-        - text: "Multiple linear regression"
+        - text: "3. Multiple linear regression"
           href: 03_slides_multiple_linear_regression.html
         - text: "Ploting regression models, marginal effects"
           href: 04_slides_model_visualization.html

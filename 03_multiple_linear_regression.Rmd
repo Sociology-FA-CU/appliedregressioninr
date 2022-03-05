@@ -6,6 +6,7 @@ bibliography: references.bib
 editor_options: 
   markdown: 
     wrap: 72
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ```
 
-```{r data-and-packages}
+```{r data-and-packages, echo=FALSE}
 library(tidyverse)
 library(patchwork)
 library(here)
@@ -25,35 +26,34 @@ countries <- read.csv(here("data", "countries.csv"))
 The goals for this lecture are (1) understanding the concept of multiple
 linear regression with emphasis on interpretation of its coefficients,
 and (2) building and interpreting multiple regression models in R. We
-will also discuss coding categorical predictors as dummy variables and
-using interaction.
+will also discuss using interactions.
 
 # Introduction to multiple linear regression
 
-Multiple linear regression (MLR) is defined by having more than one
-predictor term. Remember the general formula for simple linear
+Multiple linear regression (MLR) is defined as having multiple predictor terms (more than one). Remember the general formula for simple linear
 regression:
 
 $$
-y = \alpha + \beta*x + \epsilon_i
+Y = \alpha + \beta*X + \epsilon,
 $$
+where $\alpha + \beta*X$ represents the line and $\epsilon$ represent the deviation from it. 
+
 
 The formula for MLR is its fairly straightforward extension. Notice that
 intercept in MLR is usually called $\beta_0$ rather than $\alpha$. The
-other regression coefficients are numbered betas. The numbered x-es
-stand for predictor terms.
+other regression coefficients are numbered betas. The numbered x-es stand for predictor terms.
 
 $$
-y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon_i
+Y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon
 $$
 
-Note that having more predictor terms does not necessarily imply using
+Appreciate that having more predictor terms does not necessarily imply using
 more predictor variables. For example, the blue line in the following
 figure represents linear model estimated using three predictor terms:
 democratic index, democratic index to the power of two (quadratic term),
 and democratic index to the power of three (cubic term). While the model
 only uses one predictor variable, there are three predictor terms which
-makes the model a case of MLR. For this model, four betas would be
+makes the model a case of MLR (the interpretation framework of MLR explained in this lecture applies). For this model, four betas would be
 estimated (one of them the intercept).
 
 ```{r multiple1, message=FALSE, warning=FALSE, fig.width=5, fig.align="center", echo=FALSE}
@@ -67,10 +67,10 @@ countries %>%
        caption = "life expectancy = democratic_index + democratic_index^2 + democratic_index^3")
 ```
 
-One of the (many?) common misconceptions about linear regression is that
+One of the common misconceptions about linear regression is that
 it can only estimate a straight line. That is only true for simple
 linear regression. From the picture above, it should be clear that in
-MLR, it is possible to "bend" the line. And not only that.
+MLR, it is possible to "bend" the line. And not only that. Throughout the course we will see how flexible MLR can be.
 
 Another example of a MLR model is visualized on the figure below. It
 uses two predictor terms (in this case, they are two distinct
@@ -78,11 +78,8 @@ independent variables): again, the democratic index, and, in addition, a
 binary variable whether the country is post-soviet or not. Due to the
 fact that one of the independent variables is binary, it is possible to
 visualize the whole model in one two-dimensional figure as two lines.
-However, more complicated MLR models cannot be meaningfully visualized
-on top of the raw data like this. What we can do is visualize their
-results (apart from displaying them as numbers in a table). We will
-discuss later how it is done, but we should first make clear how the
-beta coefficients are interpreted in MLR.
+However, more complex MLR models cannot be meaningfully visualized
+on top of the raw data.
 
 ```{r multiple2, message=FALSE, warning=FALSE, fig.width=6, fig.align="center", echo=FALSE}
 
@@ -99,8 +96,8 @@ countries %>%
 # Interpreting coefficients in MLR
 
 First, let's run a model where life expectancy is explained with
-democratic index and percentage of people with university education in
-15-64 age category (that is how the variable is defined).
+democratic index and percentage of people with university degree in
+15-64 age category (that is how the variable is defined so we just use what we have).
 
 ```{r model2, include=TRUE}
 
@@ -108,10 +105,8 @@ fit1 <- lm(life_exp ~ dem_index + uni_prc, data = countries)
 summary (fit1)
 ```
 
-The output in the frame with white background above is the raw summary
-output which appears in R console as response to running the two lines
-of code. The beta coefficients are in the column called "Estimate".
-Specifically, the coefficient for democratic index is 1.786, and the
+The output above should look familiar, it differs from that of simple linear regression (previous lecture) only by having an extra row in the coefficient table. The beta coefficients are in the column called "Estimate".
+Specifically, the coefficient for democratic index is 1.786 (recall that the coefficinet was 1.62 when democratic index was the only predictor), and the
 coefficient for university education is -1.460.
 
 Interpreting coefficients in MLR can be surprisingly tricky as they are,
@@ -125,16 +120,15 @@ comparing two people who differ by one unit in the predictor $x_k$ while
 being equal in all the other predictors. This is sometimes stated in
 shorthand as comparing two people (or, more generally, two observational
 units) that differ in $x_k$ with all the other predictors held constant"
-(p. 131). We also call this conditional effect.
+(p. 131). We also call this conditional effect (as in "conditional on the assumption that all other predictors are held constant").
 
 For the example above, we could say that if one country has democratic
 index higher by one point than another country, and they both have the
 same percentage of university educated people, the first country will
-have life expectancy higher by 1.8 years (i.e., rounding 1.786), on
-average.
+have expected life expectancy higher by 1.8 years (we encourage to reasonably round the beta of 1.786 for interpretation purposes to avoid making impression of unjustified precision).
 
 Since the coefficient for percentage of university educated people has
-very broad confidence interval, we could also say that we find no
+very broad confidence interval (and very high p-value), we could also say that we find no
 evidence in the data, that two countries with the same level of democratic
 index should be expected to differ in life expectancy when they have different proportion of university educated people. That is if we believe
 the sample of countries justifies some generalization to some concrete
@@ -143,30 +137,31 @@ to make a purely descriptive interpretation with no ambition to make
 sample-to-population inference. He or she could try to say something
 along the lines that for our particular sample of countries and data
 from given years, we find that for two countries with the same level
-democratic index the life expectancy goes down by 1.5 years, on average,
+democratic index the life expectancy goes down by 1.46 years, on average,
 as the proportion of university educated increases from 0 to 100% (the
 variable is measured on scale from 0 to 1). This seems to us a
 meaningless statement and we would discourage from it, even if
 technically true. The really large standard errors should warn us
 against making interpretation even in purely descriptive situations.
 Saying that controlling for democratic index, there does not seem to be
-any association between life expectancy and proportion of university
+any linear association between life expectancy and proportion of university
 educated in our sample of countries seems much more sensible.\
+
 Within descriptive modeling strategies, we use MLR to see the effects of
-individual variables net of the effects of all the other variables in
+individual variables net of the effects of all the other predictors in
 the model. Within predictive modeling, we use MLR to improve our
 predictions over simple linear model (predictions based on just one
 predictor term often tend to be weak in social sciences). Within
-explanatory modeling, we use MLR for adjusting for background variables,
-hence discovering potentially spurious relationships.
+explanatory modeling, we use MLR for adjusting for background variables according to our theory,
+hence discovering potentially spurious relationships and isolating potentially causal effects.
 
 ## Difference-based vs. change-based interpretations
 
-There two conceptually slightly different interpretations of MLR
+There are two conceptually slightly different interpretations of MLR
 coefficients. The difference-based interpretation is well described as
 "how the outcome variable differs, on average, when comparing two groups
 of items that differ by 1 in the relevant predictor while being
-identical in all the other predictors" [@gelman2020, pp. 134]. The
+identical in all the other predictors" [@gelman2020, pp. 134]. In contrast, the
 change-based interpretation is well described by saying that "the
 coefficient is the expected change in y caused by adding 1 to the
 relevant predictor, while leaving all the other predictors in the model
@@ -178,7 +173,7 @@ uses the idea of change within individual. To be on the save side, we
 recommend interpreting regression coefficients as comparisons between
 units, not (potential) changes within units, unless one specifically
 claims causality. The difference-based interpretation is simply more
-general, hence carries less risk of being used in a misleading way.
+general, hence carries less risk of being used in a misleading way. (By misleading we mean invoking causality where no evidence for a causal relationship is shown.)
 
 Note that [@gelman2020] use the term "predictive interpretation" instead
 of difference-based interpretation and "counterfactual" interpretation
@@ -198,14 +193,14 @@ very unrealistic situation). Indeed, the coefficient value depends on
 the unit we use for measuring the independent variable.
 
 To deal with this issues of no comparability, we can use so called
-standardized betas. Those can be used to determine relative weight of
+standardized betas. Those can be used to determine relative weight or strength of
 independent variables as they show the effect of an increase in X by one
 standard deviation on Y, also measured in standard deviations. The way
 to calculate standardized betas is to first standardize (compute
 z-scores) all variables used in the model and then run a regression on
 the z-scores.
 
-A way to do this using the scale function is shown in the code below.
+A way to do this using the scale function directly in the regression call is shown below.
 
 ```{r model, include=TRUE}
 
@@ -219,7 +214,7 @@ predictor of life expectancy than the proportion of university educated
 (0.04 in absolute value as the sign is irrelevant for this comparison).
 Notice that the values of t-tests for the significance of coefficients
 did not change. It should come as no surprise, we did not substantively
-change the data by standardizing it.
+change the data by standardizing it. Also remember that we are comparing the net effect of the predictors. The comparison could look quite different when standardized betas from two simple linear regression models were compared.  
 
 @gelman2008 suggests to use slightly different transformation if we also
 want include binary predictors (dummy variables) in the model. He shows
@@ -232,11 +227,10 @@ standardized betas with coefficients for non-standardized binaries.
 All the beta coefficients in the examples above were so called main
 effects. We use this term to distinguish them from interactions which we
 will introduce in this section. First about the main effects. There are
-two types of main effects. First, in simple linear regression (with one
-predictor term), the main effect indicates the bivariate linear
+two types of main effects. First, in simple linear regression, the main effect indicates the bivariate linear
 association between independent and dependent variable. Second, in MLR,
 the main effect is the conditional effect described above (i.e., the
-effect of independent variable on a dependent variable conditional on
+effect of an independent variable on a dependent variable conditional on
 all other variables in the model being held constant).
 
 Using only the main effects in MLR relies on the assumption that the
@@ -245,19 +239,24 @@ same across all levels of other independent variables in the model, or
 more precisely, that rather than looking at different effects of our
 independent variable of interest for different levels of other
 independent variables, it is an acceptable simplification to take the
-average effect.
+average effect (maybe democratic index has different effect on life expectancy for countries with low proportion of university educated people and different effect for countries with high proportion of university educated people, but we would not be able to find out from the model above).
 
 This is easier explained with an example. Imagine you model the effect
 of years of education on earnings and you also enter gender into the
-model (we assume it only takes two values, "man" or "woman". The
-equation would like like this: \$ earnings = \beta\_0 +
-\beta\_1\*yearsOfEducation + \beta\_2\*gender\$. The coefficient
+model (we assume it only takes two values, "man" or "woman"). The
+equation would like like this: 
+
+$$
+earnings = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender
+$$
+
+The coefficient
 $\beta_1$ shows the conditional effect of years of education on income
 for some hypothetical average gender. This can be an acceptable
 simplification if the effect is similar for both men and women. But
 imagine there is strong positive effect of years of education on income
 for one gender and similarly strong negative effect for the other
-gender. These effects will cancel out (provided there is about the same
+gender (we know, very unrealistic assumption, but train your imaginaion with us :)). These effects will cancel out (provided there is about the same
 number of men an women in the sample) and the $\beta_1$ will be close to
 zero. This would be a problematic simplification of the reality - we
 would lose a potentially important piece of information. To prevent
@@ -267,49 +266,141 @@ An interaction enables to show how the effect of one independent
 variable on the dependent variable varies across levels of another
 independent variable. In the example above, the equation would look like
 this:
-$income = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender + \beta_3*yearsOfEducation*gender$.
-The interpretation of coefficients is prone to errors, caution is
+
+$$
+income = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender + \beta_3*yearsOfEducation*gender
+$$
+
+The interpretation of interaction coefficients is prone to errors, caution is
 advised. The intercept is the value of income for the reference category
-of gender (say man as R would code them as 0s because, alphabetically,
-they come before women) with 0 years of education. The coefficient for
-gender would show the difference for between the predicted income for
-men in women with no years of education. The coefficient for years of
+of gender (let's assume the reference category are men) with 0 years of education. The coefficient for
+gender would show the difference between the predicted income for
+men and women with no years of education. The coefficient for years of
 education can be thought of as the comparison of average income for men
 who differ by one year of education. Finally, the interaction
 coefficient represents the difference in slope for years of education
 between men and women.
 
-[TBD - TABLE AND FIGURE TO ILUSTRATE THIS, EXAMPLE OF EQUATION FOR
-SELECTED INDIVIDUALS]
+## Illustratin interactions with an example (a crazy one)
+
+Let's assume the following very unrealistic reality:
+
+- Men make LESS money with every year of education they get
+- Women make MORE money with every year of education they get
+- The strength of the relationship is the same for both genders, only reverse in its direction
+- There is about the same number of men in women in the population
+- Each person can have 10, 11, ... 20 years of education and each category has the same size
+- Gender and number of years of education are independent
+
+Based on these assumptions, we can simulate some data:
+
+```{r echo=TRUE}
+
+# gender - simulate 1000 women and 1000 men
+gender <- c(rep("woman", 1000), rep("man", 1000))
+# save total number of observations
+n <- length(gender)
+# generate years of education
+set.seed(42)
+yoe <- sample(10:20, n, replace = TRUE)
+
+# generate income
+# income for women
+intercept_w <- 10000
+beta_yoe_w <- 1000
+sigma_w <- 500
+income_w <- intercept_w + beta_yoe_w*yoe[1:(n/2)] + sigma_w*rnorm(n/2)
+
+# income for men
+intercept_m <- 40000
+beta_yoe_m <- -1000
+sigma_m <- 500
+income_m <- intercept_m + beta_yoe_m*yoe[((n/2)+1):n] + sigma_m*rnorm(n/2)
+
+income <- c(income_w, income_m)
+
+# bind to data frame
+
+df <- data.frame(gender, yoe, income)
+```
+
+Now, imagine we want predict income with years of education and gender and assume that the linear association between the two continuous variables is the same for both genders. We would do something like this:
+
+```{r echo=TRUE}
+fit1 <- lm(income ~ yoe + gender, data = df)
+summary(fit1)
+```
+
+The interpretation of this model would be straightforward: Expected income for a man with 0 years of education is 25 149 CZK. For women, the number is almost identical (small estimate of the difference and large standard-errors indicate no difference between men and women). Years of education do not do any difference.
+
+However, we know that there actually are associations in the data, we simulated them. The problem is that by only considering main effects, we got the average effect in which the associations cancel out, as visualized below:
+
+```{r}
+df %>% ggplot(aes(y = income, x = yoe)) + geom_point() + geom_smooth(method = "lm")
+```
+
+What we need to do to capture the different relationship between years of education and income for each gender is to include interaction. Visually this will look like this:
+
+```{r}
+df %>% ggplot(aes(y = income, x = yoe, color = gender)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+To run and explore the MLR model with interaction, we write the following code:
+
+```{r}
+
+fit2 <- lm(income ~ yoe*gender, data = df)
+summary(fit2)
+
+```
+
+Suddenly, things have changed significantly. The intercept is now interpreted as expected income for a man with 0 years of education. That is the 40000 we entered in the simulation. The beta of years of education (ca -1000) is the slope for men (i.e. when comparing two men who differ by one 1 of education, we expect the one with more education have 1000 less income). Subtracting the beta for women from the intercept will give as the 10000 simulated for women with 0 years of education. Finally, the beta for the interaction (ca 2000) says how the effect of education on income will differ for women. For example, if you are a woman with 12 year of education, your expected income is ca 22 000. Note that you still get the 1000 per year of education penalty, but it is outweighed by the 2000 per year education bonus for women (the interaction term). 
+
+$$
+39994 - 29942 - 999*12 + 1998*12*1 = 39994 - 29942 - 11988 + 23976 = 22040
+$$
+This model with interaction is obviously a much better way to describe our data, but there are some issues. The value of intercept corresponds to 0 years of education, an unrealistic value which is not at all present in our data. There is another issue: the main effect of years of education is strong and negative, while we see the overall (average) effect in our data is 0. In more complicated situations, this can be confusing and the main effect is impossible to interpret in itself. Both these issues can be addressed with centering of predictors. 
+
+## Centering variables in models with interactions
+
+We saw above that some of the interpretations of main effects can be difficult or not very useful when models contain interactions. However, we can use centering for better interpretability of main effects:
+
+```{r echo=TRUE}
+
+# center predictors
+df <- 
+  df %>% mutate(yoe_c = yoe - mean(yoe),
+                gender_w = ifelse(gender == "woman", 1, 0),
+                gender_c = gender_w - mean(gender_w))
+
+# run model
+fit3 <- lm(income ~ yoe_c*gender_c, data = df)
+summary(fit3)
+```
+
+Now, the intercept shows the expected income for the average gender with mean years of education. More importantly, the main effects have a more meaningful interpretation: the 0 value for years of education indicates the average effect of years of education on income. The interaction is unchanged, but remember that the data has been transformed (centered), so the value of gender for women is now 0.5 and for men -0.5. It is these number that we have to multiply with the beta for interaction to get our expectations. 
+
 
 ## Model with interaction VS. two separate models
 
-If we are interested in an interaction between two continuous variables, we have no other option than running a model with interaction. However, when we are interested in an interation between one continuous and one binary variable, we could also be tempted to run two separate models, one for men and one for women. This would not be a horrible solution. The estimated effected sizes would be the same. However, we would not be able to calculate the overall fit of the model (we will talk about model fit in one of the next sessions), and we would not have the estimate of standard error of the difference of slopes between men and women. So unlike in the model with interaction, we would not be able to say if the didference in slope between the two genders is statistically significant. 
+If we are interested in an interaction between two continuous variables, we have no other option than running a model with an interaction. However, when we are interested in an interaction between one continuous and one binary variable, we could also be tempted to run two separate models, one for men and one for women. This would not be a horrible solution. The estimated effected sizes would be the same. However, we would not be able to calculate the overall fit of the model (we will talk about model fit in one of the next lectures), and we would not have the estimate of standard error of the difference of slopes between men and women. So unlike in the model with interaction, we would not be able to say if the difference in slope between the two genders is statistically significant. 
 
-
-## Centering variables in models with interaction
-
-We saw above that some of the interpretations of main effects can be difficult or not very useful when models contain interactions. Indeed, they are estimated with the other independent variables fixed at 0. And the 0 can be very unrealistic such as in case of years of education above. 
-
-However, we can use centering for better interpretability of main effects. After doing so, the main effect corresponds to a predictive difference with the other input fixed at its average value. Intercept in the example above would be the average income for a person with mean number of years of education and of "average gender". Coefficient for years of education would be the average slope for all levels of gender. The interaction would keep the ame interpretation as above (difference of slope between genders).         
-
-[TBD - TABLE AND FIGURE TO ILUSTRATE THIS]
 
 ## Interaction as "it depends effects"
 
 Jim Frost offers in his [blog](https://cutt.ly/HkXcMY4) a helpful way to
 think about interactions as of "it depends effects". If the answer to
 the question 'What is the effect of X on Y?' is 'It depends', we are
-dealing with interactions. For example, do you like your food more with
-ketchup added? It depends, yes, if the food is french fries, no, if the
-food is ice-cream sundae.
+dealing with interactions. From the perspective of explanatory models, interactions are the usual way to deal with the so called moderators (see discussion of confiders, colliders, mediators, and moderators elsewhere in this course).
 
 ## Interactions require big samples
 
 Adding interactions sometimes makes good sense theoretically, and
 sometimes it also helps achieve good model specification with good fit
 to the data. However, estimating interactions requires much bigger
-samples to identify the same effect size as for main effect. And since
+samples to identify the same effect size compared to just the main effect. And since
 we can mostly assume that the effect size of interactions will be
 smaller than that of main effects, we will mostly require MUCH bigger
 samples. In his
@@ -319,10 +410,10 @@ estimate an interaction which is half the size of the main effect if we
 want to have the same statistical power. This does not mean that
 interactions are beyond reach, we can still meaningfully estimate them
 when their effect size is large enough. But when their effect size is
-only small, they can be out of reach in common sociological samples.
+only small, they can be out of reach in common sociological, let alone psychological samples.
 When we look for interactions in explorative analysis, we "typically
-look for them is with predictors that have large coefficients when not
-interacted. For a familiar example, smoking is strongly associated
+look for them for predictors that have large coefficients when not
+interacted (but this can be tricky as in the gender-income example above, it is always better to relly on theory if some is available). For a familiar example, smoking is strongly associated
 with cancer. In epidemiological studies of other carcinogens, it is crucial to adjust for smoking both as
 an uninteracted predictor and as an interaction, because the strength of association between other risk
 factors and cancer can depend on whether the individual is a smoker." [@gelman2020, pp. 136].
