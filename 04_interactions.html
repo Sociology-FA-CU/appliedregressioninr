@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Interactions</title>
+
+<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
+<link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
+<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Lecture Notes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00_quick_recap.html">0. Quick recap before you enroll</a>
+    </li>
+    <li>
+      <a href="01_goals.html">1. Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_variable_selection.html">2. Variable selection</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression.html">3. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression.html">4. Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_interactions.html">5. Interactions</a>
+    </li>
+    <li>
+      <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_model_fit.html">Model fit</a>
+    </li>
+    <li>
+      <a href="06_assumptions.html">Assumptions of linear models</a>
+    </li>
+    <li>
+      <a href="06_diagnostics.html">Regression diagnostics</a>
+    </li>
+    <li>
+      <a href="07_linearity_and_normality.html">Linearity</a>
+    </li>
+    <li>
+      <a href="08_heterscedasticity.html">Homoscedasticity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Slides
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_slides_goals.html">1. Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_slides_simple_linear_regression.html">2. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_slides_multiple_linear_regression.html">3. Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_slides_interactions.html">4. Interactions</a>
+    </li>
+    <li>
+      <a href="04_slides_model_visualization.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_slides_model_fit.html">Model fit</a>
+    </li>
+    <li>
+      <a href="06_slides_model_assumptions.html">Assumptions of linear models and diagnostics</a>
+    </li>
+    <li>
+      <a href="07_slides_nonlinearity.html">Linearity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Exercise
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_goals_excercises.html">1. Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression_excercises.html">2. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression_excercises.html">3. Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="035_multiple_linear_regression_excercises_2.html">Interactions</a>
+    </li>
+    <li>
+      <a href="04_model_visualization_exercises.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_model_fit_exercises.html">Model fit</a>
+    </li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="homework_midterm_eng.html">Final homework</a>
+    </li>
+    <li>
+      <a href="course_data.html">Datasets</a>
+    </li>
+    <li>
+      <a href="literature.html">Literature</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="syllabus.html">Completion requirements</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://ksoc.ff.cuni.cz/">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Sociology-FA-CU/appliedregressioninr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Interactions</h1>
+
+</div>
+
+
+<p>The goals for this lecture is learning about interactions. The lecture notes here provide a basic insight into interactions using an example with simulated data.</p>
+<div id="main-effects-and-interactions" class="section level1">
+<h1>Main effects and interactions</h1>
+<p>We will continue the example using the “countries” data set and regressing life expectancy on democratic index and share of people with university degree.</p>
+<pre class="r"><code>fit1 &lt;- lm(life_exp ~ dem_index + uni_prc, data = countries)
+summary (fit1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = life_exp ~ dem_index + uni_prc, data = countries)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.1640 -0.9798 -0.0910  1.4256  3.1522 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   66.300      2.210  30.003  &lt; 2e-16 ***
+## dem_index      1.786      0.415   4.303 0.000149 ***
+## uni_prc       -1.460      6.548  -0.223 0.824979    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.949 on 32 degrees of freedom
+##   (3 observations deleted due to missingness)
+## Multiple R-squared:  0.5517, Adjusted R-squared:  0.5237 
+## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
+<p>All the beta coefficients in the table above are so called main effects. We use this term to distinguish them from interactions. Let’s briefly stop on the term main effects before we proceed to interactions. There are two types of main effects. First, in simple linear regression, the main effect indicates the bivariate linear association between independent and dependent variable. Second, in MLR, the main effect is the conditional effect described in the previous lecture (i.e., the effect of an independent variable on a dependent variable conditional on all other variables in the model being held constant).</p>
+<p>Using only the main effects in MLR relies on the assumption that the effect of a given independent variable on the dependent variable is the same across all levels of other independent variables in the model, or more precisely, that rather than looking at different effects of our independent variable of interest (e.g. democratic index) for different levels of other independent variables (e.g. proportion of people with a degree), it is an acceptable simplification to take the average effect. When we do this, it is important to be aware of it. Maybe democratic index has different effect on life expectancy for countries with low proportion of university educated people and different effect for countries with high proportion of university educated people, but we would not be able to find out from the model above.</p>
+<p>In a model with just two predictors, such as ours, it is simple to check the assumption by adding the interaction term in the model. Either, we can use a syntax with an asterix, which includes both main effects and interactions. Alternatively, we can use syntax with a colon which only calls the interaction term, so we also need to call each of the main effects separately. The two models below are identical.</p>
+<pre class="r"><code>fit2 &lt;- lm(life_exp ~ dem_index*uni_prc, data = countries)
+fit3 &lt;- lm(life_exp ~ dem_index + uni_prc + dem_index:uni_prc, data = countries)
+summary (fit3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = life_exp ~ dem_index + uni_prc + dem_index:uni_prc, 
+##     data = countries)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.1316 -1.0089 -0.0921  1.4309  3.1746 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)         66.937      8.236   8.127 3.53e-09 ***
+## dem_index            1.702      1.124   1.514    0.140    
+## uni_prc             -3.967     31.908  -0.124    0.902    
+## dem_index:uni_prc    0.319      3.971   0.080    0.936    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.98 on 31 degrees of freedom
+##   (3 observations deleted due to missingness)
+## Multiple R-squared:  0.5518, Adjusted R-squared:  0.5084 
+## F-statistic: 12.72 on 3 and 31 DF,  p-value: 1.372e-05</code></pre>
+<p>For now, we will only briefly notice the fact that none of the predictors is suddenly significant. Interactions require large samples (we discuss this below) and including an interaction in a model ran on just 38 observations inflates standard errors. In addition, there are issues with interpreting main effects once interactions are included (also discussed below). But we can interpret the interaction term: it is extremely low compared to its standard error. This does not necessarily say we can safely ignore the interaction and only focus on the main effect. Rather, it says that if the effect of the interaction exists, it is too slow to reliably detect with our sample size. In other words, we don’t have the data to focus on other than the average effect, i.e., the main effect. Or yet in other words, we fail to reject the null hypothesis about the 0 size of the interaction, so we leave it out of the model.</p>
+<div id="illustrating-interactions-with-a-simulated-example-a-crazy-one" class="section level2">
+<h2>Illustrating interactions with a simulated example (a crazy one)</h2>
+<p>But what does it look like when we have enough data and interactions are significant? We will illustrate it with a very unrealistic, but hopefully illustrative example,</p>
+<p>Imagine we want to model the effect of years of education on earnings and we also enter gender into the model (we assume it only takes two values, “man” or “woman”). To make things easier, we will make ourselves fully in control by simulating our own data which will comply with the following assumptions (we know, very unrealistic assumption, but train your imagination with us :))</p>
+<ul>
+<li>Men make LESS money with every year of education they get</li>
+<li>Women make MORE money with every year of education they get</li>
+<li>The strength of the relationship is the same for both genders, only reverse in its direction</li>
+<li>There is about the same number of men in women in the population</li>
+<li>Each person can have 10, 11, … 20 years of education and each category has the same size</li>
+<li>Gender and number of years of education are independent</li>
+</ul>
+<p>Based on these assumptions, we can simulate some data:</p>
+<pre class="r"><code># gender - simulate 1000 women and 1000 men
+gender &lt;- c(rep(&quot;woman&quot;, 1000), rep(&quot;man&quot;, 1000))
+# save total number of observations
+n &lt;- length(gender)
+# generate years of education
+set.seed(42)
+yoe &lt;- sample(10:20, n, replace = TRUE)
+
+# generate income
+# income for women
+intercept_w &lt;- 10000
+beta_yoe_w &lt;- 1000
+sigma_w &lt;- 500
+income_w &lt;- intercept_w + beta_yoe_w*yoe[1:(n/2)] + sigma_w*rnorm(n/2)
+
+# income for men
+intercept_m &lt;- 40000
+beta_yoe_m &lt;- -1000
+sigma_m &lt;- 500
+income_m &lt;- intercept_m + beta_yoe_m*yoe[((n/2)+1):n] + sigma_m*rnorm(n/2)
+
+income &lt;- c(income_w, income_m)
+
+# bind to data frame
+
+df &lt;- data.frame(gender, yoe, income)</code></pre>
+<p>Now, imagine we want predict income with years of education and gender and we only include main effecs (i.e., we assume that the linear association between the two continuous variables is the same for both genders or close enough that we can ignore the difference). We use the following model:</p>
+<p><span class="math display">\[
+earnings = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender
+\]</span></p>
+<p>In R, it is:</p>
+<pre class="r"><code>fit1 &lt;- lm(income ~ yoe + gender, data = df)
+summary(fit1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = income ~ yoe + gender, data = df)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6398.8 -2919.4    42.5  2915.2  6311.0 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 25149.218    353.781  71.087   &lt;2e-16 ***
+## yoe            -6.778     22.624  -0.300    0.765    
+## genderwoman   -26.121    146.504  -0.178    0.859    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 3276 on 1997 degrees of freedom
+## Multiple R-squared:  6.119e-05,  Adjusted R-squared:  -0.0009403 
+## F-statistic: 0.0611 on 2 and 1997 DF,  p-value: 0.9407</code></pre>
+<p>The interpretation of this model would be straightforward: Expected income for a man with 0 years of education is 25 149 CZK. For women, the number is almost identical (small estimate of the difference and large standard-errors indicate no difference between men and women), so gender does not seem to matter. Years of education do not do any difference.</p>
+<p>However, we know that there actually are fairly strong associations in the data, we simulated them. The problem is that by only considering main effects, we got the average effect in which the associations cancel out, as visualized below:</p>
+<pre class="r"><code>df %&gt;% ggplot(aes(y = income, x = yoe)) + geom_point() + geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><img src="04_interactions_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>What we need to do to capture the different relationship between years of education and income for each gender is to include interaction. Visually this will look like this (we allow for different regression slopes for both genders).</p>
+<pre class="r"><code>df %&gt;% ggplot(aes(y = income, x = yoe, color = gender)) +
+  geom_point() +
+  geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><img src="04_interactions_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>This means our model will look like this:</p>
+<p><span class="math display">\[
+income = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender + \beta_3*yearsOfEducation*gender
+\]</span></p>
+<p>To run and explore it in R, we write the following code:</p>
+<pre class="r"><code>fit2 &lt;- lm(income ~ yoe*gender, data = df)
+summary(fit2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = income ~ yoe * gender, data = df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1716.62  -340.04     9.16   340.62  1663.25 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      39994.735     74.920   533.8   &lt;2e-16 ***
+## yoe               -999.656      4.897  -204.2   &lt;2e-16 ***
+## genderwoman     -29942.272    106.404  -281.4   &lt;2e-16 ***
+## yoe:genderwoman   1998.123      6.946   287.7   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 502.9 on 1996 degrees of freedom
+## Multiple R-squared:  0.9764, Adjusted R-squared:  0.9764 
+## F-statistic: 2.758e+04 on 3 and 1996 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Suddenly, things have changed significantly. The intercept is now interpreted as expected income for a man with 0 years of education. That is the 40000 we entered in the simulation. The beta of years of education (ca -1000) is the slope for men (i.e. when comparing two men who differ by one 1 of education, we expect the one with more education have 1000 less income). Subtracting the beta for women from the intercept will give as the 10000 simulated for women with 0 years of education. Finally, the beta for the interaction (ca 2000) says how the effect of education on income will differ for women. For example, if you are a woman with 12 year of education, your expected income is ca 22 000. Note that you still get the 1000 per year of education penalty, but it is outweighed by the 2000 per year education bonus for women (the interaction term).</p>
+<p><span class="math display">\[
+39994 - 29942 - 999*12 + 1998*12*1 = 39994 - 29942 - 11988 + 23976 = 22040
+\]</span> This model with interaction is obviously a much better way to describe our data, but there are some issues. The value of intercept corresponds to 0 years of education, an unrealistic value which is not at all present in our data. There is another issue: the main effect of years of education is strong and negative, while we see the overall (average) effect in our data is 0. In more complicated situations, this can be confusing and the main effect is impossible to interpret in itself. Both these issues can be addressed with centering of predictors.</p>
+</div>
+<div id="centering-variables-in-models-with-interactions" class="section level2">
+<h2>Centering variables in models with interactions</h2>
+<p>We saw above that some of the interpretations of main effects can be difficult or not very useful when models contain interactions. However, we can use centering for better interpretability of main effects:</p>
+<pre class="r"><code># center predictors
+df &lt;- 
+  df %&gt;% mutate(yoe_c = yoe - mean(yoe),
+                gender_w = ifelse(gender == &quot;woman&quot;, 1, 0),
+                gender_c = gender_w - mean(gender_w))
+
+# run model
+fit3 &lt;- lm(income ~ yoe_c*gender_c, data = df)
+summary(fit3)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = income ~ yoe_c * gender_c, data = df)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1716.62  -340.04     9.16   340.62  1663.25 
+## 
+## Coefficients:
+##                  Estimate Std. Error  t value Pr(&gt;|t|)    
+## (Intercept)    25014.6997    11.2450 2224.516   &lt;2e-16 ***
+## yoe_c             -0.5944     3.4731   -0.171    0.864    
+## gender_c         -26.3686    22.4900   -1.172    0.241    
+## yoe_c:gender_c  1998.1234     6.9463  287.655   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 502.9 on 1996 degrees of freedom
+## Multiple R-squared:  0.9764, Adjusted R-squared:  0.9764 
+## F-statistic: 2.758e+04 on 3 and 1996 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Now, the intercept shows the expected income for the average gender with mean years of education. More importantly, the main effects have a more meaningful interpretation: the 0 value for years of education indicates the average effect of years of education on income. The interaction is unchanged, but remember that the data has been transformed (centered), so the value of gender for women is now 0.5 and for men -0.5. It is these number that we have to multiply with the beta for interaction to get our expectations.</p>
+</div>
+<div id="added-value-of-centering-in-models-with-interactions" class="section level2">
+<h2>Added value of centering in models with interactions</h2>
+<p>We already knew from earlier that centering helps to give the intercept some meaningful interpretation. In case of models with interactions, it also helps give the main effects some meaningful interpretation. Imagine we continue our simulated example, but this time, there are still 1000 women in our sample, but only 300 men. When running the analysis with non-centred predictors, nothing much changed in the output table compared to the model on the full sample. Actually, the results are nearly identical, only the degrees of freedom differ (they are function of the sample size):</p>
+<pre class="r"><code># we only take the first 1300 observations, i.e., 1000 women and 300 men, and we repeat the centering.
+
+df_part &lt;- 
+  df %&gt;% 
+  slice(1:1300) %&gt;% 
+  mutate(yoe_c = yoe - mean(yoe),
+         gender_w = ifelse(gender == &quot;woman&quot;, 1, 0),
+         gender_c = gender_w - mean(gender_w))
+
+fit4 &lt;- lm(income ~ yoe*gender, data = df_part)
+summary(fit4)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = income ~ yoe * gender, data = df_part)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1716.62  -339.32     9.02   349.14  1529.84 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      40119.822    134.377   298.6   &lt;2e-16 ***
+## yoe              -1005.691      8.649  -116.3   &lt;2e-16 ***
+## genderwoman     -30067.360    153.979  -195.3   &lt;2e-16 ***
+## yoe:genderwoman   2004.158      9.942   201.6   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 500.4 on 1296 degrees of freedom
+## Multiple R-squared:  0.977,  Adjusted R-squared:  0.9769 
+## F-statistic: 1.834e+04 on 3 and 1296 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Next, we run the same model on centered data. As a result of centering, the main effect receives different interpretation: it is the average slope of the linear relationship of years of education and income, reflecting the bigger proportion of women in our sample:</p>
+<pre class="r"><code>fit5 &lt;- lm(income ~ yoe_c*gender_c, data = df_part)
+summary(fit5)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = income ~ yoe_c * gender_c, data = df_part)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1716.62  -339.32     9.02   349.14  1529.84 
+## 
+## Coefficients:
+##                 Estimate Std. Error  t value Pr(&gt;|t|)    
+## (Intercept)    25048.765     13.882 1804.454   &lt;2e-16 ***
+## yoe_c            535.969      4.267  125.617   &lt;2e-16 ***
+## gender_c          62.841     32.962    1.907   0.0568 .  
+## yoe_c:gender_c  2004.158      9.942  201.589   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 500.4 on 1296 degrees of freedom
+## Multiple R-squared:  0.977,  Adjusted R-squared:  0.9769 
+## F-statistic: 1.834e+04 on 3 and 1296 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>Visually, we still see the opposite relationships in the two sub-samples, but the average effect is more strongly influenced by the bigger group. If we are interested in the average effect and also the sub-group effects, centering is a useful tool to read them both from one model specification.</p>
+<pre class="r"><code>df_part %&gt;% ggplot(aes(x=yoe, y=income)) + geom_jitter() + geom_smooth(method = &quot;lm&quot;)</code></pre>
+<p><img src="04_interactions_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="model-with-interaction-vs.-two-separate-models" class="section level2">
+<h2>Model with interaction VS. two separate models</h2>
+<p>If we are interested in an interaction between two continuous variables, we have no other option than running a model with an interaction. However, when we are interested in an interaction between one continuous and one binary variable, we could also be tempted to run two separate models, one for men and one for women. This would not be a horrible solution. The estimated effected sizes would be the same. However, we would not be able to calculate the overall fit of the model (we will talk about model fit in one of the next lectures), and we would not have the estimate of standard error of the difference of slopes between men and women. So unlike in the model with interaction, we would not be able to say if the difference in slope between the two genders is statistically significant.</p>
+</div>
+<div id="interaction-as-it-depends-effects" class="section level2">
+<h2>Interaction as “it depends effects”</h2>
+<p>Jim Frost offers in his <a href="https://cutt.ly/HkXcMY4">blog</a> a helpful way to think about interactions as of “it depends effects.” If the answer to the question ‘What is the effect of X on Y?’ is ‘It depends,’ we are dealing with interactions. From the perspective of explanatory models, interactions are the usual way to deal with the so called moderators (see discussion of confiders, colliders, mediators, and moderators elsewhere in this course).</p>
+</div>
+<div id="interactions-require-big-samples" class="section level2">
+<h2>Interactions require big samples</h2>
+<p>Adding interactions sometimes makes good sense theoretically, and sometimes it also helps achieve good model specification with good fit to the data. However, estimating interactions requires much bigger samples to identify the same effect size compared to just the main effect. And since we can mostly assume that the effect size of interactions will be smaller than that of main effects, we will mostly require MUCH bigger samples. In his <a href="https://statmodeling.stat.columbia.edu/2018/03/15/need-16-times-sample-size-estimate-interaction-estimate-main-effect/">blog</a>, Andrew Gelman shows that we will need 16 times the sample size to estimate an interaction which is half the size of the main effect if we want to have the same statistical power. This does not mean that interactions are beyond reach, we can still meaningfully estimate them when their effect size is large enough. But when their effect size is only small, they can be out of reach in common sociological, let alone psychological samples. When we look for interactions in explorative analysis, we “typically look for them for predictors that have large coefficients when not interacted (but this can be tricky as in the gender-income example above, it is always better to relly on theory if some is available). For a familiar example, smoking is strongly associated with cancer. In epidemiological studies of other carcinogens, it is crucial to adjust for smoking both as an uninteracted predictor and as an interaction, because the strength of association between other risk factors and cancer can depend on whether the individual is a smoker.” <span class="citation">(Gelman et al., 2020, p. 136)</span>.</p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2 class="unnumbered">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="ref-gelman2020" class="csl-entry">
+Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
+</div>
+</div>
+</div>
+</div>
+
+<br>
+  <footer class="bg-white fixed-bottom border">
+    <!-- Copyright -->
+    <div class="text-center p-1">
+      <a class="text-dark" color="black" href="https://ksoc.ff.cuni.cz/">Department of Sociology, Faculty of Arts </br> Charles University </a>
+    </div>
+    <!-- Copyright -->
+  </footer>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -15,6 +15,8 @@ navbar:
           href: 02_simple_linear_regression.html
         - text: "4. Multiple linear regression"
           href: 03_multiple_linear_regression.html
+        - text: "5. Interactions"
+          href: 04_interactions.html
         - text: "Ploting regression models, marginal effects"
           href: 04_model_visualization.html
         - text: "Model fit"
@@ -35,6 +37,8 @@ navbar:
           href: 02_slides_simple_linear_regression.html
         - text: "3. Multiple linear regression"
           href: 03_slides_multiple_linear_regression.html
+        - text: "4. Interactions"
+          href: 04_slides_interactions.html
         - text: "Ploting regression models, marginal effects"
           href: 04_slides_model_visualization.html
         - text: "Model fit"
@@ -45,11 +49,11 @@ navbar:
           href: 07_slides_nonlinearity.html
     - text: "Exercise"
       menu:
-        - text: "1 Goals of regression analysis"
+        - text: "1. Goals of regression analysis"
           href: 01_goals_excercises.html
-        - text: "2 Simple linear regression"
+        - text: "2. Simple linear regression"
           href: 02_simple_linear_regression_excercises.html
-        - text: "Multiple linear regression"
+        - text: "3. Multiple linear regression"
           href: 03_multiple_linear_regression_excercises.html
         - text: "Interactions"
           href: 035_multiple_linear_regression_excercises_2.html

@@ -264,6 +264,9 @@ $(document).ready(function () {
       <a href="03_multiple_linear_regression.html">4. Multiple linear regression</a>
     </li>
     <li>
+      <a href="04_interactions.html">5. Interactions</a>
+    </li>
+    <li>
       <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
     </li>
     <li>
@@ -300,6 +303,9 @@ $(document).ready(function () {
       <a href="03_slides_multiple_linear_regression.html">3. Multiple linear regression</a>
     </li>
     <li>
+      <a href="04_slides_interactions.html">4. Interactions</a>
+    </li>
+    <li>
       <a href="04_slides_model_visualization.html">Ploting regression models, marginal effects</a>
     </li>
     <li>
@@ -321,13 +327,13 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_goals_excercises.html">1 Goals of regression analysis</a>
+      <a href="01_goals_excercises.html">1. Goals of regression analysis</a>
     </li>
     <li>
-      <a href="02_simple_linear_regression_excercises.html">2 Simple linear regression</a>
+      <a href="02_simple_linear_regression_excercises.html">2. Simple linear regression</a>
     </li>
     <li>
-      <a href="03_multiple_linear_regression_excercises.html">Multiple linear regression</a>
+      <a href="03_multiple_linear_regression_excercises.html">3. Multiple linear regression</a>
     </li>
     <li>
       <a href="035_multiple_linear_regression_excercises_2.html">Interactions</a>
@@ -404,7 +410,7 @@ $(document).ready(function () {
 <pre class="r"><code>library(tidyverse) # for pipes, count function and ggplot
 countries = read.csv(&quot;data/countries.csv&quot;)</code></pre>
 <ol style="list-style-type: decimal">
-<li>Using the <code>countries</code> data, create a regression model predicting the percentage of people at risk of poverty (<code>poverty_risk</code>) by using the democracy index (<code>dem_index</code>).</li>
+<li>Using the <code>countries</code> data, create a regression model predicting the percentage of people at risk of poverty (<code>poverty_risk</code>) from the value of democracy index (<code>dem_index</code>).</li>
 </ol>
 <pre class="r"><code>countries %&gt;% ggplot(aes(x=dem_index, y=poverty_risk))+geom_point()+geom_smooth(method = &quot;lm&quot;) # remember to visualize before modeling 
 
@@ -420,7 +426,7 @@ mod1 = lm(poverty_risk ~ dem_index, data = countries)</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Is the interpretation of the intercept in our model (as stated in previous solution) meaningful?</li>
 </ol>
-<pre class="r"><code>&quot;No, it is only technical. On inspection of the data, you will notice there are no countries in the sample even close to the democracy index of 0. So the interpetation is, in fact, a wild extrapolation to an area for which we have no data.&quot;</code></pre>
+<pre class="r"><code>&quot;Not really, it is only technical. On inspection of the data, you will notice there are no countries in the sample even close to the democracy index of 0. So the interpetation is, in fact, a wild extrapolation to an area for which we have no data.&quot;</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Center the democracy index variable and fit the model again. How does the interpretation of the coefficients changes?</li>
 </ol>
@@ -440,6 +446,35 @@ mod3 = lm(poverty_risk ~ di_cat, data = countries)
 summary(mod3)
 
 &quot;We did not have to do anything special before running the model, just check that that the di_cat variable is not coded as numeric. Since it is not, R automatically transforms it into factor (if it is not a factor yet) and then to dummies. It automatically includes only k-1 of the dummies in the model. We see, looking at the intercepts, that full democracy have 6 percentage points less people living in poverty, on average, compared to Flawed democracies. Hybrid democracies, on the other hand, have 16 percentage points higher povery rate the Flawed democracies, on average. But what is the poverty rate of Flawed democracies to begin with? It is the intercept, i.e. 25.5 %.&quot;</code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>Regress per-capita gdp on eu_membership. Interpret the results. Note the terminology. We sometimes say regress Y on X. This means use Y as dependent and X as independent variable. You may need to first create the per capita variable.</li>
+</ol>
+<pre class="r"><code>countries &lt;-
+  countries %&gt;% mutate(percapita_gdp = (gdp*1000000) / population)
+
+mod1  = lm(percapita_gdp ~ eu_member, data = countries)
+summary(mod1)
+
+&quot;The average per-capita GDP in countries which are not EU members is 36 432 EUR. The average per-capita income in countries which are EU members is 5956 EUR less, that is 30476. However, the precision of the estimate of the difference is poor. Standard error is huge and p value is very far from the standard significance treshold of 0.05. Hence the result is purely descriptive for the sample. Also remember that regression estimates for one binary predictor are just a form of expressing the group means. Compare with the code below.&quot;
+
+countries %&gt;% group_by(eu_member) %&gt;% summarise(mean = mean((gdp*1000000) / population, na.rm=TRUE))</code></pre>
+<ol start="7" style="list-style-type: decimal">
+<li>You may be surprised by the result of the previous task. Try to plot the data to get some additional insights.</li>
+</ol>
+<pre class="r"><code>countries %&gt;% 
+  mutate(eu_member = as.numeric(eu_member==&quot;yes&quot;)) %&gt;% # need to transform to numeric for geom_smooth to work
+  ggplot(aes(x=eu_member, y = (gdp*1000000) / population)) + geom_point() + geom_smooth(method = &quot;lm&quot;, se = FALSE)
+
+&quot;There are many ways to plot data and get insights. Our solution shows that the countries which are not in EU are of two distinct kinds. They either have very low per-capita GDP, or very high per-capita GDP. On avarage, they have a little higher per-capita GDP than EU members, but there are actually no &#39;average&#39; non-EU countries.&quot;</code></pre>
+<ol start="8" style="list-style-type: decimal">
+<li>Given that Czech Republic is in the EU, by how much is its per-capita GDP bigger or smaller than that predicted by the model?</li>
+</ol>
+<pre class="r"><code>countries %&gt;% filter(code == &quot;CZ&quot;) # Czechia is the 3rd row (variable X is the row number)
+
+mod1$residuals[3] # this is the answer, Czechia&#39;s per-capita GDP is almost 11 000 EUR smaller than the mean of EU countries 
+mod1$fitted.values[3] # this is the predicted values, i.e. the mean of EU countries
+countries %&gt;% group_by(eu_member) %&gt;% summarise(mean(percapita_gdp), na.rm = TRUE) # you can check OLs peridiction in this case is nothing else than a group mean
+mod1$model[3,] # this is the actual value of Czechia&#39;s per-capita GDP</code></pre>
 
 <br>
   <footer class="bg-white fixed-bottom border">

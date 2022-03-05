@@ -264,6 +264,9 @@ $(document).ready(function () {
       <a href="03_multiple_linear_regression.html">4. Multiple linear regression</a>
     </li>
     <li>
+      <a href="04_interactions.html">5. Interactions</a>
+    </li>
+    <li>
       <a href="04_model_visualization.html">Ploting regression models, marginal effects</a>
     </li>
     <li>
@@ -300,6 +303,9 @@ $(document).ready(function () {
       <a href="03_slides_multiple_linear_regression.html">3. Multiple linear regression</a>
     </li>
     <li>
+      <a href="04_slides_interactions.html">4. Interactions</a>
+    </li>
+    <li>
       <a href="04_slides_model_visualization.html">Ploting regression models, marginal effects</a>
     </li>
     <li>
@@ -321,13 +327,13 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="01_goals_excercises.html">1 Goals of regression analysis</a>
+      <a href="01_goals_excercises.html">1. Goals of regression analysis</a>
     </li>
     <li>
-      <a href="02_simple_linear_regression_excercises.html">2 Simple linear regression</a>
+      <a href="02_simple_linear_regression_excercises.html">2. Simple linear regression</a>
     </li>
     <li>
-      <a href="03_multiple_linear_regression_excercises.html">Multiple linear regression</a>
+      <a href="03_multiple_linear_regression_excercises.html">3. Multiple linear regression</a>
     </li>
     <li>
       <a href="035_multiple_linear_regression_excercises_2.html">Interactions</a>
@@ -402,53 +408,66 @@ $(document).ready(function () {
 
 
 <pre class="r fold-show"><code>library(tidyverse)
-countries = read.csv(&quot;data/countries.csv&quot;)</code></pre>
-<p>We will be using the ‘countries’ data set for this set of exercises. Before you start, look at the overview of the variables. If you cannot lookup the course webpage, use the following command in R to open it. You will need to understand how GDP is measured in the data.</p>
+countries = read.csv(&quot;data/countries.csv&quot;)
+un &lt;- read.table(&quot;data/UnitedNations.txt&quot;) # you will need to download as .txt the UnitedNations data set</code></pre>
+<p>We will be using both the familiar ‘countries’ data set for this set of exercises (task 1), and a new dataset, United Nations. You will need to download this dataset from the course webpage and make yourself familiar with it.</p>
 <pre class="r fold-show"><code>browseURL(&quot;https://sociology-fa-cu.github.io/appliedregressioninr/course_data.html&quot;) 
-# browseURL function enables to save and quickly open webpages from your script</code></pre>
+# browseURL function enables to quickly open webpages from your script</code></pre>
 <div id="tasks" class="section level1">
 <h1>Tasks</h1>
 <ol style="list-style-type: decimal">
-<li>Using the <code>countries</code> data, regress per-capita gdp on eu_membership. Interpret the results. Note the terminology. We sometimes say regress Y on X. This means use Y as dependent and X as independent variable.</li>
+<li>Use the countries dataset. Regress per-capita GDP (must create first) on the percentage of university educated (‘uni_prc’). Then regress per-capita GDP on both percentage of university educated (‘uni_prc’) and democratic index (‘dem_index’) in a single multiple regression model. Interpret the results.</li>
 </ol>
-<pre class="r"><code>countries &lt;-
+<pre class="r"><code># compute percapita_gdp
+countries &lt;-
   countries %&gt;% mutate(percapita_gdp = (gdp*1000000) / population)
 
-mod1  = lm(percapita_gdp ~ eu_member, data = countries)
+mod1 &lt;- lm(percapita_gdp ~ uni_prc, data = countries)
 summary(mod1)
 
-&quot;The average per-capita GDP in countries which are not EU members is 36 432 EUR. The average per-capita income in countries which are EU members is 5956 EUR less, that is 30476. However, the precision of the estimate of the difference is poor. Standard error is huge and p value is very far from the standard significance treshold of 0.05. Hence the result is purely descriptive for the sample. Also remember that regression estimates for one binary predictor are just a form of expressing the group means. Compare with the code below.&quot;
+&quot;This model is not very nice to intepret at its face value. It says that percapita GDP of a country with no university educated people is -26404 EUR. A non-sensical value which result from the fact that there are no countries without university educated people (yet we extrapolate to such hypothetical countires). It further says that the difference between the hypothetical countries with no uni educated and countries with all people having university degree is 197313 EUR. From this, we can easily calculate that the difference in percapita GDP between two countries which differ by 1 percentage point in their proportion of uni educated people is 1973 EUR (197313 / 100). The difference is statistically significant from 0.&quot;
 
-countries %&gt;% group_by(eu_member) %&gt;% summarise(mean = mean((gdp*1000000) / population, na.rm=TRUE))</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>You may be surprised by the result of the previous task. Try to plot the data to get some additional insights.</li>
-</ol>
-<pre class="r"><code>countries %&gt;% 
-  mutate(eu_member = as.numeric(eu_member==&quot;yes&quot;)) %&gt;%
-  ggplot(aes(x=eu_member, y = (gdp*1000000) / population)) + geom_point() + geom_smooth(method = &quot;lm&quot;, se = FALSE)
 
-&quot;There are many ways to plot data and get insights. Our solution shows that the countries which are not in EU are of two distinct kinds. They either have very low per-capita GDP, or very high per-capita GDP. On avarage, they have a little higher per-capita GDP than EU members, but there are actually no &#39;average&#39; non-EU countries.&quot;</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>Given that Czech Republic is in the EU, by how much is its per-capita GDP bigger or smaller than that predicted by the model?</li>
-</ol>
-<pre class="r"><code>countries %&gt;% filter(code == &quot;CZ&quot;) # Czechia is the 3rd row (variable X is the row number)
-
-mod1$residuals[3] # this is the answer, Czechia&#39;s per-capita GDP is almost 11 000 EUR smaller than the mean of EU countries 
-mod1$fitted.values[3] # this is the predicted values, i.e. the mean of EU countries
-mod1$model[3,] # this is the actual value of Czechia&#39;s per-capita GDP</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Regress per-capita GDP on the percentage of university educated (‘uni_prc’). Then regress per-capita GDP on both percentage of university educated (‘uni_prc’) and democratic index (‘dem_index’) in a single multiple regression model. Interpret the results.</li>
-</ol>
-<pre class="r"><code>mod2 &lt;- lm(percapita_gdp ~ uni_prc, data = countries)
+mod2 &lt;- lm(percapita_gdp ~ uni_prc + dem_index, data = countries)
 summary(mod2)
 
-&quot;This model is not very nice to intepret at its face value. It says that percapita GDP of a country with no university educated people is -26404 EUR. A non-sensical value which result from the fact that there are no countries without university educated people (yet we extrapolate to such hypothetical countires). It further says that the difference between the hypothetical countries with no uni educated and countries with all people having university degree is 197313 EUR. But we can easily calculate that the difference in percapita GDP between two countries which differ by 1 percentage point in their proportion of uni educated people is 1973 EUR (197313 / 100). The difference is statistically significant from 0.&quot;
+&quot;The difference in per-capita GDP between countries which differ by one point in their democratic index (ten point scale) AND have the same proportion of university educated is 16310 EUR on average. This is a huge difference substantially and it is also statistically significant. Notice that the coefficient for &#39;uni_prc&#39; went down dramatically to only 34543 EUR. In other words, for two countries with the same democratic index and differing by 1 percentage point in their proportion of university educated, the difference in per capita GDP only 345 EUR, a number which is likely some random noise given the broad standard errors.&quot;</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Use the UN dataset. Regress total fertility rate (tfr) on illiteracy.</li>
+</ol>
+<pre class="r"><code>un %&gt;% glimpse() # when inspecting the dataset, you will notice there are two variables for illiteracy - one for males and one for females. Let&#39;s see what happens when we use the male illiteracy, the female illiteracy and when we use both.
 
-
-mod3 &lt;- lm(percapita_gdp ~ uni_prc + dem_index, data = countries)
+mod3 &lt;- lm(tfr ~ illiteracyMale, data = un)
 summary(mod3)
 
-&quot;The difference in per-capita GDP between countries which differ by one point in their democratic index AND have the same proportion of university educated is 16310 EUR on average. This is a huge difference substantially and it is also statistically significant. Notice that the coefficient for &#39;uni_prc&#39; went down dramatically to only 34543 EUR. In other words, for two countries with the same democratic index and differing by 1 percentage point in their proportion of university educated, the difference in per capita GDP only 345 EUR, a number which is likely random noise given the broad standard errors.&quot;</code></pre>
+&quot;Male illiteracy is a fairly strong predictor of total fertility rate. For each percetnage point of male illiteracy, total fertility rate goes up by 0.068 children per woman. In other words, if two countries differ by 15 (1/0.068) percentage points in male illiteracy, the one with more illiteracy is expected to have 1 more child born per woman.&quot;
+
+ggplot(aes(x=illiteracyMale, y = tfr), data = un) + geom_point() + geom_smooth(method=&quot;lm&quot;)
+
+
+mod4 &lt;- lm(tfr ~ illiteracyFemale, data = un)
+summary(mod4)
+
+&quot;A similar story with slightly different numbers unfolds for female illitaracy, only the beta is a bit smaller.&quot;
+
+ggplot(aes(x=illiteracyFemale, y = tfr), data = un) + geom_point() + geom_smooth(method=&quot;lm&quot;)
+
+mod5 &lt;- lm(tfr ~ illiteracyMale + illiteracyFemale, data = un)
+summary(mod5)
+
+&quot;A peculiar thing happnes when we use both. The male illiteracy stops being statistically significant. We know that regression coefficients in MLR are in part dependent on other predictors in the model. This, however, is an extreme example. When two variables are very strongly correlated, like male and female illiteracy, it becomes difficult for the regression analysis to evaluate their independent (net) effect. This is called multicolinearity and we will address this issue in more detail later in the course. Generally, it is better to just use on of the two variables in the final model as the second one, while being a strong predictor in simple linear model, adds (almost) no new information.&quot;
+
+
+cor(un$illiteracyFemale, un$illiteracyMale, use = &quot;complete&quot;) # correlation is extreamly high between the two predictors
+
+
+# You may have decided to center the variables:
+un &lt;-
+  un %&gt;% mutate(imc = illiteracyMale - mean(illiteracyMale, na.rm = TRUE),
+                ifc = illiteracyFemale - mean(illiteracyFemale, na.rm=TRUE))
+
+mod6 &lt;- lm(tfr ~ imc + ifc, data = un)
+summary(mod6)</code></pre>
 </div>
 
 <br>

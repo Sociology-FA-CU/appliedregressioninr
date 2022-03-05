@@ -1,5 +1,5 @@
 ---
-title: "Lesson 3: Multiple linear regression and interactions"
+title: "Lesson 3: Multiple linear regression"
 subtitle: "Jaromír Mazák & Aleš Vomáčka"
 author: "Dpt. of Sociology, Faculty of Arts, Charles University"
 date: "Last updated in March 2022"
@@ -23,7 +23,6 @@ countries <- read.csv(here("data", "countries.csv"))
 
 -   Understanding the concept of multiple linear regression
 -   Building and interpreting multiple linear regression in R
--   Using and interpreting interactions
 
 ## Multiple linear regression
 
@@ -91,33 +90,6 @@ To be on the save side, interpret regression coefficients as comparisons between
 -   Used to determine relative weight of independent variables: Effect of an increase in X by one standard deviation on Y, also measured in standard deviations.
 - Standardize all variables to z-scores
 -   Sometimes better: standardizing by subtracting the mean and dividing by 2 standard deviations (not 1) - direct comparability with untransformed binary predictors [@gelman2008]
-
-
-## Main effects and interactions
-
--   Two kinds of main effects
-
-    -   bivariate association (simple regression) or
-    -   conditional/additional effects (multiple regression)
-    -   main effects in equation: $... + \beta_i*X_i +...$
-
--   Interactions: the effect of one independent variable on the dependent variable varies across levels of another independent variable. Interaction effects as "it depends" effects.
-
-    -   e.g. interaction between smoking and inhaling asbestos in their effect on lung cancer risk
-    -   interactions in equation: $... + \beta_1*X_1 + \beta_2*X_2 + \beta_3*X_1*X_2 + ...$
-    
-    
-## Model with interactions vs. two separate models
-
-For an interaction of continuous variable with a binary variable, we could also run two separate models. So why not?
-- one model with interaction term = one fit
-- one model with interaction term = statistical significance test of the difference of slopes 
-
-
-## Interpreting interaction coefficients
-
-This can be tricky, we will go through it in the lab part of this session. Also see [@gelman2020, pp. 134-136] for general comments and [@gelman2020, pp. 185-187] for the effect of centering variables in models with interactions.
-
 
 
 ## References
