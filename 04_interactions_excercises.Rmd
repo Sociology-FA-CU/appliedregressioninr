@@ -1,0 +1,145 @@
+---
+title: "Interactions - Excercises"
+output:
+  html_document:
+    code_foldin: hide
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = F)
+```
+
+```{r data, class.source = "fold-show"}
+library(tidyverse)
+un = read.table("data/UnitedNations.txt")
+```
+
+This time, we will be using the 'un' data set which can be downloaded from the data section as 'UnitedNations.txt'. Note it is a '.txt' file, use 'read.table' function to read it into R. For variables description, run the following browseURL - it will open the documentation in your browser.
+
+```{r data-description, class.source = "fold-show"}
+browseURL("https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/UnitedNations.pdf")
+```
+
+  
+# Tasks
+
+
+1) Copy-paste the simulation we did in class (or use your class script). Change parameters to some more plausible values (even if not realistic). For example the intercept for women stays 8000, the one for men is 12000. Beta for years of education for women stays 1000, the one for men is only 500. Sigma for women is newly 2000, the one for men is 2200. Or make up your own values.
+
+Run the same model as in the class (predict income with gender and years of education using also the interaction between the two) on raw predictors and centered predictors. Interpret both models and explain how the parameters hard-coded in the simulation are "hidden" in the regression coefficients   
+
+```{r}
+
+# START SIMULATION
+# gender
+gender <- c(rep("woman", 1000), rep("man", 1000))
+n <- length(gender)
+
+# years of education
+set.seed(2) # for steady results to interpret
+yoe <- sample(10:20, n, replace = TRUE)
+
+# income for women
+intercept_w <- 8000
+beta_yoe_w <- 1000
+sigma_w <- 2000
+
+income_w <- intercept_w + beta_yoe_w*yoe[1:1000] + sigma_w*rnorm(n/2)
+
+# income for men
+intercept_m <- 12000
+beta_yoe_m <- 500
+sigma_m <- 2200
+
+income_m <- intercept_m + beta_yoe_m*yoe[1001:2000] + sigma_m*rnorm(n/2)
+
+income <- c(income_w, income_m)
+
+# produce dataframe
+
+df <- data.frame(gender, yoe, income)
+
+# END SIMULATION
+
+# visualize
+
+df %>% ggplot(aes(x=yoe, y = income))+
+  geom_jitter() +
+  geom_smooth(method = "lm")
+
+df %>% ggplot(aes(x=yoe, y = income, color = gender))+
+  geom_jitter() +
+  geom_smooth(method = "lm")
+
+
+# mutate and model
+
+fit1 <- lm(income ~ yoe*gender, data=df)
+summary(fit1)
+
+df <-
+  df %>% mutate(yoe_c = yoe - mean(yoe),
+                  female = ifelse(gender == "woman", 1,0), # first convert to numeric using ifelse
+                  female_c = female - mean(female)) # then center
+
+fit2 <- lm(income ~ yoe_c*female_c, data=df)
+summary(fit2)
+
+
+# Notice what has happened thanks to centering. 
+# Not only does the intercept now have a more meaningful interpretation (expected income for an average 
+# person in the sense that they have mean years of education and "average" gender, i.e. weighted middle 
+# between men and women). But also the main effects now retain meaningful interpretation: the main effect 
+# of years of education is not an average effect across the groups (across the two genders) and the main 
+# effect of being female does not show the difference between men and women at some unrealistic 0 years 
+# of education, but for men and women with average years of education. Compare this information to the 
+# much less meaningful value of -4000 for the non-centered model, which could trap someone into thinking 
+# that women have smaller income, but this is only true for a wild extrapolation of the linear trend to 0 
+# years of education. As a bonus, the interaction effect does not change: it is still the extimate of the 
+# difference in slopes between men and women. 
+
+```
+
+2) Use the countries data set, predict human development index hdi with life_exp a uni_prc, also try interaction between the two and compare the two predictors with each other.
+
+```{r}
+fit3 <- lm(hdi ~ life_exp + uni_prc, data = countries)
+summary (fit3) 
+
+# both variables seem to be strong predictors of human development index - no surprise here, 
+# I can imagine the index is constructed taking life expectancy and percentage of people with
+# degree into the computation.
+
+countries %>% ggplot(aes(x=uni_prc, y=hdi)) + geom_point() + geom_smooth() 
+countries %>% ggplot(aes(x=life_exp, y=hdi)) + geom_point() + geom_smooth() 
+
+
+fit4 <- lm(hdi ~ life_exp*uni_prc, data = countries)
+summary (fit4) # the interaction is small an statistically insignificant - no wonder, interactions
+# rarely are in small samples. However, notice how the standard errors for the main effects went up
+# dramatically. They are estimated at 0 and as such, very unstable and un-interpretable. 
+
+
+# try centering next...
+
+countries <- 
+  countries %>% mutate(life_exp_c = life_exp - mean(life_exp, na.rm = TRUE),
+                       uni_prc_c = uni_prc - mean(uni_prc, na.rm = TRUE))
+
+fit5 <- lm(hdi ~ life_exp_c*uni_prc_c, data = countries)
+summary (fit5) 
+
+# this is much better, we can still show the statistically insignificant interaction in the model, 
+# while also reporting meaningful main effects (very similar to those in model without interactions fit3)
+
+# compare coefficients 
+
+fit6 <- lm(hdi ~ scale(life_exp_c)*scale(uni_prc_c), data = countries)
+summary (fit6) 
+
+# we can see clearly that the interaction effect is very small compared to the main effects, 
+# about 20-25 % in size. 
+```
+

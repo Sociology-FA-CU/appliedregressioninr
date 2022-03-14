@@ -11,7 +11,7 @@
 
 
 
-<title>Multiple linear regression - Excercises</title>
+<title>Interactions - Excercises</title>
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -402,127 +402,127 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Multiple linear regression - Excercises</h1>
+<h1 class="title toc-ignore">Interactions - Excercises</h1>
 
 </div>
 
 
 <pre class="r fold-show"><code>library(tidyverse)
-countries = read.csv(&quot;data/countries.csv&quot;)
-un &lt;- read.table(&quot;data/UnitedNations.txt&quot;) # you will need to download as .txt the UnitedNations data set</code></pre>
-<p>First, we will be using both the familiar ‘countries’ data set for this set of exercises (task 1), and then a new dataset, United Nations, for the rest. You will need to download this new dataset from the course webpage and make yourself familiar with it.</p>
-<pre class="r fold-show"><code>browseURL(&quot;https://sociology-fa-cu.github.io/appliedregressioninr/course_data.html&quot;) 
-# browseURL function enables to quickly open webpages from your script</code></pre>
+un = read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
+<p>This time, we will be using the ‘un’ data set which can be downloaded from the data section as ‘UnitedNations.txt’. Note it is a ‘.txt’ file, use ‘read.table’ function to read it into R. For variables description, run the following browseURL - it will open the documentation in your browser.</p>
+<pre class="r fold-show"><code>browseURL(&quot;https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/UnitedNations.pdf&quot;)</code></pre>
 <div id="tasks" class="section level1">
 <h1>Tasks</h1>
 <ol style="list-style-type: decimal">
-<li>Use the countries dataset. Regress per-capita GDP (must create first) on the percentage of university educated (‘uni_prc’). Then regress per-capita GDP on both percentage of university educated (‘uni_prc’) and democratic index (‘dem_index’) in a single multiple regression model. Interpret the results.</li>
+<li>Copy-paste the simulation we did in class (or use your class script). Change parameters to some more plausible values (even if not realistic). For example the intercept for women stays 8000, the one for men is 12000. Beta for years of education for women stays 1000, the one for men is only 500. Sigma for women is newly 2000, the one for men is 2200. Or make up your own values.</li>
 </ol>
-<pre class="r"><code># compute percapita_gdp
-countries &lt;-
-  countries %&gt;% mutate(percapita_gdp = (gdp*1000000) / population)
+<p>Run the same model as in the class (predict income with gender and years of education using also the interaction between the two) on raw predictors and centered predictors. Interpret both models and explain how the parameters hard-coded in the simulation are “hidden” in the regression coefficients</p>
+<pre class="r"><code># START SIMULATION
+# gender
+gender &lt;- c(rep(&quot;woman&quot;, 1000), rep(&quot;man&quot;, 1000))
+n &lt;- length(gender)
 
-mod1 &lt;- lm(percapita_gdp ~ uni_prc, data = countries)
-summary(mod1)
+# years of education
+set.seed(2) # for steady results to interpret
+yoe &lt;- sample(10:20, n, replace = TRUE)
 
-&quot;This model is not very nice to intepret at its face value. It says that percapita GDP of a country with no university educated people is -26404 EUR. A non-sensical value which result from the fact that there are no countries without university educated people (yet we extrapolate to such hypothetical countires). It further says that the difference between the hypothetical countries with no uni educated and countries with all people having university degree is 197313 EUR. From this, we can easily calculate that the difference in percapita GDP between two countries which differ by 1 percentage point in their proportion of uni educated people is 1973 EUR (197313 / 100). The difference is statistically significant from 0.&quot;
+# income for women
+intercept_w &lt;- 8000
+beta_yoe_w &lt;- 1000
+sigma_w &lt;- 2000
 
+income_w &lt;- intercept_w + beta_yoe_w*yoe[1:1000] + sigma_w*rnorm(n/2)
 
-mod2 &lt;- lm(percapita_gdp ~ uni_prc + dem_index, data = countries)
-summary(mod2)
+# income for men
+intercept_m &lt;- 12000
+beta_yoe_m &lt;- 500
+sigma_m &lt;- 2200
 
-&quot;The difference in per-capita GDP between countries which differ by one point in their democratic index (ten point scale) AND have the same proportion of university educated is 16310 EUR on average. This is a huge difference substantially and it is also statistically significant. Notice that the coefficient for &#39;uni_prc&#39; went down dramatically to only 34543 EUR. In other words, for two countries with the same democratic index and differing by 1 percentage point in their proportion of university educated, the difference in per capita GDP only 345 EUR, a number which is likely some random noise given the broad standard errors.&quot;</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>Use the UN dataset. Regress total fertility rate (tfr) on illiteracy.</li>
-</ol>
-<pre class="r"><code>un %&gt;% glimpse() # when inspecting the dataset, you will notice there are two variables for illiteracy - one for males and one for females. Let&#39;s see what happens when we use the male illiteracy, the female illiteracy and when we use both.
+income_m &lt;- intercept_m + beta_yoe_m*yoe[1001:2000] + sigma_m*rnorm(n/2)
 
-mod3 &lt;- lm(tfr ~ illiteracyMale, data = un)
-summary(mod3)
+income &lt;- c(income_w, income_m)
 
-&quot;Male illiteracy is a fairly strong predictor of total fertility rate. For each percetnage point of male illiteracy, total fertility rate goes up by 0.068 children per woman. In other words, if two countries differ by 15 (1/0.068) percentage points in male illiteracy, the one with more illiteracy is expected to have 1 more child born per woman.&quot;
+# produce dataframe
 
-ggplot(aes(x=illiteracyMale, y = tfr), data = un) + geom_point() + geom_smooth(method=&quot;lm&quot;)
+df &lt;- data.frame(gender, yoe, income)
 
+# END SIMULATION
 
-mod4 &lt;- lm(tfr ~ illiteracyFemale, data = un)
-summary(mod4)
+# visualize
 
-&quot;A similar story with slightly different numbers unfolds for female illitaracy, only the beta is a bit smaller.&quot;
+df %&gt;% ggplot(aes(x=yoe, y = income))+
+  geom_jitter() +
+  geom_smooth(method = &quot;lm&quot;)
 
-ggplot(aes(x=illiteracyFemale, y = tfr), data = un) + geom_point() + geom_smooth(method=&quot;lm&quot;)
-
-mod5 &lt;- lm(tfr ~ illiteracyMale + illiteracyFemale, data = un)
-summary(mod5)
-
-&quot;A peculiar thing happnes when we use both. The male illiteracy stops being statistically significant. We know that regression coefficients in MLR are in part dependent on other predictors in the model. This, however, is an extreme example. When two variables are very strongly correlated, like male and female illiteracy, it becomes difficult for the regression analysis to evaluate their independent (net) effect. This is called multicolinearity and we will address this issue in more detail later in the course. Generally, it is better to just use on of the two variables in the final model as the second one, while being a strong predictor in simple linear model, adds (almost) no new information.&quot;
-
-
-cor(un$illiteracyFemale, un$illiteracyMale, use = &quot;complete&quot;) # correlation is extreamly high between the two predictors
+df %&gt;% ggplot(aes(x=yoe, y = income, color = gender))+
+  geom_jitter() +
+  geom_smooth(method = &quot;lm&quot;)
 
 
-# You may have decided to center the variables:
-un &lt;-
-  un %&gt;% mutate(imc = illiteracyMale - mean(illiteracyMale, na.rm = TRUE),
-                ifc = illiteracyFemale - mean(illiteracyFemale, na.rm=TRUE))
+# mutate and model
 
-mod6 &lt;- lm(tfr ~ imc + ifc, data = un)
-summary(mod6)</code></pre>
-<p>We have mostly (or even only) used two predictor terms in our examples so far to keep things simple. Try now to regress ‘infantMortality’ on ‘tfr’, ‘economicActivityFemale’, and ‘illiteracyFemale’.</p>
-<ol start="3" style="list-style-type: decimal">
-<li>Before we start modeling, plot the dependent variable using geom_density.</li>
-</ol>
-<pre class="r"><code>ggplot(aes(x=infantMortality), data=un) + geom_density() # it is skewed, but we will proceed with the variable as is, without transformation. However, it is especially important to check assumptuions when this kind of distribution happens for the dependent variable. (We wil cover testing for assumptions later in the course.)</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>Now, plot the bivariate relationship between each predictor variable and the dependent variable, i.e. three plots in total. Use combination of geom_point and geom_smooth with the defualt method, i.e. loess curve.</li>
-</ol>
-<pre class="r"><code>ggplot(aes(y=infantMortality, x = tfr), data=un) + geom_point() + geom_smooth()
-# no surprise here, higher fertility associated with higher infant mortality (both typical of less developed countries). However, notice the spread seems to get bigger for higher values of total fertility rate. This could indicate issues to be covered later in the course.  
-
-ggplot(aes(y=infantMortality, x = economicActivityFemale), data=un) + geom_point() + geom_smooth()
-# female economic activity is not lineary associated with infant mortality, but there might be some U-shape non-linear relationship. Again, modelling non-linearity will be introduced further in the course.
-
-ggplot(aes(y=infantMortality, x = economicActivityFemale), data=un) + geom_point() + geom_smooth(method = &quot;lm&quot;)
-# see the non-effect if the line to fit is forced to linear
-
-ggplot(aes(y=infantMortality, x = illiteracyFemale), data=un) + geom_point() + geom_smooth(method = &quot;lm&quot;)
-# this is a fairly good looking linear association</code></pre>
-<ol start="5" style="list-style-type: decimal">
-<li>Run the model. Regress ‘infantMortality’ on ‘tfr’, ‘economicActivityFemale’, and ‘illiteracyFemale’. Only use the main effects. Interpret the model.</li>
-</ol>
-<pre class="r"><code>fit1 &lt;- lm(infantMortality ~ tfr + economicActivityFemale + illiteracyFemale, data = un)
+fit1 &lt;- lm(income ~ yoe*gender, data=df)
 summary(fit1)
 
-# total fertility rate, female economic activity, and illiteracy among females all have their independent linear effect on infantMortality. This may be surprising for the female economic activity, where there was no linear association for the bivariate relationship. But this is not too rare: conditional main effects in MLR may differ a lot from bivariate main effects. 
+df &lt;-
+  df %&gt;% mutate(yoe_c = yoe - mean(yoe),
+                  female = ifelse(gender == &quot;woman&quot;, 1,0), # first convert to numeric using ifelse
+                  female_c = female - mean(female)) # then center
 
-# Interpreting the coefficients: when two hypothetical countries had the same level of female economic activity and female illiteracy rate, but differed in total fertility rate by one child per woman, the country with higher fertility rate is predicted to have 9.6 higher infant mortality rate (infant deaths per 1000 live births), on average. 
-
-# Next, when 2 countries have the same level of total fertility rate and female illiteracy rate, but differ in female activity rate by one percentage point, the country with higher fertility rate will have 0.395 higher infant mortality rate, on average. 
-
-# Finally, when 2 countries have the same level of total fertility rate and female economic activity, but differ in female illiteracy rate by one percentage point, the country with higher female illiteracy rate will have 0.68 higher infant mortality rate, on average.
-
-# Note, correlation is not causation. Even if controlling for other variables, we cannot say that female economic activity causally increases infant mortality. This model is not based on any theory and there may be many other variables we would have to control for before being able to make even a tentative causal statement. The same is true for the other variables. We have no grounds to interpret this model causally at its face value. 
-
-# In addition, we have not checked the assumption of normality (we will learn how to do it later in the course). So we have no guarantee that the linear fit is the best model specification. </code></pre>
-<ol start="6" style="list-style-type: decimal">
-<li>There is of course some uncertainty in our estimates. Find 90%, 95% and 99% confidence intervals of the three betas. Use the function confint for that and use help to learn about the function parameter you need to change to change the confidence interval from the 95% default. Before you do that, say which one set of them will be the narrowest and why.</li>
-</ol>
-<pre class="r"><code># 95
-confint(fit1)
-
-# 90
-confint(fit1, level = 0.9) # the narrowest intervals are these because they provide us with least certainty. The more certain we want to be with our interval, the broader it will be.
-
-# 99
-confint(fit1, level = 0.99)</code></pre>
-<ol start="7" style="list-style-type: decimal">
-<li>We now want to compare the coefficients to each other to compare the relative size of independent contributions of each of our predictors to the explanatory power of our model. Use standardized betas to do that.</li>
-</ol>
-<pre class="r"><code>fit2 &lt;- lm(scale(infantMortality) ~ scale(tfr) + scale(economicActivityFemale) + scale(illiteracyFemale), 
-           data = un)
+fit2 &lt;- lm(income ~ yoe_c*female_c, data=df)
 summary(fit2)
 
-# we see tfr and illiteracyFemale have about the same explanatory power, economicActivityFemale has less</code></pre>
+
+# Notice what has happened thanks to centering. 
+# Not only does the intercept now have a more meaningful interpretation (expected income for an average 
+# person in the sense that they have mean years of education and &quot;average&quot; gender, i.e. weighted middle 
+# between men and women). But also the main effects now retain meaningful interpretation: the main effect 
+# of years of education is not an average effect across the groups (across the two genders) and the main 
+# effect of being female does not show the difference between men and women at some unrealistic 0 years 
+# of education, but for men and women with average years of education. Compare this information to the 
+# much less meaningful value of -4000 for the non-centered model, which could trap someone into thinking 
+# that women have smaller income, but this is only true for a wild extrapolation of the linear trend to 0 
+# years of education. As a bonus, the interaction effect does not change: it is still the extimate of the 
+# difference in slopes between men and women. </code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Use the countries data set, predict human development index hdi with life_exp a uni_prc, also try interaction between the two and compare the two predictors with each other.</li>
+</ol>
+<pre class="r"><code>fit3 &lt;- lm(hdi ~ life_exp + uni_prc, data = countries)
+summary (fit3) 
+
+# both variables seem to be strong predictors of human development index - no surprise here, 
+# I can imagine the index is constructed taking life expectancy and percentage of people with
+# degree into the computation.
+
+countries %&gt;% ggplot(aes(x=uni_prc, y=hdi)) + geom_point() + geom_smooth() 
+countries %&gt;% ggplot(aes(x=life_exp, y=hdi)) + geom_point() + geom_smooth() 
+
+
+fit4 &lt;- lm(hdi ~ life_exp*uni_prc, data = countries)
+summary (fit4) # the interaction is small an statistically insignificant - no wonder, interactions
+# rarely are in small samples. However, notice how the standard errors for the main effects went up
+# dramatically. They are estimated at 0 and as such, very unstable and un-interpretable. 
+
+
+# try centering next...
+
+countries &lt;- 
+  countries %&gt;% mutate(life_exp_c = life_exp - mean(life_exp, na.rm = TRUE),
+                       uni_prc_c = uni_prc - mean(uni_prc, na.rm = TRUE))
+
+fit5 &lt;- lm(hdi ~ life_exp_c*uni_prc_c, data = countries)
+summary (fit5) 
+
+# this is much better, we can still show the statistically insignificant interaction in the model, 
+# while also reporting meaningful main effects (very similar to those in model without interactions fit3)
+
+# compare coefficients 
+
+fit6 &lt;- lm(hdi ~ scale(life_exp_c)*scale(uni_prc_c), data = countries)
+summary (fit6) 
+
+# we can see clearly that the interaction effect is very small compared to the main effects, 
+# about 20-25 % in size. </code></pre>
 </div>
 
 <br>

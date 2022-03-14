@@ -1,5 +1,5 @@
 ---
-title: "Multiple linear regression - Excercises "
+title: "Multiple linear regression - Excercises"
 output:
   html_document:
     code_foldin: hide
@@ -17,7 +17,7 @@ countries = read.csv("data/countries.csv")
 un <- read.table("data/UnitedNations.txt") # you will need to download as .txt the UnitedNations data set
 ```
 
-We will be using both the familiar 'countries' data set for this set of exercises (task 1), and a new dataset, United Nations. You will need to download this dataset from the course webpage and make yourself familiar with it.   
+First, we will be using both the familiar 'countries' data set for this set of exercises (task 1), and then a new dataset, United Nations, for the rest. You will need to download this new dataset from the course webpage and make yourself familiar with it.   
 
 ```{r class.source = "fold-show"}
 
@@ -88,3 +88,79 @@ mod6 <- lm(tfr ~ imc + ifc, data = un)
 summary(mod6)
 ```
 
+
+We have mostly (or even only) used two predictor terms in our examples so far to keep things simple. Try now to regress 'infantMortality' on 'tfr', 'economicActivityFemale', and 'illiteracyFemale'.
+ 
+ 
+3) Before we start modeling, plot the dependent variable using geom_density.  
+
+```{r}
+ggplot(aes(x=infantMortality), data=un) + geom_density() # it is skewed, but we will proceed with the variable as is, without transformation. However, it is especially important to check assumptuions when this kind of distribution happens for the dependent variable. (We wil cover testing for assumptions later in the course.)
+```
+
+4) Now, plot the bivariate relationship between each predictor variable and the dependent variable, i.e. three plots in total. Use combination of geom_point and geom_smooth with the defualt method, i.e. loess curve.
+
+```{r}
+
+ggplot(aes(y=infantMortality, x = tfr), data=un) + geom_point() + geom_smooth()
+# no surprise here, higher fertility associated with higher infant mortality (both typical of less developed countries). However, notice the spread seems to get bigger for higher values of total fertility rate. This could indicate issues to be covered later in the course.  
+
+ggplot(aes(y=infantMortality, x = economicActivityFemale), data=un) + geom_point() + geom_smooth()
+# female economic activity is not lineary associated with infant mortality, but there might be some U-shape non-linear relationship. Again, modelling non-linearity will be introduced further in the course.
+
+ggplot(aes(y=infantMortality, x = economicActivityFemale), data=un) + geom_point() + geom_smooth(method = "lm")
+# see the non-effect if the line to fit is forced to linear
+
+ggplot(aes(y=infantMortality, x = illiteracyFemale), data=un) + geom_point() + geom_smooth(method = "lm")
+# this is a fairly good looking linear association
+
+```
+
+5) Run the model.  Regress 'infantMortality' on 'tfr', 'economicActivityFemale', and 'illiteracyFemale'. Only use the main effects. Interpret the model.
+
+
+```{r}
+
+fit1 <- lm(infantMortality ~ tfr + economicActivityFemale + illiteracyFemale, data = un)
+summary(fit1)
+
+# total fertility rate, female economic activity, and illiteracy among females all have their independent linear effect on infantMortality. This may be surprising for the female economic activity, where there was no linear association for the bivariate relationship. But this is not too rare: conditional main effects in MLR may differ a lot from bivariate main effects. 
+
+# Interpreting the coefficients: when two hypothetical countries had the same level of female economic activity and female illiteracy rate, but differed in total fertility rate by one child per woman, the country with higher fertility rate is predicted to have 9.6 higher infant mortality rate (infant deaths per 1000 live births), on average. 
+
+# Next, when 2 countries have the same level of total fertility rate and female illiteracy rate, but differ in female activity rate by one percentage point, the country with higher fertility rate will have 0.395 higher infant mortality rate, on average. 
+
+# Finally, when 2 countries have the same level of total fertility rate and female economic activity, but differ in female illiteracy rate by one percentage point, the country with higher female illiteracy rate will have 0.68 higher infant mortality rate, on average.
+
+# Note, correlation is not causation. Even if controlling for other variables, we cannot say that female economic activity causally increases infant mortality. This model is not based on any theory and there may be many other variables we would have to control for before being able to make even a tentative causal statement. The same is true for the other variables. We have no grounds to interpret this model causally at its face value. 
+
+# In addition, we have not checked the assumption of normality (we will learn how to do it later in the course). So we have no guarantee that the linear fit is the best model specification. 
+
+```
+
+6) There is of course some uncertainty in our estimates. Find 90%, 95% and 99% confidence intervals of the three betas. Use the function confint for that and use help to learn about the function parameter you need to change to change the confidence interval from the 95% default. Before you do that, say which one set of them will be the narrowest and why.       
+
+```{r}
+
+# 95
+confint(fit1)
+
+# 90
+confint(fit1, level = 0.9) # the narrowest intervals are these because they provide us with least certainty. The more certain we want to be with our interval, the broader it will be.
+
+# 99
+confint(fit1, level = 0.99)
+
+```
+
+7) We now want to compare the coefficients to each other to compare the relative size of independent contributions of each of our predictors to the explanatory power of our model. Use standardized betas to do that.     
+
+```{r}
+
+fit2 <- lm(scale(infantMortality) ~ scale(tfr) + scale(economicActivityFemale) + scale(illiteracyFemale), 
+           data = un)
+summary(fit2)
+
+# we see tfr and illiteracyFemale have about the same explanatory power, economicActivityFemale has less
+
+```
