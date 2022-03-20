@@ -1,0 +1,144 @@
+---
+title: "Visualizing regression models"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in March 2022"
+output:
+  ioslides_presentation:
+    widescreen: true
+    incremental: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+library(here)
+library(ggeffects)
+library(broom)
+
+countries <- read.csv(here("data", "countries.csv"))
+```
+
+## Goals for today
+
+- Learning how to produce point-range regression plots
+- Understanding marginal effects 
+- Plotting marginal effects
+
+# Point-range plots
+
+## Point-range plots
+
+- Straightforward visualizations of the regression coefficients tables
+
+```{r forest-example, fig.height=3.5}
+m1 = lm(life_exp ~ hdi + dem_index + poverty_risk, data = countries)
+
+tidy(m1) %>% 
+  ggplot(aes(x = estimate, 
+             xmin = estimate - 1.96*std.error, 
+             xmax = estimate + 1.96*std.error,
+             y = term)) +
+  geom_pointrange()
+```
+
+## Standardization
+
+- Visual display invites comparison, so better standardize
+
+```{r forest-example-z, fig.height=3.5}
+
+m2 = lm(scale(life_exp) ~ scale(hdi) + scale(dem_index) + scale(poverty_risk), data = countries)
+
+tidy(m2) %>% 
+  ggplot(aes(x = estimate, 
+             xmin = estimate - 1.96*std.error, 
+             xmax = estimate + 1.96*std.error,
+             y = fct_reorder(term, estimate))) +
+  geom_pointrange()
+```
+
+# Marginal effect plots
+
+
+## Some models are easy to interpret...
+
+- Relationship between life expectancy and democratic index, assuming linear relationship
+
+```{r linear-simple, echo=TRUE}
+mod1 = lm(life_exp ~ dem_index, data = countries)
+coef(mod1)
+```
+
+- A country with additional point of democratic index has, on average, 1.6 years higher life expectancy
+
+## ... others not so much
+
+- Relationship between life expectancy and democratic index, but the relationship can be parabolic and also can differ based on whether the country has a post soviet history or not.
+
+```{r linear-not-simple, echo=TRUE}
+
+m2 = lm(life_exp ~ poly(dem_index, 2) * postsoviet,
+          data = countries[!is.na(countries$dem_index),])
+coef(m2)
+```
+
+- Help, how can I interpret this?
+
+## Complex models are hard to interpret 
+
+- Once variables are transformed, there are interactions, quadratic terms, splines, etc., interpreting relationships between them using coefficients tables becomes difficult
+- Solution: visual interpretation using marginal effects
+
+## Marginal effects are here to save the day
+
+- Marginal effect = expected value of the dependent variable for given values of selected independent variable while other independent variables are held constant (preferably at some reasonable value such as mean)
+
+```{r marg-eff-table, echo=TRUE}
+ggpredict(m2, terms = c("dem_index [4,6,8]", "postsoviet [yes]"))
+```
+
+## Marginal effects vizualized
+
+- The plot contains the exact same information as the table of regression coefficients, but is actually interpretable
+
+```{r marg-eff-plot}
+plot(ggpredict(m2, terms = c("dem_index [all]", "postsoviet")))
+```
+
+
+## Marginal effects
+
+- We can also plot just one variable one, while holding the others constant
+- The following plot shows the difference in expected life expectancy for countries with **average** democratic index
+
+```{r marg-eff-plot-solo, fig.height=3}
+plot(ggpredict(m2, terms = c("postsoviet")))
+```
+
+- Question: How is this plot different from displaying simply group means, i.e. mean life expectancy for the postsoviet vs. non-postsoviet?
+  
+## `ggeffects` package
+
+- `ggeffects` package computes marginal effects and returns `ggplot2` friendly data frames
+
+- The `ggeffects` offers three basic functions:
+
+  - `ggpredict` - based on the base `predict()` function, works on almost any model
+  - `ggeffects` - based on the `effects` package, similar to ggpredict, but handles categorical variables differently
+  - `ggemeans` - based on the `emeans` package, mostly for contrasts
+
+
+## `ggeffects` package is broadly applicable
+
+- The package works for a variety of models not covered in this course
+  - generalized linear models
+  - (generalized) mixed models
+  - bayesian models
+  - survival models
+  - and many more
+
+And that is pretty cool!
+  
+

@@ -1,0 +1,236 @@
+---
+title: "Ploting regression models, marginal effects"
+output: html_document
+csl: apa.csl
+bibliography: references.bib
+editor_options: 
+  markdown: 
+    wrap: 72
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+library(tidyverse)
+library(here)
+library(ggeffects)
+library(broom)
+library(jtools)
+
+countries <- read.csv(here("data", "countries.csv"))
+```
+
+
+We will introduce two ways of presenting regression models visually. First, we will introduce so called point-range plots, which are a very straightforward way to graphically display information from regression coefficients tables. Second, we will focus on so called margianl effects and their visualization - a technique which requires some some new conptual insights and is especially useful for dealing with complex models and/or models with interactions. 
+
+# Point-range plots
+
+We live in a visual time and we think this is a good thing. Using point-range plots to present multiple-regression models is especially useful for a large number of predictors. For example, consider the following model with five predictors (which is not that many). Unless you fall for the practice which we very much try to discourage, i.e. only looking where the stars are, but you want to appreciate the different estimates and their standard errors more carefully, going through the table can take some time and effort. 
+
+```{r point-model, echo=TRUE}
+m1 <- lm(life_exp ~ dem_index + hdi + uni_prc + poverty_risk + material_dep, data = countries)
+summary(m1)
+```
+
+Point-range plots visualize regression estimates as points along with confidence intervals making it easy to quickly absorb the results.The most straightforward tidyverse approach is using the function *tidy* from the *broom* package to convert the regression results into a data frame (tibble, more specifically). We then apply ggplot with a special geom called *geom_pointrange*. The resulting plot below shows the regression coefficient for each predictor with its 95% confidence interval.
+
+```{r point-range, echo=TRUE}
+
+m1_tibble <- tidy(m1) # convert m1 coefficients table into tibble
+
+m1_tibble %>% 
+  ggplot(aes(x = estimate, 
+             xmin = estimate - 1.96*std.error, 
+             xmax = estimate + 1.96*std.error, 
+             y = term)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 0, color = "grey", alpha = 0.8)
+
+```
+
+The plot above is nothing but a staightforward visual representation of the regression table. Since the raw coefficients cannot be compared to each other as each predictor is measured in different units, the same holds for the plotted values: We should consider them separately rather than in a comparative perspective. This is perhaps harder to do with a plot than a table. That's why we usually prefer plotting standardized betas, which can be roughly compared to each other. In that case, it can be a good idea to arrange estimates by their size (it would be a rather misleading thing to do in the previous graph where comparison do not make sense).
+
+```{r echo=TRUE}
+countries_scaled <- 
+  mutate(.data = countries,
+         across(.cols = c("life_exp", "dem_index", "hdi", 
+                          "uni_prc", "poverty_risk", "material_dep"),
+                .fns  = scale,
+                .names = "{.col}_scaled")) %>%
+  # we only keep variables to be used in the model
+  select(contains("_scaled"))
+
+# thanks to only keeping variables to be used in the model, we can use this shorthand
+m2 <- lm(life_exp_scaled ~ ., data = countries_scaled) 
+
+tidy(m2) %>%
+  mutate(term = fct_reorder(term, estimate)) %>% 
+  ggplot(aes(x = estimate, 
+             xmin = estimate - 1.96*std.error, 
+             xmax = estimate + 1.96*std.error, 
+             y = term)) +
+  geom_pointrange() +
+  geom_vline(xintercept = 0, color = "grey", alpha = 0.8)
+```
+
+## Ready-made tools 
+
+There are also multiple packages which you can use for some quickly available additional effects. In our work, we have used the *jtools* package, which produces elegant plots, but there are others out there. 
+
+```{r echo=TRUE}
+plot_summs(m1)
+
+```
+
+You can scale from within the *plot_summs* function:
+
+```{r echo=TRUE}
+plot_summs(m1, scale = TRUE)
+```
+
+The package also makes it easy to combine multiple confidence intervals into one plot. 95% is the default, but you can add an inner interval. 
+
+```{r echo=TRUE}
+plot_summs(m1, scale = TRUE, inner_ci_level = .8) # compate two models
+```
+
+Finally, it is really easy to compare multiple models visually. Here, adding eu_membership, in itself a statistically insignificant predictor, does almost nothing to the other predictors. 
+
+```{r echo=TRUE}
+m2 <- update(m1, . ~ . + eu_member) # add another predictor
+plot_summs(m1, m2, scale = TRUE, inner_ci_level = .8)
+```
+
+
+# Marginal effects
+
+Once the regression models become more complex, e.g., they include interactions, quadratic terms, or combination of them, the challenge is not having to go through a lot of values, but even making sense of the values in the first place. For example, consider a model involving a quadratic term and an interaction such as below. 
+
+```{r echo=TRUE}
+m3 = lm(life_exp ~ poly(dem_index, 2) * postsoviet,data = countries[!is.na(countries$dem_index),])
+summary(m3)
+```
+
+The model becomes almost impossible to interpret from the table.  Sure, we can still proceed with the technical, algorithmic interpretation: if we compare hypothetical two groups of countries which are both post-soviet, have the base democratic index 0, but the first group has the quadratic democratic index higher by 1 than the second, then we would expect in this group the life expectancy to be 12.7 - 3.3 = 9.4 years higher, on average, than in the second group. While technically hopefully correct, this information is also completely undecipherable. (We will leave aside what it actually means that the base democratic index is 0 and the quadratic term is higher by 1 in one group than another. While it is theoretically impossible for such a country to even exist (once democratic index is 0, its quadratic term can be nothing but a 0, too),the linear (i.e. additive) model can make such a prediction.) 
+
+Fortunately, we have another way to interpret our model: displaying visually the marginal effects
+
+## What are marginal effects?
+
+Marginal effects (also adjusted predictions) are expected values of the dependent variable for given values of selected independent variable while other independent variables are held constant (preferably at some reasonable value such as mean, this is important for models with interactions where keeping other variables constant at 0 can be rather unhelpful).
+
+In R, there are several packages for computing marginal effects (as there are for nearly everything). The package `ggeffects` is especially well suited for the `tidyverse` environment, so it will be our go-to package for visualizing marginal effects in this course. 
+
+## Calculating marginal effects
+
+Before plotting them, we need to calculate marginal effects. We do this using the *ggpredict* function from the *ggeffects* package. For the model above, we could do:
+
+```{r echo=TRUE}
+ggpredict(m3, terms = c("dem_index"))
+```
+
+Note, the output gives us predicted values of life_expectancy for several values (here selected automatically by default) of democracy index for non-postsoviet countries, based on the model specification above. Let us say it again, the predicted values are linked to the model specification. We can quickly demonstrate this by calculating other models and comparing the predictions. This time, we will specify values of democracy index for which we want our predictions to make the output comparable:
+
+```{r echo=TRUE}
+m4 <- lm(life_exp ~ dem_index,data = countries)
+m5 <- lm(life_exp ~ dem_index + postsoviet ,data = countries)
+ggpredict(m3, terms = "dem_index [4:9]")
+ggpredict(m4, terms = "dem_index [4:9]")
+ggpredict(m5, terms = "dem_index [4:9]")
+```
+
+While the command is the same, each predictions are different because we refer to models with different specifications. 
+
+We can also specify more terms for which to calculate predictions, such as in the following code which produces same values as the respective command above, but also adds predictions for post soviet countries.
+
+```{r ggeffects-example, echo=TRUE}
+ggpredict(m3, terms = c("dem_index [4:9]", "postsoviet"))
+```
+
+Now, we can specify as many as four terms in one ggpredict command. The predictions are then made for a few level of each predictors which are algorithmically selected. We showed above how this default can be overwritten in square brackets. There is a third option if we do not want to rely on default values and we also don't want to hand pick values ourselves - we can use following shorthands: *[meansd]* for predictions for the values one standard deviation below the mean, the mean, and one standard deviation above the mean; *[quart2]* for the three quartiles. Examples follow:
+
+```{r echo=TRUE}
+ggpredict(m3, terms = c("dem_index [meansd]", "postsoviet"))
+```
+
+```{r echo=TRUE}
+ggpredict(m3, terms = c("dem_index [quart2]", "postsoviet"))
+```
+
+Finally, you can also use the *condition* parameter to hold covariates constant on a specific level rather than their mean. Compare the following two lines of code. The first gives prediction for both level of post_soviet holding the democracy index constant at its mean. The second hold it constant at its theoretical maximum. 
+
+```{r echo=TRUE}
+ggpredict(m3, terms = c("postsoviet"))
+ggpredict(m3, terms = c("postsoviet"), condition = c(dem_index = 10))
+```
+
+
+## Plotting marginal effects
+
+Now for the fun part. The easiest way to plot the marginal effects is by using a generic function *plot* on the object created by ggpredict. Again, the plot corresponds to the respective model specification, so do not forget to provide it along with your plot.
+
+```{r echo=TRUE}
+ggpredict(m3, terms = c("dem_index", "postsoviet")) %>% plot()
+```
+
+Conveniently, applying plot on the ggpredict-generated object creates a *ggplot* object, so you can edit it with the usual ggplot syntax.
+
+```{r echo=TRUE}
+ggpredict(m3, terms = c("dem_index", "postsoviet")) %>% 
+  plot () + 
+  labs(x="Democracy index", y="Life expectancy", title = "Predicted values of life expectancy", subtitle = "formula = life_exp ~ poly(dem_index, 2) * postsoviet") +
+  scale_x_continuous(breaks = c(5:10))
+```
+
+The look of the resulting plot will depend on the order of terms as they are entered in the ggpredict function. The mapping follows these rules:
+
+* dependent variable is given by the model = y axis
+* first term = x axis
+* second term = color
+* third term = one level of facetting
+* fourth term = another level of facetting (You probably do not want to use this unless absolutely inevitable.)
+
+A great feature of the generic *plot* function when applied to a *ggpredict* object is its parameter *add.data* to draw the actual data points and thus visually assess the model fit.
+
+```{r echo=TRUE}
+ggpredict(m3, terms = c("dem_index", "postsoviet")) %>% plot(add.data = TRUE)
+```
+
+
+## *ggpredict* object
+
+When you apply *ggpredict*, it produces this output which looks like an array. However, there is a standard data frame in the background - of course, this is tidyverse, right. To force it shows its true face, you just apply a function such as as_tibble or View and magic happens. 
+
+```{r echo=TRUE}
+ggpredict(m3, terms = c("dem_index", "postsoviet")) %>% as_tibble()
+```
+
+Knowing now the true appearance of the object, you can also work produce a ggplot from the scratch. First, apply plot:
+
+
+```{r echo=TRUE}
+
+df <- ggpredict(m3, terms = c("postsoviet", "dem_index")) # notice we now reverse the terms to change appearance
+df %>% as_tibble()
+df %>% plot()
+```
+
+Now we produce something similar from scratch:
+
+```{r echo=TRUE}
+
+ggplot(df, aes(x = x, y = predicted, colour = group)) +
+  geom_point(position = position_dodge(.1)) +
+  geom_errorbar(
+    aes(ymin = conf.low, ymax = conf.high),
+    position = position_dodge(.1)
+  ) +
+  scale_x_discrete(labels = get_x_labels(df))
+
+```
+
+## ggeffects options
+
+The `ggeffects` package offers three options for computing marginal effects. We have only use `ggpredict()`. This functions is based on the `predict()` function from the base R. The second options is `ggeffect()`, which requires the `effects` package. The main difference between between the two is in their treatment of categorical predictors. `ggpredict()` fixes categorical at the reference category when computing marginal effects, while `ggeffect()` computes a "sort of average of the categorical predictors" (as it is stated in the manual).
+The last option, `ggemmeans()`, treats categorical predictors in a similar way as `ggeffect()`, see documentation for detail. It also require the `emmeans` package.
