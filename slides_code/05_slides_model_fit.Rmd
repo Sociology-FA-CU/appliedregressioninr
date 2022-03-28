@@ -36,18 +36,16 @@ countries = read.csv(here("data", "countries.csv"))
     -   Fit indexes that summarize fit into a single number
     -   Formal test of fit (ANOVA/F test)
 
-## Coefficient of determination
+## Coefficient of determination (R^2^)
 
--   For Linear models, model fit can be summarized using *coefficient of determination* (*R^2^*)
-
--   *R^2^* represents the proportion of variance of the depended variable, which can be predicted using the independent variables
+-   *The proportion of variance of the depended variable, which can be predicted using the independent variables*
 
     -   e.g. if *R^2^* = 0.32, we can say our model predicts 32% of variance of the dependent variable (in our data)
     -   Alternatively, the depend variable shares 32% of its variance with the independent variables
 
--   Some say *R^2^* is the proportion of variance "explained" by the model. However, this is overly causal language and can be therfore misleading.
+-   Nothing about R^2^ is causal!
 
-## Coefficient of determination
+## Coefficient of determination (R^2^)
 
 -   Formally, *R^2^* is defined as:
 
@@ -61,7 +59,7 @@ $$
 R^{2} =1 - \frac{Sum \: of \: Squares_{our\:model} }{Sum \: of \: Squares_{intercept\:only\:model}}
 $$
 
-## Coefficient of determination
+## Coefficient of determination (R^2^)
 
 -   Intercept only model is one with zero predictors, predictions are made solely based on the grand mean (mean of the dependent variable)
 -   This is the "worst" possible model
@@ -84,26 +82,33 @@ ggplot(aes(x = hdi, y = life_exp), data = countries) +
 
 -   if *R^2^* = 0, then our model is as "good" as if we had no predictor at all
 
--   if *R^2^* = 1, then we predict our data perfectly (in law-like manner)
+-   if *R^2^* = 1, then we predict our data perfectly
 
 -   There is no universal cut-off for when *R^2^* is good or bad
 
     -   In laboratory calibrations, *R^2^* \< 0.99 is considered bad and a sign of an equipment failure
     -   In day to day stock market, *R^2^* \> 0.02 is considered good and such models are used for trading.
 
--   Conclusion: To interpret *R^2^*, you need to know the purpose of the model and the fit of related models in this field
 
 ## ANOVA
 
 -   We can also compare two models formally, using ANOVA/F test
 
--   This is like a classic ANOVA, but instead of comparing between- and within-group variance, we are comparing residual variances of two models
+-   Similar classic to ANOVA
 
--   Residual variance = variance of dependent variable not predicted by independent variables
+-   Null hypothesis: All regression coefficients (except for intercept) are 0.
 
--   Null hypothesis: Residual variances of both models are equal.
+## ANOVA
 
--   Alternative: Residual variance of the second model is smaller than residual variance of the first model.
+```{r anova-visal, warning=FALSE}
+ggplot(aes(x = hdi, y = life_exp), data = countries) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ 1, aes(color = "Intercet only")) +
+  geom_smooth(method = "lm", se = F, formula = y ~ x, aes(color = "HDI as predictor")) +
+  scale_color_manual(values = c("red", "blue")) +
+  labs(color = element_blank()) +
+  theme(legend.position = c(0.8, 0.2))
+```
 
 ## ANOVA
 
@@ -147,15 +152,13 @@ anova(mod1, mod2)
 
 ## *R^2^* and coefficient bias
 
--   Imagine we have representative sample of adults and want to analyze the relationship between intelligence (`IQ`) and work diligence (`diligence`). We also know if our respondents have a university degree (`degree`).
-
--   The truth (which we usually don't know) is that there is weak relationship between `IQ` and `diligence`: `intelligence = 0.1*diligence`
-
-    -   i.e. more intelligent people are somewhat more diligent than the less intelligent ones
+-   We want to analyze the relationship between intelligence (`IQ`) and work diligence (`diligence`). We also know if our respondents have a university degree (`degree`).
 
 -   `degree` is related to both `IQ` and `diligence` - only those who are top 20% most intelligent or the top 20% most diligent people will obtain a university degree
 
--   Should we control for `degree` or not? Degree surely is associated with both `IQ` and `diligence`, so why not?
+-   Should we control for `degree` or not? For prediction? For explanation?
+
+-   (Truth : `intelligence = 0.1*diligence`, but let's pretend we don't know)
 
 ## *R^2^* and coefficient bias
 
@@ -192,7 +195,8 @@ ggplot(aes(x = diligence, y = IQ, color = degree), data = dd) +
   geom_point(alpha = 0.5) +
   geom_smooth(method = "lm", se = F, formula = y ~ x, data = me1) +
   geom_smooth(method = "lm", se = F, formula = y ~ x, data = d, mapping = aes(group = 1), color = "black") +
-  theme(legend.position = c(0.93,0.1)) +
+  theme(legend.position = c(0.93,0.1),
+        strip.text = element_text(size = 15)) +
   labs(color = element_blank())
 ```
 
@@ -201,16 +205,7 @@ ggplot(aes(x = diligence, y = IQ, color = degree), data = dd) +
 
 ## *R^2^* and coefficient bias
 
--   Controlling for variables that are actually causal **consequences** of the dependent variable and one of the predictors improves predictive power (i.e. raises *R^2^*), but regression coefficient will no longer be interpretable in a substantive way (*collider bias*)
--   This also happens with mediators
-    - See the first few chapters of @pearl2016 for details
-    
-
-- Conclusion: If the goal of an analysis is the interpretation of regression coefficients (either for causal inference or testing a hypothesis generated by theory), do not select variables based on *R^2^*. Doing so will sooner or later lead to bias and an incorrect conclusion. Use theory and common sense instead to avoid conditioning on colliders and mediators.
-
-## Quick note on conditioning
-
-Conditioning is broader term which encompasses multiple practices such as controlling for variables in regression analysis, stratification (in the above example: separate analysis of people with degree and without degree), sub-sampling (in the above example: only analyzing one subsample such as those wiht degree).
+- Conclusion: If the goal of an analysis is the interpretation of regression coefficients, do not select variables based on *R^2^*.
 
 # Gotcha 2 - *R^2^* depends on the variance of the dependent variable
 
@@ -259,10 +254,11 @@ d %>% pivot_longer(cols = -x) %>%
   geom_point(alpha = 0.2) +
   geom_smooth(method = "lm", se = F, formula = y ~ x) +
   labs(x = element_blank(), y = element_blank()) +
-  geom_abline(intercept = 0, slope = 10, color = "red", linetype = "dashed")
+  geom_abline(intercept = 0, slope = 10, color = "red", linetype = "dashed") +
+  theme(strip.text = element_text(size = 15))
 ```
 
--   Notice that *R^2^* varies widely, despite all models being perfectly specified and describing the relationship correctly. (Remember the conceptual distinction between regression coefficients and correlation coefficients.)   
+-   Notice that *R^2^* varies widely, despite all models being perfectly specified and describing the relationship correctly.
 
 ## *R^2^* and the variance of dependent variable
 
@@ -273,8 +269,6 @@ d %>% pivot_longer(cols = -x) %>%
 -   Low *R^2^* can simply mean that we cannot explain a social phenomenon in its entirety, but that is almost never our goal.
 
 -   Conclusion: If our goal is substantive interpretation of coefficients, *R^2^* is not a good measure of model's quality
-
-    -   Low *R^2^* does not mean an explanatory model is bad (analogously, high *R^2^* does not mean the model is good)
 
 
 # Gotcha 3 - *R^2^* depends on the number of predictors
@@ -320,8 +314,7 @@ ggplot(mapping = aes(x = 1:15, y = r_sqr)) +
 
 ## *R^2^* depends on the number of predictors
 
--   Solution is to adjust *R^2^* when comparing models with different number of predictors
--   *Adjusted R^2^* [@henri1961] controls the number of predictors in the model (represented by the degrees of freedom)
+-   *Adjusted R^2^* [@henri1961] controls for the number of predictors in the model (represented by the degrees of freedom)
 
 $$
 R^{2}_{adj} = 1 - (1 - R^{2}) * \frac{no. \: of \: observations - 1}{no. \: of \: observations - no. \: of \: parameters - 1}
@@ -371,7 +364,8 @@ d %>% pivot_longer(cols = -y) %>%
   geom_point(alpha = 0.2) +
   geom_smooth(method = "lm", se = F, formula = y ~ x) +
   geom_abline(intercept = 0, slope = 3, color = "red", linetype = "dashed") +
-  labs(x = element_blank(), y = element_blank())
+  labs(x = element_blank(), y = element_blank()) +
+  theme(strip.text = element_text(size = 15))
 ```
 
 -   Notice that despite the coefficients being (virtually) the same, *R^2^* gets lower as the range of data gets narrower
