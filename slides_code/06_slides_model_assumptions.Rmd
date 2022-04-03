@@ -6,6 +6,7 @@ date: "Last updated in March 2021"
 output:
   ioslides_presentation:
     widescreen: true
+    css: "../css/slides-style.css"
 csl: "../apa.csl"
 bibliography: 06_model_assumptions.bib
 ---
@@ -53,29 +54,26 @@ un = read.table("../data/UnitedNations.txt")
 
 ## How to think about assumptions
 
--   Regression models represent a simplification of real world
--   To make this simplification, some assumptions have to be made
+> *All models are wrong, but some are useful*. <br>
+> - George Box
 
-<br>
-
--   All models make assumptions
--   It is important to realize that no real model actually meet all assumptions we make (in fact, most models don't meet any of our assumptions exactly)
-
-<br>
-
--   Models can be by useful even when assumptions are wrong
--   What is important is to what extent are our assumptions violated
+- No model is perfect picture of reality and that's ok.
+- How good the picture is?
 
 ## How to think about assumptions
 
--   The total error depends on how much are the assumptions violated, small violations lead to only small error
--   Don't think about assumptions in binary term (*"ok"* vs *"bad"*)
--   Instead, think *how much* we deviate from them
--   Not all assumption are also important for all tasks
+-   Small violations lead to only small error, big ones...
 
 <br>
 
--   Therefore, we need to know why are some assumptions important and what happens when they are wrong
+-   Don't think about assumptions in binary term (*"ok"* vs *"bad"*)
+-   Instead, think *how much* we deviate from them
+
+<br>
+
+-   Not all assumption are also important for all tasks
+
+# What are the assumptions?
 
 ## Assumptions of linear regression
 
@@ -95,23 +93,10 @@ un = read.table("../data/UnitedNations.txt")
 
 ## Validity
 
--   Most important and at the same time most elusive assumption
-
--   Relates to both our data and our model
-
--   Firstly, we should make sure that the data we use are sufficient to answer the research question at hand (e.g. no important variable is missing)
-
-    -   Often a problem in secondary analysis
-
--   Secondly, all traits and phenomena we want to analyze need to be measured with sufficient quality
-
-    -   Remember to checks instrument's quality and don't mistake related traits for each other
-
-## Validity
-
--   Thirdly, data must be gathered in such way that inference to the desired population is possible
-
--   Lastly, our models has to be correctly specified to capture the true relationships between variables.
+1)  Are the data we use are sufficient to answer the research question at hand?
+2)  Are all traits measured with sufficient quality?
+3)  Are data  gathered to so that inference is possible?
+4)  Is the model correctly specified?
 
 <br>
 
@@ -125,7 +110,9 @@ un = read.table("../data/UnitedNations.txt")
 
 ## Representativeness
 
--   If our goal is only to describe relationship between variables, and we aren't interested in measures of location (mean, median, etc.), we don't actually need our sample to be representative in all aspects
+-   Do the data need to be representative in all aspects?
+
+<br>
 
 -   Consider model predicting `income` based on `age`. What happens if our data are not representative?
 
@@ -171,9 +158,32 @@ con_income_plot = ggplot(data = rep_df[rep_df$income > mean(rep_df$income),], ae
 con_age_plot + con_income_plot + plot_annotation(tag_levels = "A") + plot_layout(guides = "collect") & theme(legend.position = "bottom")
 ```
 
--   We get unbiased estimate of the regression coefficient even when sample is not representative in terms of age (independent variable)
+-   Estimates even when sample is not representative in age (independent variable).
 
 ## Linearity and additivity
+
+- Two ways people talk about linearity:
+  - Linearity of relationship between variables
+  - Linearity of regression terms
+
+<br>
+
+- What is the difference?
+
+## Linearity of relationships
+
+- Simple, the relationship between variables is a straight line.
+
+```{r}
+
+ggplot(mapping = aes(x = 1:10, y = 1:10)) +
+  geom_abline(color = "tomato") +
+  labs(y = "Dependent variable",
+       x = "Indepdendent variable") +
+  theme_classic()
+```
+
+## Linearity of forms
 
 -   Linear models are linear, because they assume linear form:
 
@@ -181,11 +191,17 @@ $$
 y = \beta_0 + \beta_1*x_1 + \beta_2*x_2\:+\:...\:\beta_p*x_p
 $$
 
+<br>
+
 -   No all relationship are neccesary linear though:
 
 $$
 y = \beta_0 + (\beta_1*x_1) * (\beta_2*x_2)
-$$ - Model is linear, if the regression coefficients are only either add or subtracted from each other
+$$
+
+<br>
+
+- Model is linear, if the regression coefficients are only either add or subtracted from each other
 
 ## Linearity and additivity
 
@@ -198,11 +214,22 @@ $$ <br>
 -   Linear models can only capture relationships that fulfill this assumption
 -   Violation of this assumption leads to bias
 
+## Linearity and additivity
+
+- We assume that the effects of independent variables can be simply added together.
+- Sometimes, this may not be true, e.g. a interaction is needed.
+
+<br>
+
+- Violation of this assumption leads to bias.
+
 ## Independence of errors
 
--   Linear regression assumes that differences between the true and the predicted values, are independent of each other across the range of the predictors.
--   Often violated in time series, where the errors at the time of t are correlated with the errors at the time of t-1 (or t-2, t-3, etc.).
--   Also problem in spatial analysis
+-   Linear regression assumes that errors are independent of each other.
+
+<br>
+
+-   Often violated due to sampling design, time series and spatial analysis.
 
 <br>
 
@@ -210,8 +237,7 @@ $$ <br>
 
 ## Homoscedasticity (constant variance of errors)
 
--   The standard linear regression is derived under the assumption that the errors have the same variance across all levels of the dependent variable
--   This situation is called homoscedasticity
+-   Homoscedasticity = variance of residuals is the same for all levels of $Y$
 -   If the variance of the errors is not constant, the the error are heteroscedastic.
 
 ## Homoscedasticity (constant variance of errors)
@@ -243,21 +269,19 @@ plot_homodescadistic + plot_heterodescadistic + plot_annotation(tag_levels = "A"
 <br>
 
 -   Firstly, the estimation of the regression coefficients become inefficient.
--   The second, more serious problem is that the estimates of the standard errors of the coefficients would be biased, leading to incorrectly specified p values and standard errors.
+-   Secondly, standard errors of the coefficients would be biased
 
 ## Normality of errors
 
--   Linear regression assumes that the errors are normally distributed
+-   Linear regression assumes that the errors are normally distributed.
 
--   Especially important for the prediction of individual observations
+-   Especially important for the prediction of individual observations.
 
--   Furthermore, the normality of residuals is important for the inference from small samples
-
-    -   for large enough samples, the sampling distribution of regression coefficient will approach normality no matter the distribution of residuals
+-   Also important for inference on small samples.
 
 <br>
 
--   Violation of this assumptions lead to incorrect prediction for individual observations and for incorrect p values and confidence intervals in small samples
+-   Violation of this assumptions lead to incorrect prediction for individual observations and for incorrect p values and confidence intervals in small samples.
 
 # Diagnostic plots
 
@@ -300,6 +324,14 @@ plot_nonlinear = qplot(x = x_nonlin, y = y_nonlin) + labs(x = "Scaled predicted 
 plot_linear + plot_nonlinear + plot_annotation(tag_levels = "A")
 ```
 
+## Diagnostics plots - Homoscedasticity
+
+- Can be checked using the same plots and linearity, or the scale location plot.
+
+```{r homoskedasticity-check, fig.width = 10}
+plot_homodescadistic + plot_heterodescadistic + plot_annotation(tag_levels = "A")
+```
+
 ## Diagnostics plots - Normality of residuals
 
 -   Can be checked either by histogram or Quantile-Quantile plot
@@ -330,6 +362,7 @@ chisq_qq_plot = ggplot(mapping = aes(sample = chisq_dist)) +
 
 ## Diagnostic plots - influentials observations
 
+- Not strictly an assumption, but still important.
 -   Influential observations can distort the relationship between variables
 
 ```{r anscombe, fig.height=4}
@@ -445,7 +478,9 @@ plot(mod_res, which = 1)
 crPlots(mod_res)
 ```
 
--   We can produce partial residual plot (also known as component residual plot) for each predictor
+-   We can produce partial residual plot (also known as component residual plot) for each predictor (e.g. function `crPlots` from the `car` package)
+
+# But what about tests?
 
 ## Diagnostic tests and why not to use them
 
@@ -465,27 +500,29 @@ crPlots(mod_res)
 ## Diagnostic tests and why not to use them
 
 -   Consider normal distribution
--   Normal distribution is a theoretical construct, that only arises under highly specific conditions (e.g. infinity number of sample means)
 -   In real life, normal distribution doesn't exist -\> we know that our residuals don't follow normal distributio before we even run a test
 -   Consequently, all observed nonsignificant results are false negatives
 
 ## Diagnostic tests and why not to use them
 
--   Some say *"We should use normality tests for small samples, in large samples they are too sensitive!"*
+-   Some say:
+<br>
+
+> *"We should use normality tests for small samples, in large samples they are too sensitive!"*
+
 -   This misunderstands the problem
--   Normality tests are equally valid for both small and large samples
 -   The problem is the hypothesis, not the test
 
 <br>
 
 -   Tests of equal variance are somewhat more plausible, but still highly unrealistic
 
-    -   What are the chances, that two diffrent groups of people have the the same variance of incomes, to an arbitrary decimal point?
-
 ## Diagnostic tests and why not to use them
 
 -   Luckily for us, we don't need all the assumptions to be fullfiled perfectly
 -   Small deviations from the assumptions only lead to a small errors -\> for practical purposes, our model will still work fine
+
+# Summary
 
 ## Summary
 
