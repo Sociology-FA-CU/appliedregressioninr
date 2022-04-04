@@ -71,8 +71,6 @@ plot(mod1, which = 1)
 
 -   Most basic way of dealing with nonlinearity
 
--   We can transform numeric predictors into discrete categories and model them as ordinal
-
 -   There are many different ways a numerical variable can be cut into categories:
 
     -   based on quantiles
