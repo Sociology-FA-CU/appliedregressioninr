@@ -47,6 +47,8 @@ navbar:
           href: 06_slides_model_assumptions.html
         - text: "Linearity"
           href: 07_slides_nonlinearity.html
+        - text: "Homoscedasticity"
+          href: 08_slides_heteroscedasticity.html
     - text: "Exercise"
       menu:
         - text: "1. Goals of regression analysis"

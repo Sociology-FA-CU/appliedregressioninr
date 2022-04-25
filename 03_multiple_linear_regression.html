@@ -13,16 +13,16 @@
 
 <title>Multiple linear regression</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -48,6 +48,7 @@ if (window.hljs) {
   }
 }
 </script>
+
 
 
 
@@ -98,6 +99,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -250,7 +254,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -260,7 +264,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -305,7 +309,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -335,10 +339,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -369,7 +376,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -417,26 +424,60 @@ $(document).ready(function () {
 </div>
 
 
-<p>The goals for this lecture are (1) understanding the concept of multiple linear regression with emphasis on interpretation of its coefficients, and (2) building and interpreting multiple regression models in R.</p>
-<div id="introduction-to-multiple-linear-regression" class="section level1">
+<p>The goals for this lecture are (1) understanding the concept of
+multiple linear regression with emphasis on interpretation of its
+coefficients, and (2) building and interpreting multiple regression
+models in R.</p>
+<div id="introduction-to-multiple-linear-regression"
+class="section level1">
 <h1>Introduction to multiple linear regression</h1>
-<p>Multiple linear regression (MLR) is defined as having multiple predictor terms (more than one). Remember the general formula for simple linear regression:</p>
+<p>Multiple linear regression (MLR) is defined as having multiple
+predictor terms (more than one). Remember the general formula for simple
+linear regression:</p>
 <p><span class="math display">\[
 Y = \alpha + \beta*X + \epsilon,
-\]</span> where <span class="math inline">\(\alpha + \beta*X\)</span> represents the line and <span class="math inline">\(\epsilon\)</span> represent the deviation from it.</p>
-<p>The formula for MLR is its fairly straightforward extension. Notice that intercept in MLR is usually called <span class="math inline">\(\beta_0\)</span> rather than <span class="math inline">\(\alpha\)</span>. The other regression coefficients are numbered betas. The numbered x-es stand for predictor terms.</p>
+\]</span> where <span class="math inline">\(\alpha + \beta*X\)</span>
+represents the line and <span class="math inline">\(\epsilon\)</span>
+represent the deviation from it.</p>
+<p>The formula for MLR is its fairly straightforward extension. Notice
+that intercept in MLR is usually called <span
+class="math inline">\(\beta_0\)</span> rather than <span
+class="math inline">\(\alpha\)</span>. The other regression coefficients
+are numbered betas. The numbered x-es stand for predictor terms.</p>
 <p><span class="math display">\[
 Y = \beta_0 + \beta_1*x_1 + + \beta_2*x_2 + ... + \epsilon
 \]</span></p>
-<p>Appreciate that having more predictor terms does not necessarily imply using more predictor variables. For example, the blue line in the following figure represents linear model estimated using three predictor terms: democratic index, democratic index to the power of two (quadratic term), and democratic index to the power of three (cubic term). While the model only uses one predictor variable, there are three predictor terms which makes the model a case of MLR (the interpretation framework of MLR explained in this lecture applies). For this model, four betas would be estimated (one of them the intercept).</p>
+<p>Appreciate that having more predictor terms does not necessarily
+imply using more predictor variables. For example, the blue line in the
+following figure represents linear model estimated using three predictor
+terms: democratic index, democratic index to the power of two (quadratic
+term), and democratic index to the power of three (cubic term). While
+the model only uses one predictor variable, there are three predictor
+terms which makes the model a case of MLR (the interpretation framework
+of MLR explained in this lecture applies). For this model, four betas
+would be estimated (one of them the intercept).</p>
 <p><img src="03_multiple_linear_regression_files/figure-html/multiple1-1.png" width="480" style="display: block; margin: auto;" /></p>
-<p>One of the common misconceptions about linear regression is that it can only estimate a straight line. That is only true for simple linear regression. From the picture above, it should be clear that in MLR, it is possible to “bend” the line. And not only that. Throughout the course we will see how flexible MLR can be.</p>
-<p>Another example of a MLR model is visualized on the figure below. It uses two predictor terms (in this case, they are two distinct independent variables): again, the democratic index, and, in addition, a binary variable whether the country is post-soviet or not. Due to the fact that one of the independent variables is binary, it is possible to visualize the whole model in one two-dimensional figure as two lines. However, more complex MLR models cannot be meaningfully visualized on top of the raw data.</p>
+<p>One of the common misconceptions about linear regression is that it
+can only estimate a straight line. That is only true for simple linear
+regression. From the picture above, it should be clear that in MLR, it
+is possible to “bend” the line. And not only that. Throughout the course
+we will see how flexible MLR can be.</p>
+<p>Another example of a MLR model is visualized on the figure below. It
+uses two predictor terms (in this case, they are two distinct
+independent variables): again, the democratic index, and, in addition, a
+binary variable whether the country is post-soviet or not. Due to the
+fact that one of the independent variables is binary, it is possible to
+visualize the whole model in one two-dimensional figure as two lines.
+However, more complex MLR models cannot be meaningfully visualized on
+top of the raw data.</p>
 <p><img src="03_multiple_linear_regression_files/figure-html/multiple2-1.png" width="576" style="display: block; margin: auto;" /></p>
 </div>
 <div id="interpreting-coefficients-in-mlr" class="section level1">
 <h1>Interpreting coefficients in MLR</h1>
-<p>First, let’s run a model where life expectancy is explained with democratic index and percentage of people with university degree in 15-64 age category (that is how the variable is defined so we just use what we have).</p>
+<p>First, let’s run a model where life expectancy is explained with
+democratic index and percentage of people with university degree in
+15-64 age category (that is how the variable is defined so we just use
+what we have).</p>
 <pre class="r"><code>fit1 &lt;- lm(life_exp ~ dem_index + uni_prc, data = countries)
 summary (fit1)</code></pre>
 <pre><code>## 
@@ -459,24 +500,114 @@ summary (fit1)</code></pre>
 ##   (3 observations deleted due to missingness)
 ## Multiple R-squared:  0.5517, Adjusted R-squared:  0.5237 
 ## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
-<p>The output above should look familiar, it differs from that of simple linear regression (previous lecture) only by having an extra row in the coefficient table. The beta coefficients are in the column called “Estimate.” Specifically, the coefficient for democratic index is 1.786 (recall that the coefficinet was 1.62 when democratic index was the only predictor), and the coefficient for university education is -1.460.</p>
-<p>Interpreting coefficients in MLR can be surprisingly tricky as they are, “in part, contingent on the other variables in the model” <span class="citation">(Gelman et al., 2020, p. 131)</span>. This means that they will change when other variables are added to the model or dropped from the model.</p>
-<p>We will cite <span class="citation">Gelman et al. (2020)</span> on how best to interpret them: “The coefficient <span class="math inline">\(\beta_k\)</span> is the average or expected difference in outcome <span class="math inline">\(y_k\)</span>, comparing two people who differ by one unit in the predictor <span class="math inline">\(x_k\)</span> while being equal in all the other predictors. This is sometimes stated in shorthand as comparing two people (or, more generally, two observational units) that differ in <span class="math inline">\(x_k\)</span> with all the other predictors held constant” (p. 131). We also call this conditional effect (as in “conditional on the assumption that all other predictors are held constant”).</p>
-<p>For the example above, we could say that if one country has democratic index higher by one point than another country, and they both have the same percentage of university educated people, the first country will have expected life expectancy higher by 1.8 years (we encourage to reasonably round the beta of 1.786 for interpretation purposes to avoid making impression of unjustified precision).</p>
-<p>Since the coefficient for percentage of university educated people has very broad confidence interval (and very high p-value), we could also say that we find no evidence in the data, that two countries with the same level of democratic index should be expected to differ in life expectancy when they have different proportion of university educated people. That is if we believe the sample of countries justifies some generalization to some concrete or at least abstract population of countries. Someone could be tempted to make a purely descriptive interpretation with no ambition to make sample-to-population inference. He or she could try to say something along the lines that for our particular sample of countries and data from given years, we find that for two countries with the same level democratic index the life expectancy goes down by 1.46 years, on average, as the proportion of university educated increases from 0 to 100% (the variable is measured on scale from 0 to 1). This seems to us a meaningless statement and we would discourage from it, even if technically true. The really large standard errors should warn us against making interpretation even in purely descriptive situations. Saying that controlling for democratic index, there does not seem to be any linear association between life expectancy and proportion of university educated in our sample of countries seems much more sensible.<br />
+<p>The output above should look familiar, it differs from that of simple
+linear regression (previous lecture) only by having an extra row in the
+coefficient table. The beta coefficients are in the column called
+“Estimate”. Specifically, the coefficient for democratic index is 1.786
+(recall that the coefficinet was 1.62 when democratic index was the only
+predictor), and the coefficient for university education is -1.460.</p>
+<p>Interpreting coefficients in MLR can be surprisingly tricky as they
+are, “in part, contingent on the other variables in the model” <span
+class="citation">(Gelman et al., 2020, p. 131)</span>. This means that
+they will change when other variables are added to the model or dropped
+from the model.</p>
+<p>We will cite <span class="citation">Gelman et al. (2020)</span> on
+how best to interpret them: “The coefficient <span
+class="math inline">\(\beta_k\)</span> is the average or expected
+difference in outcome <span class="math inline">\(y_k\)</span>,
+comparing two people who differ by one unit in the predictor <span
+class="math inline">\(x_k\)</span> while being equal in all the other
+predictors. This is sometimes stated in shorthand as comparing two
+people (or, more generally, two observational units) that differ in
+<span class="math inline">\(x_k\)</span> with all the other predictors
+held constant” (p. 131). We also call this conditional effect (as in
+“conditional on the assumption that all other predictors are held
+constant”).</p>
+<p>For the example above, we could say that if one country has
+democratic index higher by one point than another country, and they both
+have the same percentage of university educated people, the first
+country will have expected life expectancy higher by 1.8 years (we
+encourage to reasonably round the beta of 1.786 for interpretation
+purposes to avoid making impression of unjustified precision).</p>
+<p>Since the coefficient for percentage of university educated people
+has very broad confidence interval (and very high p-value), we could
+also say that we find no evidence in the data, that two countries with
+the same level of democratic index should be expected to differ in life
+expectancy when they have different proportion of university educated
+people. That is if we believe the sample of countries justifies some
+generalization to some concrete or at least abstract population of
+countries. Someone could be tempted to make a purely descriptive
+interpretation with no ambition to make sample-to-population inference.
+He or she could try to say something along the lines that for our
+particular sample of countries and data from given years, we find that
+for two countries with the same level democratic index the life
+expectancy goes down by 1.46 years, on average, as the proportion of
+university educated increases from 0 to 100% (the variable is measured
+on scale from 0 to 1). This seems to us a meaningless statement and we
+would discourage from it, even if technically true. The really large
+standard errors should warn us against making interpretation even in
+purely descriptive situations. Saying that controlling for democratic
+index, there does not seem to be any linear association between life
+expectancy and proportion of university educated in our sample of
+countries seems much more sensible.<br />
 </p>
-<p>Within descriptive modeling strategies, we use MLR to see the effects of individual variables net of the effects of all the other predictors in the model. Within predictive modeling, we use MLR to improve our predictions over simple linear model (predictions based on just one predictor term often tend to be weak in social sciences). Within explanatory modeling, we use MLR for adjusting for background variables according to our theory, hence discovering potentially spurious relationships and isolating potentially causal effects.</p>
-<div id="difference-based-vs.-change-based-interpretations" class="section level2">
+<p>Within descriptive modeling strategies, we use MLR to see the effects
+of individual variables net of the effects of all the other predictors
+in the model. Within predictive modeling, we use MLR to improve our
+predictions over simple linear model (predictions based on just one
+predictor term often tend to be weak in social sciences). Within
+explanatory modeling, we use MLR for adjusting for background variables
+according to our theory, hence discovering potentially spurious
+relationships and isolating potentially causal effects.</p>
+<div id="difference-based-vs.-change-based-interpretations"
+class="section level2">
 <h2>Difference-based vs. change-based interpretations</h2>
-<p>There are two conceptually slightly different interpretations of MLR coefficients. The difference-based interpretation is well described as “how the outcome variable differs, on average, when comparing two groups of items that differ by 1 in the relevant predictor while being identical in all the other predictors” <span class="citation">(Gelman et al., 2020, p. 134)</span>. In contrast, the change-based interpretation is well described by saying that “the coefficient is the expected change in y caused by adding 1 to the relevant predictor, while leaving all the other predictors in the model unchanged” <span class="citation">(Gelman et al., 2020, p. 134)</span>.</p>
-<p>In others words, the difference-based interpretation uses the idea of difference between individuals, whereas the change-based interpretation uses the idea of change within individual. To be on the save side, we recommend interpreting regression coefficients as comparisons between units, not (potential) changes within units, unless one specifically claims causality. The difference-based interpretation is simply more general, hence carries less risk of being used in a misleading way. (By misleading we mean invoking causality where no evidence for a causal relationship is shown.)</p>
-<p>Note that <span class="citation">(Gelman et al., 2020)</span> use the term “predictive interpretation” instead of difference-based interpretation and “counterfactual” interpretation instead of change-based interpretation.</p>
+<p>There are two conceptually slightly different interpretations of MLR
+coefficients. The difference-based interpretation is well described as
+“how the outcome variable differs, on average, when comparing two groups
+of items that differ by 1 in the relevant predictor while being
+identical in all the other predictors” <span class="citation">(Gelman et
+al., 2020, p. 134)</span>. In contrast, the change-based interpretation
+is well described by saying that “the coefficient is the expected change
+in y caused by adding 1 to the relevant predictor, while leaving all the
+other predictors in the model unchanged” <span class="citation">(Gelman
+et al., 2020, p. 134)</span>.</p>
+<p>In others words, the difference-based interpretation uses the idea of
+difference between individuals, whereas the change-based interpretation
+uses the idea of change within individual. To be on the save side, we
+recommend interpreting regression coefficients as comparisons between
+units, not (potential) changes within units, unless one specifically
+claims causality. The difference-based interpretation is simply more
+general, hence carries less risk of being used in a misleading way. (By
+misleading we mean invoking causality where no evidence for a causal
+relationship is shown.)</p>
+<p>Note that <span class="citation">(Gelman et al., 2020)</span> use the
+term “predictive interpretation” instead of difference-based
+interpretation and “counterfactual” interpretation instead of
+change-based interpretation.</p>
 </div>
-<div id="comparing-beta-coefficients-of-different-predictors" class="section level2">
+<div id="comparing-beta-coefficients-of-different-predictors"
+class="section level2">
 <h2>Comparing beta coefficients of different predictors</h2>
-<p>It can be sometimes useful to compare coefficients of different independent variables in the model. As we saw in the model above, it cannot be done in a straightforward way. While values of 1.786 and 1.460 are not very far from each other, it makes no sense to compare them. The first shows change when two countries differ in democratic index (measured on the scale from 0 to 10) by one (a realistic situation), whereas the latter shows change when one country has no university educated people and the other has only university educated people (a very unrealistic situation). Indeed, the coefficient value depends on the unit we use for measuring the independent variable.</p>
-<p>To deal with this issues of no comparability, we can use so called standardized betas. Those can be used to determine relative weight or strength of independent variables as they show the effect of an increase in X by one standard deviation on Y, also measured in standard deviations. The way to calculate standardized betas is to first standardize (compute z-scores) all variables used in the model and then run a regression on the z-scores.</p>
-<p>A way to do this using the scale function directly in the regression call is shown below.</p>
+<p>It can be sometimes useful to compare coefficients of different
+independent variables in the model. As we saw in the model above, it
+cannot be done in a straightforward way. While values of 1.786 and 1.460
+are not very far from each other, it makes no sense to compare them. The
+first shows change when two countries differ in democratic index
+(measured on the scale from 0 to 10) by one (a realistic situation),
+whereas the latter shows change when one country has no university
+educated people and the other has only university educated people (a
+very unrealistic situation). Indeed, the coefficient value depends on
+the unit we use for measuring the independent variable.</p>
+<p>To deal with this issues of no comparability, we can use so called
+standardized betas. Those can be used to determine relative weight or
+strength of independent variables as they show the effect of an increase
+in X by one standard deviation on Y, also measured in standard
+deviations. The way to calculate standardized betas is to first
+standardize (compute z-scores) all variables used in the model and then
+run a regression on the z-scores.</p>
+<p>A way to do this using the scale function directly in the regression
+call is shown below.</p>
 <pre class="r"><code>fit2 &lt;- lm(scale(life_exp) ~ scale(dem_index) + scale(uni_prc), data = countries)
 summary (fit2)</code></pre>
 <pre><code>## 
@@ -500,18 +631,38 @@ summary (fit2)</code></pre>
 ##   (3 observations deleted due to missingness)
 ## Multiple R-squared:  0.5517, Adjusted R-squared:  0.5237 
 ## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
-<p>Now we can compare the relative strengths of our predictors. The democratic index (with standardized beta of 0.82) is a way stronger predictor of life expectancy than the proportion of university educated (0.04 in absolute value as the sign is irrelevant for this comparison). Notice that the values of t-tests for the significance of coefficients did not change. It should come as no surprise, we did not substantively change the data by standardizing it. Also remember that we are comparing the net effect of the predictors. The comparison could look quite different when standardized betas from two simple linear regression models were compared.</p>
-<p><span class="citation">Gelman (2008)</span> suggests to use slightly different transformation if we also want include binary predictors (dummy variables) in the model. He shows that standardizing by subtracting the mean and dividing by 2 standard deviations (rather than just 1) enables to directly compare this kind of standardized betas with coefficients for non-standardized binaries.</p>
+<p>Now we can compare the relative strengths of our predictors. The
+democratic index (with standardized beta of 0.82) is a way stronger
+predictor of life expectancy than the proportion of university educated
+(0.04 in absolute value as the sign is irrelevant for this comparison).
+Notice that the values of t-tests for the significance of coefficients
+did not change. It should come as no surprise, we did not substantively
+change the data by standardizing it. Also remember that we are comparing
+the net effect of the predictors. The comparison could look quite
+different when standardized betas from two simple linear regression
+models were compared.</p>
+<p><span class="citation">Gelman (2008)</span> suggests to use slightly
+different transformation if we also want include binary predictors
+(dummy variables) in the model. He shows that standardizing by
+subtracting the mean and dividing by 2 standard deviations (rather than
+just 1) enables to directly compare this kind of standardized betas with
+coefficients for non-standardized binaries.</p>
 </div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="refs" class="references csl-bib-body hanging-indent"
+line-spacing="2">
 <div id="ref-gelman2008" class="csl-entry">
-Gelman, A. (2008). Scaling regression inputs by dividing by two standard deviations. <em>Statistics in Medicine</em>, <em>27</em>(15), 2865–2873. https://doi.org/<a href="https://doi.org/10.1002/sim.3107">https://doi.org/10.1002/sim.3107</a>
+Gelman, A. (2008). Scaling regression inputs by dividing by two standard
+deviations. <em>Statistics in Medicine</em>, <em>27</em>(15), 2865–2873.
+https://doi.org/<a
+href="https://doi.org/10.1002/sim.3107">https://doi.org/10.1002/sim.3107</a>
 </div>
 <div id="ref-gelman2020" class="csl-entry">
-Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
+Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other
+stories</em>. Cambridge University Press. <a
+href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
 </div>
 </div>
 </div>

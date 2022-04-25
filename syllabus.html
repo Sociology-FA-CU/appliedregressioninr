@@ -13,16 +13,16 @@
 
 <title>Completion requirements</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -56,6 +56,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -76,6 +77,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -228,7 +232,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -238,7 +242,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -283,7 +287,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -313,10 +317,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -347,7 +354,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -395,15 +402,38 @@ $(document).ready(function () {
 </div>
 
 
-<p>To succesfuly complete this course, students are required to do the following:</p>
+<p>To succesfuly complete this course, students are required to do the
+following:</p>
 <ol style="list-style-type: decimal">
-<li>Pick a dataset featured on the <a href="https://github.com/rfordatascience/tidytuesday">TidyTuesday project</a> (any year).</li>
-<li>Formulate a research problem related to the data. This research problem can be either predictive or inferential in nature (e.g. Can we predict the popularity of a song on Spotify based on its characteristics? Does the gender wage gap in the US depend on the proportion of women in the field? Are more expensive video games rated better?).</li>
-<li>Analyze the data using a linear regression model and write a report on your findings. This report should include clear definition of your research problems, description of your data (including descriptive statistics), description of your regression model (both tables and graphs where appropriate), diagnostics of your regression model and overall conclusion. You can transform and filter data as necessary, but clearly describe all data transformations.</li>
-<li>Prepare two documents for submission: (1) a script which must be fully operational: it has to run without error from start (including downloading data from TidyTuesday website) to finish without any need for outside interference and produce all analytic outputs (models, charts) used for the assignment, (2) final report (e.g. Word or Pdf) as described above.</li>
-<li>Send both document to <a href="mailto:ales@vomacka.io" class="email">ales@vomacka.io</a>.</li>
+<li>Pick a dataset featured on the <a
+href="https://github.com/rfordatascience/tidytuesday">TidyTuesday
+project</a> (any year).</li>
+<li>Formulate a research problem related to the data. This research
+problem can be either predictive or inferential in nature (e.g. Can we
+predict the popularity of a song on Spotify based on its
+characteristics? Does the gender wage gap in the US depend on the
+proportion of women in the field? Are more expensive video games rated
+better?).</li>
+<li>Analyze the data using a linear regression model and write a report
+on your findings. This report should include clear definition of your
+research problems, description of your data (including descriptive
+statistics), description of your regression model (both tables and
+graphs where appropriate), diagnostics of your regression model and
+overall conclusion. You can transform and filter data as necessary, but
+clearly describe all data transformations.</li>
+<li>Prepare two documents for submission: (1) a script which must be
+fully operational: it has to run without error from start (including
+downloading data from TidyTuesday website) to finish without any need
+for outside interference and produce all analytic outputs (models,
+charts) used for the assignment, (2) final report (e.g. Word or Pdf) as
+described above.</li>
+<li>Send both document to <a href="mailto:ales@vomacka.io"
+class="email">ales@vomacka.io</a>.</li>
 </ol>
-<p>The due date for the report is 5th September so that we can grade it till 20th September (the last day when SIS is open for entries for the summer semester). We recommend that you try to submit (much) earlier. If you get stuck don’t be afraid to ask for a consultation.</p>
+<p>The due date for the report is 5th September so that we can grade it
+till 20th September (the last day when SIS is open for entries for the
+summer semester). We recommend that you try to submit (much) earlier. If
+you get stuck don’t be afraid to ask for a consultation.</p>
 
 <br>
   <footer class="bg-white fixed-bottom border">

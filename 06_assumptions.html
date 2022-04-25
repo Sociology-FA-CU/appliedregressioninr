@@ -13,16 +13,16 @@
 
 <title>Assumptions of linear regression</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -48,6 +48,7 @@ if (window.hljs) {
   }
 }
 </script>
+
 
 
 
@@ -98,6 +99,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -250,7 +254,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -260,7 +264,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -305,7 +309,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -335,10 +339,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -369,7 +376,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -417,88 +424,240 @@ $(document).ready(function () {
 </div>
 
 
-<p>So far, we discussed how to create and interpret linear regression models. However, if we want to summarize complex relationships that exist in the real world using mathematical models, certain assumptions have to be made. The validity of our results then dependents on how well our models match these assumptions. In this context, it is important to note that no model can be at the same time both parsimonious and perfectly accurate, and therefore no assumption we can make regarding our models will ever be satisfied perfectly.</p>
-<p>This does no mean that we should resign on the critical reflection of our models and blindly accept whatever results they may give. On the contrary, we should think carefully about the ways in which our models deviate from the assumptions we established and what consequences these deviations may have. As the british statistician George E. P. Box (allegedly) said: <em>“All models are wrong, but some are useful”</em>.</p>
-<p>The most important assumptions of linear regression model, in order of relative importance, are as follows <span class="citation">(Gelman et al., 2020)</span>.</p>
+<p>So far, we discussed how to create and interpret linear regression
+models. However, if we want to summarize complex relationships that
+exist in the real world using mathematical models, certain assumptions
+have to be made. The validity of our results then dependents on how well
+our models match these assumptions. In this context, it is important to
+note that no model can be at the same time both parsimonious and
+perfectly accurate, and therefore no assumption we can make regarding
+our models will ever be satisfied perfectly.</p>
+<p>This does no mean that we should resign on the critical reflection of
+our models and blindly accept whatever results they may give. On the
+contrary, we should think carefully about the ways in which our models
+deviate from the assumptions we established and what consequences these
+deviations may have. As the british statistician George E. P. Box
+(allegedly) said: <em>“All models are wrong, but some are
+useful”</em>.</p>
+<p>The most important assumptions of linear regression model, in order
+of relative importance, are as follows <span class="citation">(Gelman et
+al., 2020)</span>.</p>
 <div id="validity" class="section level1">
 <h1>1. Validity</h1>
-<p>The most important, and at the same time most elusive, is the assumption of validity, which relates both to the variables of interest and the model itself. Firstly, we should make sure that the data we use are sufficient to answer the research question at hand. This often becomes a problem in secondary analyses, in which we reuse data from previous studies. Since no two studies have the same goal, data gathered by other researchers will probably not align perfectly with our research questions, and consequently important variables may be missing or not be measured in sufficient detail.</p>
-<p>Secondly, all traits and phenomena we want to analyze need to be measured with sufficient quality. Theoretical constructs have to be operationalized adequately, so that we don’t miss any of its important facets and, if possible, validated measuring tools should be used, to make sure that our measurement is both reliable and valid. We should also be careful not to mistake related traits with each other. For example, it may be tempting to use school grades as a measure of academic proficiency, but grades are often influenced not by academic skills, but also by behavior and personal traits of students and hence may not be an ideal proxy.</p>
-<p>Thirdly, data must be gathered in such way that inference to the desired population is possible. A sample of university students may be fine if our goal is to learn about this specific population, but we should be careful about generalizing to any more general group. In the similar vein, a representative sample of Czech population may not be ideal if our goal is to study a narrowly specified subset, such as second generation immigrants.</p>
-<p>Lastly, our models has to be correctly specified to capture the true relationships between variables. If we were to specify a linear relationship between age and income, when in reality the two variables would be nonlinear dependent, our conclusions would be biased. To correctly specify a model, we can either lean on theory to guide us or make our model sufficiently flexible so that we don’t introduce unreasonable assumptions about the nature of the studied topic.</p>
-<p>Overall, while it is impossible to design a perfect study, which would fully satisfy all facets of validity, we should strive to do as well as possible, as the loss of validity strongly lessens the usefulness of our findings.</p>
+<p>The most important, and at the same time most elusive, is the
+assumption of validity, which relates both to the variables of interest
+and the model itself. Firstly, we should make sure that the data we use
+are sufficient to answer the research question at hand. This often
+becomes a problem in secondary analyses, in which we reuse data from
+previous studies. Since no two studies have the same goal, data gathered
+by other researchers will probably not align perfectly with our research
+questions, and consequently important variables may be missing or not be
+measured in sufficient detail.</p>
+<p>Secondly, all traits and phenomena we want to analyze need to be
+measured with sufficient quality. Theoretical constructs have to be
+operationalized adequately, so that we don’t miss any of its important
+facets and, if possible, validated measuring tools should be used, to
+make sure that our measurement is both reliable and valid. We should
+also be careful not to mistake related traits with each other. For
+example, it may be tempting to use school grades as a measure of
+academic proficiency, but grades are often influenced not by academic
+skills, but also by behavior and personal traits of students and hence
+may not be an ideal proxy.</p>
+<p>Thirdly, data must be gathered in such way that inference to the
+desired population is possible. A sample of university students may be
+fine if our goal is to learn about this specific population, but we
+should be careful about generalizing to any more general group. In the
+similar vein, a representative sample of Czech population may not be
+ideal if our goal is to study a narrowly specified subset, such as
+second generation immigrants.</p>
+<p>Lastly, our models has to be correctly specified to capture the true
+relationships between variables. If we were to specify a linear
+relationship between age and income, when in reality the two variables
+would be nonlinear dependent, our conclusions would be biased. To
+correctly specify a model, we can either lean on theory to guide us or
+make our model sufficiently flexible so that we don’t introduce
+unreasonable assumptions about the nature of the studied topic.</p>
+<p>Overall, while it is impossible to design a perfect study, which
+would fully satisfy all facets of validity, we should strive to do as
+well as possible, as the loss of validity strongly lessens the
+usefulness of our findings.</p>
 </div>
 <div id="representativeness" class="section level1">
 <h1>2. Representativeness</h1>
-<p>The second assumption is the one of representativeness If our goal is either prediction or inference, our data needs to be a representative sample of the population of interest. More specifically, we assume that the distribution of the dependent variable is representative of the population, given the the predictors. This is a distinction with an important implication. While it is crucial for the dependent variable to be sampled in representative manner, it is not strictly necessary for the the rest of the variables in the model. Consider for example model predicting income based on age:</p>
+<p>The second assumption is the one of representativeness If our goal is
+either prediction or inference, our data needs to be a representative
+sample of the population of interest. More specifically, we assume that
+the distribution of the dependent variable is representative of the
+population, given the the predictors. This is a distinction with an
+important implication. While it is crucial for the dependent variable to
+be sampled in representative manner, it is not strictly necessary for
+the the rest of the variables in the model. Consider for example model
+predicting income based on age:</p>
 <p><span class="math display">\[
 income = \beta_0 + \beta_1*age+\epsilon
 \]</span></p>
-<p>Ideally, we would have sample representative in both age and income, as shown in the subplot A below. Notice however, that even if we only sampled respondents with above average age, the estimated relationship between age and income would still be identical to the one from the fully representative sample (subplot B). Only in the situation where the sampling is biased in term of income, would our inference be significantly of (subplot C). The red line shows the true relationship between the variables, while the blue one shows the relationship on the reduced data set.</p>
+<p>Ideally, we would have sample representative in both age and income,
+as shown in the subplot A below. Notice however, that even if we only
+sampled respondents with above average age, the estimated relationship
+between age and income would still be identical to the one from the
+fully representative sample (subplot B). Only in the situation where the
+sampling is biased in term of income, would our inference be
+significantly of (subplot C). The red line shows the true relationship
+between the variables, while the blue one shows the relationship on the
+reduced data set.</p>
 <div class="figure">
 <img src="06_assumptions_files/figure-html/representativeness-example-1.png" alt="Example of A) Fully representative sample, B) Sample with indepdendent variable bias c) Sample with dependent variable bias" width="672" />
 <p class="caption">
-Example of A) Fully representative sample, B) Sample with indepdendent variable bias c) Sample with dependent variable bias
+Example of A) Fully representative sample, B) Sample with indepdendent
+variable bias c) Sample with dependent variable bias
 </p>
 </div>
-<p>This also naturally extends to undersampling and oversampling. Oversampling older respondents would be of little worry, while oversampling respondents with low income would be a considerable problem. We should therefore pay special attention to potential sampling biases regarding our dependent variables, especially if our goal is inference.</p>
+<p>This also naturally extends to undersampling and oversampling.
+Oversampling older respondents would be of little worry, while
+oversampling respondents with low income would be a considerable
+problem. We should therefore pay special attention to potential sampling
+biases regarding our dependent variables, especially if our goal is
+inference.</p>
 </div>
 <div id="linearity-and-additivity" class="section level1">
 <h1>3. Linearity and additivity</h1>
-<p>The first and the most important mathematical assumption of linear regression are the assumptions linearity and additivity. All linear models assume that the expected value of the dependent variable can be computed as a linear combination of predictor values and their regression coefficients:</p>
+<p>The first and the most important mathematical assumption of linear
+regression are the assumptions linearity and additivity. All linear
+models assume that the expected value of the dependent variable can be
+computed as a linear combination of predictor values and their
+regression coefficients:</p>
 <p><span class="math display">\[
 y = \beta_0 + \beta_1*x_1 + \beta_2*x_2\:+\:...\:\beta_p*x_p
 \]</span></p>
-<p>Not all relationships are necessarily additive and linear An example of a multiplicative model would be:</p>
+<p>Not all relationships are necessarily additive and linear An example
+of a multiplicative model would be:</p>
 <p><span class="math display">\[
 y = \beta_0 + (\beta_1*x_1) * (\beta_2*x_2)
 \]</span></p>
-<p>As a rule of thumb, if the regression coefficients in the model are only either add or subtracted from each other (i.e. <span class="math inline">\(\beta_1*x_1+\beta_2*x_2+...)\)</span>), the model is considered linear and additive. On the other hand, if the regression coefficients are multiplied, divided or taken to the power of each other, the relationship the model is either not linear or not additive.</p>
-<p>Just because some relationships are not linear in their natural form, all is not lost. Perhaps confusingly, some nonlinear models can be transformed into a linear form, using an appropriate transformation. One of the widely used transformation are logarithms, which can ,roughly speaking, convert multiplication to addition and division to subtraction. Consider the example of the multiplicative model above. We can transform such model into linear form by simply taking the logarithm of the product, as the logarithm of product is the sum of logarithms:</p>
+<p>As a rule of thumb, if the regression coefficients in the model are
+only either add or subtracted from each other (i.e. <span
+class="math inline">\(\beta_1*x_1+\beta_2*x_2+...)\)</span>), the model
+is considered linear and additive. On the other hand, if the regression
+coefficients are multiplied, divided or taken to the power of each
+other, the relationship the model is either not linear or not
+additive.</p>
+<p>Just because some relationships are not linear in their natural form,
+all is not lost. Perhaps confusingly, some nonlinear models can be
+transformed into a linear form, using an appropriate transformation. One
+of the widely used transformation are logarithms, which can ,roughly
+speaking, convert multiplication to addition and division to
+subtraction. Consider the example of the multiplicative model above. We
+can transform such model into linear form by simply taking the logarithm
+of the product, as the logarithm of product is the sum of
+logarithms:</p>
 <p><span class="math display">\[
-\beta_0 + log[(\beta_1*x_1) * (\beta_2*x_2)] = \beta_0 + log(\beta_1*x_1) + log(\beta_2*x_2)
+\beta_0 + log[(\beta_1*x_1) * (\beta_2*x_2)] = \beta_0 +
+log(\beta_1*x_1) + log(\beta_2*x_2)
 \]</span></p>
-<p>The assumptions of linearity and additivity are crucial, as linear models can only capture relationship which fulfill these assumptions. While no relationship between two variables is perfectly linear in the real world, many can be approximated in such way. Despite this, we should be careful about parametrizing our models, as failing to at least approximately fulfill these assumptions biases both our regression coefficients and our predictions, and thus presents danger no matter what our goals are. For examples on how can a volition of these assumptions lead to incorrect conclusions, see <span class="citation">(King &amp; Roberts, 2015)</span>.</p>
+<p>The assumptions of linearity and additivity are crucial, as linear
+models can only capture relationship which fulfill these assumptions.
+While no relationship between two variables is perfectly linear in the
+real world, many can be approximated in such way. Despite this, we
+should be careful about parametrizing our models, as failing to at least
+approximately fulfill these assumptions biases both our regression
+coefficients and our predictions, and thus presents danger no matter
+what our goals are. For examples on how can a volition of these
+assumptions lead to incorrect conclusions, see <span
+class="citation">(King &amp; Roberts, 2015)</span>.</p>
 </div>
 <div id="independence-of-errors" class="section level1">
 <h1>4. Independence of errors</h1>
-<p>Another important assumptions is that the errors, i.e. the differences between the true and the predicted values, are independent of each other. This assumption is often violated in time series, where the errors at the time of <em>t</em> are correlated with the errors at the time of <em>t-1</em> (or <em>t-2</em>, <em>t-3</em>, etc.). In other words, values that are measured closer together in time have more similar values of errors. Such thing can also happen in analysis of spatial data, where regions that are geographically close together have similar errors. The violation of this assumption leads to incorrect estimation of standard error, and therefore presents a risk to inference <span class="citation">(Williams et al., 2019)</span>.</p>
+<p>Another important assumptions is that the errors, i.e. the
+differences between the true and the predicted values, are independent
+of each other. This assumption is often violated in time series, where
+the errors at the time of <em>t</em> are correlated with the errors at
+the time of <em>t-1</em> (or <em>t-2</em>, <em>t-3</em>, etc.). In other
+words, values that are measured closer together in time have more
+similar values of errors. Such thing can also happen in analysis of
+spatial data, where regions that are geographically close together have
+similar errors. The violation of this assumption leads to incorrect
+estimation of standard error, and therefore presents a risk to inference
+<span class="citation">(Williams et al., 2019)</span>.</p>
 </div>
-<div id="homoscedasticity-constant-variance-of-errors" class="section level1">
+<div id="homoscedasticity-constant-variance-of-errors"
+class="section level1">
 <h1>5. Homoscedasticity (constant variance of errors)</h1>
-<p>The standard linear regression is derived under the assumption that the errors have the same variance across all levels of the dependent variable and such situation is called homoscedasticity. If the variance of the errors is not constant, the the error are heteroscedastic.</p>
+<p>The standard linear regression is derived under the assumption that
+the errors have the same variance across all levels of the dependent
+variable and such situation is called homoscedasticity. If the variance
+of the errors is not constant, the the error are heteroscedastic.</p>
 <div class="figure">
 <img src="06_assumptions_files/figure-html/homoscedasticity-examples-1.png" alt="Example of A) homoscedastic data B) heteroscedastic data" width="960" />
 <p class="caption">
 Example of A) homoscedastic data B) heteroscedastic data
 </p>
 </div>
-<p>The violation of this assumption has two consequences <span class="citation">(White, 1980)</span>. Firstly, the estimation of the regression coefficients become inefficient. This simply mean that we will need bigger sample size to obtain the level of precision than if the the errors were homoscedastic. The second, more serious problem is that the estimates of the standard errors of the coefficients would be biased, leading to incorrectly specified p values and standard errors. Therefore, this assumption is most important when our goal is inference or in situations where the precision of estimates matters greatly (e.g. when we are estimating weak relationships or small effect sizes).</p>
+<p>The violation of this assumption has two consequences <span
+class="citation">(White, 1980)</span>. Firstly, the estimation of the
+regression coefficients become inefficient. This simply mean that we
+will need bigger sample size to obtain the level of precision than if
+the the errors were homoscedastic. The second, more serious problem is
+that the estimates of the standard errors of the coefficients would be
+biased, leading to incorrectly specified p values and standard errors.
+Therefore, this assumption is most important when our goal is inference
+or in situations where the precision of estimates matters greatly
+(e.g. when we are estimating weak relationships or small effect
+sizes).</p>
 </div>
 <div id="normality-of-errors" class="section level1">
 <h1>6. Normality of errors</h1>
-<p>The last of the assumptions states that the errors should be normally distributed. This is especially important for the prediction of individual observations, i.e. if our goal is to predict values of individual persons rather than just the average value. Furthermore, the normality of residuals is important for the inference from small samples. The classic way of inference assume that the sampling distribution of regression coefficients is normal. This assumption can be assured in several way, one of which is that the errors itself have normal attribution. On the other hand, for large enough samples, the sampling distribution of regression coefficient will approach normality no matter the distribution of residuals <span class="citation">(Lumley et al., 2002; Schmidt &amp; Finan, 2018)</span>. Therefore, the assumption of normality is only needed when the prediction on the individual level is desired or when we seek inference from small samples.</p>
+<p>The last of the assumptions states that the errors should be normally
+distributed. This is especially important for the prediction of
+individual observations, i.e. if our goal is to predict values of
+individual persons rather than just the average value. Furthermore, the
+normality of residuals is important for the inference from small
+samples. The classic way of inference assume that the sampling
+distribution of regression coefficients is normal. This assumption can
+be assured in several way, one of which is that the errors itself have
+normal attribution. On the other hand, for large enough samples, the
+sampling distribution of regression coefficient will approach normality
+no matter the distribution of residuals <span class="citation">(Lumley
+et al., 2002; Schmidt &amp; Finan, 2018)</span>. Therefore, the
+assumption of normality is only needed when the prediction on the
+individual level is desired or when we seek inference from small
+samples.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="refs" class="references csl-bib-body hanging-indent"
+line-spacing="2">
 <div id="ref-gelman2020" class="csl-entry">
-Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
+Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other
+stories</em>. Cambridge University Press. <a
+href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
 </div>
 <div id="ref-king2015" class="csl-entry">
-King, G., &amp; Roberts, M. E. (2015). How robust standard errors expose methodological problems they do not fix, and what to do about it. <em>Political Analysis</em>, <em>23</em>(2), 159179.
+King, G., &amp; Roberts, M. E. (2015). How robust standard errors expose
+methodological problems they do not fix, and what to do about it.
+<em>Political Analysis</em>, <em>23</em>(2), 159179.
 </div>
 <div id="ref-lumley2002" class="csl-entry">
-Lumley, T., Diehr, P., Emerson, S., &amp; Chen, L. (2002). The importance of the normality assumption in large public health data sets. <em>Annual Review of Public Health</em>, <em>23</em>, 151–169. <a href="https://doi.org/10.1146/annurev.publhealth.23.100901.140546">https://doi.org/10.1146/annurev.publhealth.23.100901.140546</a>
+Lumley, T., Diehr, P., Emerson, S., &amp; Chen, L. (2002). The
+importance of the normality assumption in large public health data sets.
+<em>Annual Review of Public Health</em>, <em>23</em>, 151–169. <a
+href="https://doi.org/10.1146/annurev.publhealth.23.100901.140546">https://doi.org/10.1146/annurev.publhealth.23.100901.140546</a>
 </div>
 <div id="ref-schmidt2018" class="csl-entry">
-Schmidt, A. F., &amp; Finan, C. (2018). Linear regression and the normality assumption. <em>Journal of Clinical Epidemiology</em>, <em>98</em>, 146–151. <a href="https://doi.org/10.1016/j.jclinepi.2017.12.006">https://doi.org/10.1016/j.jclinepi.2017.12.006</a>
+Schmidt, A. F., &amp; Finan, C. (2018). Linear regression and the
+normality assumption. <em>Journal of Clinical Epidemiology</em>,
+<em>98</em>, 146–151. <a
+href="https://doi.org/10.1016/j.jclinepi.2017.12.006">https://doi.org/10.1016/j.jclinepi.2017.12.006</a>
 </div>
 <div id="ref-white1980" class="csl-entry">
-White, H. (1980). <em>A heteroskedasticity-consistent covariance matrix estimator and a direct test for heteroskedasticity</em>.
+White, H. (1980). <em>A heteroskedasticity-consistent covariance matrix
+estimator and a direct test for heteroskedasticity</em>.
 </div>
 <div id="ref-williams2019" class="csl-entry">
-Williams, M., Grajales, C., &amp; Kurkiewicz, D. (2019). Assumptions of multiple regression: Correcting two misconceptions. <em>Practical Assessment, Research, and Evaluation</em>, <em>18</em>(1). https://doi.org/<a href="https://doi.org/10.7275/55hn-wk47">https://doi.org/10.7275/55hn-wk47</a>
+Williams, M., Grajales, C., &amp; Kurkiewicz, D. (2019). Assumptions of
+multiple regression: Correcting two misconceptions. <em>Practical
+Assessment, Research, and Evaluation</em>, <em>18</em>(1).
+https://doi.org/<a
+href="https://doi.org/10.7275/55hn-wk47">https://doi.org/10.7275/55hn-wk47</a>
 </div>
 </div>
 </div>

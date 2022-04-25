@@ -13,16 +13,16 @@
 
 <title>Data used in the course</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -56,6 +56,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -76,6 +77,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -228,7 +232,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -238,7 +242,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -283,7 +287,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -313,10 +317,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -347,7 +354,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -395,13 +402,18 @@ $(document).ready(function () {
 </div>
 
 
-<p>In this course, appart from simulating own data for some examples, we employ several datasets.</p>
+<p>In this course, appart from simulating own data for some examples, we
+employ several datasets.</p>
 <div id="countries-dataset" class="section level1">
 <h1>Countries dataset</h1>
-<p>Data on European countries, primarily from Eurostat. It can be downloaded in several formats</p>
+<p>Data on European countries, primarily from Eurostat. It can be
+downloaded in several formats</p>
 <ul>
-<li><p><strong>Comma separated values format</strong> is available <a href="https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/countries.csv">here</a> (right click and choose <em>Save link as…</em>).</p></li>
-<li><p><strong>RDS format</strong> <a href="https://github.com/Sociology-FA-CU/appliedregressioninr/raw/main/data/countries.rds">here</a>.</p></li>
+<li><p><strong>Comma separated values format</strong> is available <a
+href="https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/countries.csv">here</a>
+(right click and choose <em>Save link as…</em>).</p></li>
+<li><p><strong>RDS format</strong> <a
+href="https://github.com/Sociology-FA-CU/appliedregressioninr/raw/main/data/countries.rds">here</a>.</p></li>
 </ul>
 <p>The data contains the following variables:</p>
 <table>
@@ -460,7 +472,8 @@ $(document).ready(function () {
 </tr>
 <tr class="odd">
 <td align="left">uni_prc</td>
-<td align="left">% of people with university education between 15-64 years (2018)</td>
+<td align="left">% of people with university education between 15-64
+years (2018)</td>
 <td align="left">Eurostat</td>
 </tr>
 <tr class="even">
@@ -470,7 +483,8 @@ $(document).ready(function () {
 </tr>
 <tr class="odd">
 <td align="left">material_dep</td>
-<td align="left">% of people in material deprivation, 3 or less items (2017)</td>
+<td align="left">% of people in material deprivation, 3 or less items
+(2017)</td>
 <td align="left">Eurostat</td>
 </tr>
 <tr class="even">
@@ -491,16 +505,28 @@ $(document).ready(function () {
 </tbody>
 </table>
 </div>
-<div id="czech-2017-parliamentary-elections-voter-turnout" class="section level1">
+<div id="czech-2017-parliamentary-elections-voter-turnout"
+class="section level1">
 <h1>Czech 2017 parliamentary elections voter turnout</h1>
-<p>Data on the voter turnout in the Czech 2017 parliamentary elections from the 8th round of the European Social Survey.</p>
-<p><strong>Comma seperated values format</strong> is available <a href="https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/parl_vote_2017.csv">here</a> (right click and choose <em>Save link as…</em>).</p>
-<p>We recommend to download the data and save them ina folder called <code>data</code> together with other materials for the course.</p>
+<p>Data on the voter turnout in the Czech 2017 parliamentary elections
+from the 8th round of the European Social Survey.</p>
+<p><strong>Comma seperated values format</strong> is available <a
+href="https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/parl_vote_2017.csv">here</a>
+(right click and choose <em>Save link as…</em>).</p>
+<p>We recommend to download the data and save them ina folder called
+<code>data</code> together with other materials for the course.</p>
 </div>
 <div id="united-nations-data-from-john-fox" class="section level1">
 <h1>United Nations data from John Fox</h1>
-<p>This is United Nations country level data from 1998, originally used by John Fox in his book <a href="https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/index.html">Applied Regression Analysis and Generalized Linear Models</a></p>
-<p>The data can be downloaded in .txt format <a href="https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/UnitedNations.txt">here</a> (right click and choose <em>Save link as…</em>). The description of the data <a href="https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/UnitedNations.pdf">here</a>.</p>
+<p>This is United Nations country level data from 1998, originally used
+by John Fox in his book <a
+href="https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/index.html">Applied
+Regression Analysis and Generalized Linear Models</a></p>
+<p>The data can be downloaded in .txt format <a
+href="https://raw.githubusercontent.com/Sociology-FA-CU/appliedregressioninr/main/data/UnitedNations.txt">here</a>
+(right click and choose <em>Save link as…</em>). The description of the
+data <a
+href="https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/UnitedNations.pdf">here</a>.</p>
 </div>
 
 <br>

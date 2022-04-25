@@ -13,16 +13,16 @@
 
 <title>Regression diagnostics</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -48,6 +48,7 @@ if (window.hljs) {
   }
 }
 </script>
+
 
 
 
@@ -98,6 +99,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -250,7 +254,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -260,7 +264,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -305,7 +309,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -335,10 +339,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -369,7 +376,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -417,78 +424,186 @@ $(document).ready(function () {
 </div>
 
 
-<p>While some regression assumptions, such as validity and representativeness, cannot be checked from the data directly, others can. Namely, the assumptions of linearity, constant variance, normality and the absence of influential observations and additivity should be checked every time they are relevant to a given goal. Note that not every assumption has to be satisfied for every model. For example, constant variance is only needed for hypothesis testing using the classically computed standard error. If our is not inference or if we use robust standard errors, constant variance is not needed to reach a valid conclusion.</p>
+<p>While some regression assumptions, such as validity and
+representativeness, cannot be checked from the data directly, others
+can. Namely, the assumptions of linearity, constant variance, normality
+and the absence of influential observations and additivity should be
+checked every time they are relevant to a given goal. Note that not
+every assumption has to be satisfied for every model. For example,
+constant variance is only needed for hypothesis testing using the
+classically computed standard error. If our is not inference or if we
+use robust standard errors, constant variance is not needed to reach a
+valid conclusion.</p>
 <div id="basic-regression-diagnostics" class="section level1">
 <h1>Basic regression diagnostics</h1>
-<p>Basic regression diagnostic involves checking the assumption of linearity, constant variance, normality and absence of influential observations.</p>
-<p>Let’s start with creating a regression model predicting life expectancy of European countries by poverty rate and and Human development index:</p>
+<p>Basic regression diagnostic involves checking the assumption of
+linearity, constant variance, normality and absence of influential
+observations.</p>
+<p>Let’s start with creating a regression model predicting life
+expectancy of European countries by poverty rate and and Human
+development index:</p>
 <pre class="r"><code>mod1 = lm(life_exp ~ poverty_risk + hdi, data = countries)</code></pre>
-<p>For start, we can use the generic <code>plot()</code> function. The <code>plot()</code> function, when applied to a linear model object, produces by default four plots, each useful for checking a different assumption. We will go over all of them.</p>
+<p>For start, we can use the generic <code>plot()</code> function. The
+<code>plot()</code> function, when applied to a linear model object,
+produces by default four plots, each useful for checking a different
+assumption. We will go over all of them.</p>
 <div id="the-assumption-of-linearity" class="section level2">
 <h2>The assumption of linearity</h2>
-<p>The assumption of linearity refers to the fact that metric and ratio independent variables should have a linear relationship with the dependent variable. In other words, it should be possible to capture the relationship between variables by using a straight line.</p>
-<p>To check this assumption we can plot the residuals of our model against the predicted values of the dependent variable. If the assumption of linearity is fulfilled, the residuals should not exhibit any curvilinear pattern.</p>
+<p>The assumption of linearity refers to the fact that metric and ratio
+independent variables should have a linear relationship with the
+dependent variable. In other words, it should be possible to capture the
+relationship between variables by using a straight line.</p>
+<p>To check this assumption we can plot the residuals of our model
+against the predicted values of the dependent variable. If the
+assumption of linearity is fulfilled, the residuals should not exhibit
+any curvilinear pattern.</p>
 <div class="figure">
 <img src="06_diagnostics_files/figure-html/linearity-examples-1.png" alt="Example of A) Linear relationship B) Curvilinear relationship" width="960" />
 <p class="caption">
 Example of A) Linear relationship B) Curvilinear relationship
 </p>
 </div>
-<p>In the graph above, we can see that when the assumption of linearity is satisfied (plot A), there is no discernible pattern and data points are spread along the horizontal line starting at zero. On the other hand, the data plot B shows noticeable nonlinear pattern.</p>
-<p>To plot such diagnostic graph for our model, we can use the base <code>plot()</code> function with argument <code>which = 1</code>:</p>
+<p>In the graph above, we can see that when the assumption of linearity
+is satisfied (plot A), there is no discernible pattern and data points
+are spread along the horizontal line starting at zero. On the other
+hand, the data plot B shows noticeable nonlinear pattern.</p>
+<p>To plot such diagnostic graph for our model, we can use the base
+<code>plot()</code> function with argument <code>which = 1</code>:</p>
 <pre class="r"><code>plot(mod1, which = 1)</code></pre>
 <p><img src="06_diagnostics_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>Notice that the <code>plot()</code> function by default overlays the residual plot with a loess line, to help us discern the relationship between predicted values and residuals. We see that the relationship in our plot is not completely linear, indicating that our model is not correctly specified to capture the relationship between life expectancy, human development index and poverty rate.</p>
+<p>Notice that the <code>plot()</code> function by default overlays the
+residual plot with a loess line, to help us discern the relationship
+between predicted values and residuals. We see that the relationship in
+our plot is not completely linear, indicating that our model is not
+correctly specified to capture the relationship between life expectancy,
+human development index and poverty rate.</p>
 </div>
 <div id="the-assumption-of-normality" class="section level2">
 <h2>The assumption of normality</h2>
-<p>The second common assumption is the assumption of normality. Linear regression assumes that errors follow the normal distribution. Though we cannot check the distribution of errors,we can check the distribution of residuals and these residuals should ideally be normally distributed.</p>
-<p>Arguably the best tool for checking if some data are following a specific theoretical distribution is Quantile-Quantile plot, or Q-Q plot. A Q-Q plot is simply a scatterplot of quantiles coming from the normal distribution on one axis and quantiles of our observed data on the other axis. To use Q-Q plot, we first compute the quantiles of normal distribution with the mean and standard deviation of our observed data. Next we compute the values coresponding to quantiles from out data. Lastly, we compare the values of the theoretical quantiles with the observed ones.</p>
+<p>The second common assumption is the assumption of normality. Linear
+regression assumes that errors follow the normal distribution. Though we
+cannot check the distribution of errors,we can check the distribution of
+residuals and these residuals should ideally be normally
+distributed.</p>
+<p>Arguably the best tool for checking if some data are following a
+specific theoretical distribution is Quantile-Quantile plot, or Q-Q
+plot. A Q-Q plot is simply a scatterplot of quantiles coming from the
+normal distribution on one axis and quantiles of our observed data on
+the other axis. To use Q-Q plot, we first compute the quantiles of
+normal distribution with the mean and standard deviation of our observed
+data. Next we compute the values coresponding to quantiles from out
+data. Lastly, we compare the values of the theoretical quantiles with
+the observed ones.</p>
 <div class="figure">
 <img src="06_diagnostics_files/figure-html/qqplot-example-1.png" alt="Q-Q plot examples of A) Normally distributed B) non-nonormally distributed data" width="960" />
 <p class="caption">
-Q-Q plot examples of A) Normally distributed B) non-nonormally distributed data
+Q-Q plot examples of A) Normally distributed B) non-nonormally
+distributed data
 </p>
 </div>
-<p>If our data come from the normal distribution, the Q-Q plot will show a straight line, indicating, indicating that the values of the theoretical quantiles match the values of the observed one. On the other hand, if the distribution of our sample deviates from the normal distribution, the points in our Q-Q plot will deviate from the straight line.</p>
-<p>To create Q-Q plot for residuals from our model, we simply use the generic <code>plot()</code> function with an argument <code>which = 2</code>:</p>
+<p>If our data come from the normal distribution, the Q-Q plot will show
+a straight line, indicating, indicating that the values of the
+theoretical quantiles match the values of the observed one. On the other
+hand, if the distribution of our sample deviates from the normal
+distribution, the points in our Q-Q plot will deviate from the straight
+line.</p>
+<p>To create Q-Q plot for residuals from our model, we simply use the
+generic <code>plot()</code> function with an argument
+<code>which = 2</code>:</p>
 <pre class="r"><code>plot(mod1, which = 2)</code></pre>
 <p><img src="06_diagnostics_files/figure-html/qqplot-model-1.png" width="672" /></p>
-<p>Looking at the Q-Q plot from our model, we can see that our residuals follow the normal distribution quite nicely.</p>
+<p>Looking at the Q-Q plot from our model, we can see that our residuals
+follow the normal distribution quite nicely.</p>
 </div>
-<div id="the-assumption-of-constant-variance-homoscedasticity" class="section level2">
+<div id="the-assumption-of-constant-variance-homoscedasticity"
+class="section level2">
 <h2>The assumption of constant variance (homoscedasticity)</h2>
-<p>The standard ordinary least square regression assumes that the variance of residuals is constant across the whole range of the dependent variable. This assumptions allows for a convenient mathematical shortcut when computing standard errors of regression coefficients, and as such is crucial in situations where our goal is statistical inference.</p>
-<p>Residuals, that are constant across the entire range of the predicted variable are called homoscedastic. The opposite of homoscedasticity is then heteroscedasticity.</p>
-<p>To check if the variance of residuals is constant, we can plot the residuals against the predicted values of the dependent variables. If the assumption of homoscedasticity (and the assumption of linearity) is fulfilled, we will see the residuals equally spaced along the expected value of the Y axis. On the other hand, if the assumption of constant variance is violated, the residuals will be more spread out in some parts of the plot than in the others. It is also common to take a square root of the residuals to “squish” the data points together to make the plot easily interpretable in presence of outliers.</p>
-<p>The following plot shows A) homoscedastic residuals and B) heteroscedastic residuals:</p>
+<p>The standard ordinary least square regression assumes that the
+variance of residuals is constant across the whole range of the
+dependent variable. This assumptions allows for a convenient
+mathematical shortcut when computing standard errors of regression
+coefficients, and as such is crucial in situations where our goal is
+statistical inference.</p>
+<p>Residuals, that are constant across the entire range of the predicted
+variable are called homoscedastic. The opposite of homoscedasticity is
+then heteroscedasticity.</p>
+<p>To check if the variance of residuals is constant, we can plot the
+residuals against the predicted values of the dependent variables. If
+the assumption of homoscedasticity (and the assumption of linearity) is
+fulfilled, we will see the residuals equally spaced along the expected
+value of the Y axis. On the other hand, if the assumption of constant
+variance is violated, the residuals will be more spread out in some
+parts of the plot than in the others. It is also common to take a square
+root of the residuals to “squish” the data points together to make the
+plot easily interpretable in presence of outliers.</p>
+<p>The following plot shows A) homoscedastic residuals and B)
+heteroscedastic residuals:</p>
 <div class="figure">
 <img src="06_diagnostics_files/figure-html/homoscedasticity-examples-1.png" alt="Example of A) homoscedastic data B) heteroscedastic data" width="960" />
 <p class="caption">
 Example of A) homoscedastic data B) heteroscedastic data
 </p>
 </div>
-<p>To create such plot for our model, we can use the <code>plot()</code> function with argument <code>which = 3</code>:</p>
+<p>To create such plot for our model, we can use the <code>plot()</code>
+function with argument <code>which = 3</code>:</p>
 <pre class="r"><code>plot(mod1, which = 3)</code></pre>
 <p><img src="06_diagnostics_files/figure-html/diagnostic%20homoscedasticity-1.png" width="672" /></p>
-<p>Notice, that our residuals do not fulfill the assumption of linearity and therefore the expected value of the residuals is not the same at all values of the dependent variable. We are therefore interested if the the residuals of our model are equally spaced along the red loess line. This mostly appear to be true, indicating that the assumption of constant variance is fulfilled.</p>
+<p>Notice, that our residuals do not fulfill the assumption of linearity
+and therefore the expected value of the residuals is not the same at all
+values of the dependent variable. We are therefore interested if the the
+residuals of our model are equally spaced along the red loess line. This
+mostly appear to be true, indicating that the assumption of constant
+variance is fulfilled.</p>
 </div>
 <div id="absence-of-influential-observations" class="section level2">
 <h2>Absence of influential observations</h2>
-<p>The last of the basic assumptions of linear regression is the absence of influential observations. Influential observations are those which have an overly large influence on the final form of our model, to the point where they bias our inference and predictions.</p>
-<p>To evaluate the influence of our individual observations on the final model, we can use leverage. Leverage tells us how big a role an observation plays when fitting a regression line. More specifically, observations with high leverage are those which lie far away from the center of the data. To understand why, remember that a) the goal of linear is to minimize the (squared) vertical distance between the regression and observed values and b) the regression line will always go through the center of the data, i.e. the mean of all included variables. We can therefore think about fitting the regression line as a children seesaw, with pivot in the middle. From our kindergarten days, we should remember that the further from the pivot we sit on the seesaw, the stronger pull/push we have. In other words, the further we are from the center, the higher our leverage. More formally, leverage can be expressed as <span class="citation">(Casella 1983)</span>:</p>
+<p>The last of the basic assumptions of linear regression is the absence
+of influential observations. Influential observations are those which
+have an overly large influence on the final form of our model, to the
+point where they bias our inference and predictions.</p>
+<p>To evaluate the influence of our individual observations on the final
+model, we can use leverage. Leverage tells us how big a role an
+observation plays when fitting a regression line. More specifically,
+observations with high leverage are those which lie far away from the
+center of the data. To understand why, remember that a) the goal of
+linear is to minimize the (squared) vertical distance between the
+regression and observed values and b) the regression line will always go
+through the center of the data, i.e. the mean of all included variables.
+We can therefore think about fitting the regression line as a children
+seesaw, with pivot in the middle. From our kindergarten days, we should
+remember that the further from the pivot we sit on the seesaw, the
+stronger pull/push we have. In other words, the further we are from the
+center, the higher our leverage. More formally, leverage can be
+expressed as <span class="citation">(Casella 1983)</span>:</p>
 <p><span class="math display">\[
-leverage_i = \frac{\partial \hat{y_i}}{\partial y_i} = \frac{partial\:change\:in\:expected\:y_i}{partial\:change\:in\:observed\:y_i} 
+leverage_i = \frac{\partial \hat{y_i}}{\partial y_i} =
+\frac{partial\:change\:in\:expected\:y_i}{partial\:change\:in\:observed\:y_i}
 \]</span></p>
-<p>Where <span class="math inline">\(\partial\)</span> can be recognized as partial derivative, <span class="math inline">\(y_i\)</span> is an observed value of the dependent variable and <span class="math inline">\(\hat{y_i}\)</span> is a expected value of the dependent variable. As we can see, the bigger effect on the expected value would changing the observed value have, the bigger that observation’s leverage.</p>
-<p>However, just because an observation has high leverage does not necessarily mean it will distort our model. What if the observation lied far from the center of the date, but still in line with the general trend? Removing such observations would not affect the model much. Only in the situation where the observation has both high leverage and does not match the trend in our data, will the observation influence the model as a whole.</p>
+<p>Where <span class="math inline">\(\partial\)</span> can be recognized
+as partial derivative, <span class="math inline">\(y_i\)</span> is an
+observed value of the dependent variable and <span
+class="math inline">\(\hat{y_i}\)</span> is a expected value of the
+dependent variable. As we can see, the bigger effect on the expected
+value would changing the observed value have, the bigger that
+observation’s leverage.</p>
+<p>However, just because an observation has high leverage does not
+necessarily mean it will distort our model. What if the observation lied
+far from the center of the date, but still in line with the general
+trend? Removing such observations would not affect the model much. Only
+in the situation where the observation has both high leverage and does
+not match the trend in our data, will the observation influence the
+model as a whole.</p>
 <div class="figure">
 <img src="06_diagnostics_files/figure-html/leverage-example-1.png" alt="Plots showing the effect of A) high leverage, low residual B) low leverage, high residual c) high leverage, high residual" width="960" />
 <p class="caption">
-Plots showing the effect of A) high leverage, low residual B) low leverage, high residual c) high leverage, high residual
+Plots showing the effect of A) high leverage, low residual B) low
+leverage, high residual c) high leverage, high residual
 </p>
 </div>
-<p>We can therefore evaluate the presence of influential observations by plotting leverage against standardized residuals of our model. To do this, we can use the <code>plot()</code> with argument <code>which = 5</code>:</p>
+<p>We can therefore evaluate the presence of influential observations by
+plotting leverage against standardized residuals of our model. To do
+this, we can use the <code>plot()</code> with argument
+<code>which = 5</code>:</p>
 <pre class="r"><code>plot(mod1, which = 5)</code></pre>
 <div class="figure">
 <img src="06_diagnostics_files/figure-html/leverage-vs-residuals-1.png" alt="Leverage vs residuals" width="672" />
@@ -496,12 +611,33 @@ Plots showing the effect of A) high leverage, low residual B) low leverage, high
 Leverage vs residuals
 </p>
 </div>
-<p>As we can see the, no observation in our model has both exceedingly high (or exceedingly low) value of standardized residual and also high leverage. We can therefore see no excessively influential observations are present.</p>
-<p>The value of residuals and leverage can also be summarized using Cook’s distance <span class="citation">(Cook 1977)</span>. Cook’s distance of a single observation is a scaled difference between the predicted values of the model including all observations and the predicted values of the model with the specific observation removed. Therefore, observations with high Cook’s distance are those, which has either very high leverage, a very high residual or some combination of both. Formally <span class="citation">(Cook 1977)</span>:</p>
+<p>As we can see the, no observation in our model has both exceedingly
+high (or exceedingly low) value of standardized residual and also high
+leverage. We can therefore see no excessively influential observations
+are present.</p>
+<p>The value of residuals and leverage can also be summarized using
+Cook’s distance <span class="citation">(Cook 1977)</span>. Cook’s
+distance of a single observation is a scaled difference between the
+predicted values of the model including all observations and the
+predicted values of the model with the specific observation removed.
+Therefore, observations with high Cook’s distance are those, which has
+either very high leverage, a very high residual or some combination of
+both. Formally <span class="citation">(Cook 1977)</span>:</p>
 <p><span class="math display">\[
 Cook&#39;s\:distance_i=\frac{residual_i^2}{number\:of\:parameters*MSE}*\left[\frac{leverage_i}{(1-leverage_i)^2}\right]
-\]</span> <span class="math inline">\(MSE\)</span> here represents the mean square error and the number of parameters is the number of regression terms, including the intercept. Notice that the formula has two parts. The left part deals with residual, while the right one deals with leverage. The number of parameters and the mean square error are constant for all observation and serve only for scaling. Apart from them, notice that there are two ways to get a large value of Cook’s distance. One way is by having large residual, i.e. having large value on the left size of the formula. The other way by having a large leverage.</p>
-<p>A plot, showing Cook’s distance for all observations, can be created using the <code>plot()</code> function and including the argument <code>which = 4</code></p>
+\]</span> <span class="math inline">\(MSE\)</span> here represents the
+mean square error and the number of parameters is the number of
+regression terms, including the intercept. Notice that the formula has
+two parts. The left part deals with residual, while the right one deals
+with leverage. The number of parameters and the mean square error are
+constant for all observation and serve only for scaling. Apart from
+them, notice that there are two ways to get a large value of Cook’s
+distance. One way is by having large residual, i.e. having large value
+on the left size of the formula. The other way by having a large
+leverage.</p>
+<p>A plot, showing Cook’s distance for all observations, can be created
+using the <code>plot()</code> function and including the argument
+<code>which = 4</code></p>
 <pre class="r"><code>plot(mod1, which  =4)</code></pre>
 <div class="figure">
 <img src="06_diagnostics_files/figure-html/cooks-distance-1.png" alt="Cook's distance of individual observations" width="672" />
@@ -509,16 +645,35 @@ Cook&#39;s\:distance_i=\frac{residual_i^2}{number\:of\:parameters*MSE}*\left[\fr
 Cook’s distance of individual observations
 </p>
 </div>
-<p>While the intuitive meaning of what Cook’s distance represent, it is difficult to select a proper cut off for which observations are influential and which are not. More than dozens of various rules of thumb have been proposed <span class="citation">(Chatterjee and Hadi 1986; Cook 1986)</span> with varying complexity, with the most simple and perhaps the most popular being to consider as influential any observation with Cook’s distance higher than 1 <span class="citation">(Cook and Weisberg 1982)</span>. Others <span class="citation">(Fox 2015)</span> suggest the following rule</p>
+<p>While the intuitive meaning of what Cook’s distance represent, it is
+difficult to select a proper cut off for which observations are
+influential and which are not. More than dozens of various rules of
+thumb have been proposed <span class="citation">(Chatterjee and Hadi
+1986; Cook 1986)</span> with varying complexity, with the most simple
+and perhaps the most popular being to consider as influential any
+observation with Cook’s distance higher than 1 <span
+class="citation">(Cook and Weisberg 1982)</span>. Others <span
+class="citation">(Fox 2015)</span> suggest the following rule</p>
 <p><span class="math display">\[
 D_i &gt; \frac{4}{n-k-1}
 \]</span></p>
-<p>Where <em>n</em> is the number of observations and <em>k</em> is the number of parameters in the model. However, as there is no clearly preferred option and Cook’s distance may sometimes fail to detect influential observations altogether <span class="citation">(Kim 2017)</span>, perhaps it is simply best to follow the advice of <span class="citation">(Fox 1991)</span> and inspect observations which has substantially higher Cook’s distance than the rest.</p>
+<p>Where <em>n</em> is the number of observations and <em>k</em> is the
+number of parameters in the model. However, as there is no clearly
+preferred option and Cook’s distance may sometimes fail to detect
+influential observations altogether <span class="citation">(Kim
+2017)</span>, perhaps it is simply best to follow the advice of <span
+class="citation">(Fox 1991)</span> and inspect observations which has
+substantially higher Cook’s distance than the rest.</p>
 </div>
 </div>
 <div id="displaying-basic-diagnostic-plots" class="section level1">
 <h1>Displaying basic diagnostic plots</h1>
-<p>While it is possible to display the diagnostic plots one by one, we can also display them in a compact way in a single pane. To do this, we first use <code>par(mfrow = c(2,2))</code>, to divide the plot pane into 2x2 table. Then, we simply use the <code>plot()</code> on our model object with no other arguments. If we wished to go back to a single graph in a picture, we can use <code>par(mfrow = c(1,1))</code></p>
+<p>While it is possible to display the diagnostic plots one by one, we
+can also display them in a compact way in a single pane. To do this, we
+first use <code>par(mfrow = c(2,2))</code>, to divide the plot pane into
+2x2 table. Then, we simply use the <code>plot()</code> on our model
+object with no other arguments. If we wished to go back to a single
+graph in a picture, we can use <code>par(mfrow = c(1,1))</code></p>
 <pre class="r"><code>par(mfrow = c(2,2))
 plot(mod1)</code></pre>
 <div class="figure">
@@ -528,66 +683,165 @@ Diagnostic multiplot
 </p>
 </div>
 <pre class="r"><code>par(mfrow = c(1,1))</code></pre>
-<p>These are the same plots we have seen in the previous part, but composed in a single picture.</p>
+<p>These are the same plots we have seen in the previous part, but
+composed in a single picture.</p>
 </div>
 <div id="partial-residuals-plots" class="section level1">
 <h1>Partial residuals plots</h1>
-<p>The basic residual plot is an useful tool to diagnose the overall fit of the model. However, when more than one numeric predictors is present, it may be difficult to tell which of the variables is the source of non linearity. A potential remedy for this are partial residual plots, known also as the component-residual plots <span class="citation">(Fox 2015)</span>. These plot show the relationship between predictor and partial residuals of the model, while conditioning (controlling) for all other predictors.</p>
-<p>Partial residual plots are not implemented in the base R, but are available in the <code>car</code> package.</p>
+<p>The basic residual plot is an useful tool to diagnose the overall fit
+of the model. However, when more than one numeric predictors is present,
+it may be difficult to tell which of the variables is the source of non
+linearity. A potential remedy for this are partial residual plots, known
+also as the component-residual plots <span class="citation">(Fox
+2015)</span>. These plot show the relationship between predictor and
+partial residuals of the model, while conditioning (controlling) for all
+other predictors.</p>
+<p>Partial residual plots are not implemented in the base R, but are
+available in the <code>car</code> package.</p>
 <pre class="r"><code>library(car)</code></pre>
-<p>The partial residual plots can be created using the <code>crPlots()</code> function. Note that unlike the basic residual plot, the Y axis in the partial plots is not transformed to have the expected values of residuals be equal to zero. Instead, we are simply expecting the relationship between the predictor and the partial residuals be linear. To help us judge if the assumption of linearity of is met for individual independent variable, the partial residual plots draw two lines lines through the data. The blue dashed line represents linear fit, while the violet full line is a loess line. If the assumption of linearity is met, the violet line should follow the blue one without significant departures.</p>
+<p>The partial residual plots can be created using the
+<code>crPlots()</code> function. Note that unlike the basic residual
+plot, the Y axis in the partial plots is not transformed to have the
+expected values of residuals be equal to zero. Instead, we are simply
+expecting the relationship between the predictor and the partial
+residuals be linear. To help us judge if the assumption of linearity of
+is met for individual independent variable, the partial residual plots
+draw two lines lines through the data. The blue dashed line represents
+linear fit, while the violet full line is a loess line. If the
+assumption of linearity is met, the violet line should follow the blue
+one without significant departures.</p>
 <pre class="r"><code>crPlots(mod1)</code></pre>
 <p><img src="06_diagnostics_files/figure-html/partial-residual-1.png" width="672" /></p>
-<p>In our example, the partial plot for poverty risk show no significant non linearity. The partial plot for Human development index show some mild non linearity in the top right corner. This can inform our decision regarding potential transformation of variable or specifying our model.</p>
+<p>In our example, the partial plot for poverty risk show no significant
+non linearity. The partial plot for Human development index show some
+mild non linearity in the top right corner. This can inform our decision
+regarding potential transformation of variable or specifying our
+model.</p>
 </div>
-<div id="note-on-using-tests-to-check-model-assumptions" class="section level1">
+<div id="note-on-using-tests-to-check-model-assumptions"
+class="section level1">
 <h1>Note on using tests to check model assumptions</h1>
-<p>Some researchers prefer to use statistical tests to judge whether the assumptions of linear regression has been met, rather than rely on diagnostic plots, such as <span class="citation">Ghasemi and Zahediasl (2012)</span> . These tests include Shapiro-Wilk’s test and Kolmogorov-Smirnov’s test for testing normality or Levene’s test for testing the quality of variances. However, use of tests is not recommended for two reasons.</p>
-<p>Firstly, the null hypotheses tested by the aformentioned tests are highly unrealistic. The normal distribution is a purely theoretical construct, that arises in circumstances not possible in real world, such as in infinitely large samples. No real data will follow data the normal distribution and because of that, any normality test will reject this hypothesis with large enough sample size <span class="citation">(Wells and Hintze 2007; Ruxton, Wilkinson, and Neuhäuser 2015)</span>. For these reasons, some authors argue that normality tests should be used only with small or medium sample, as the tests are “too sensitive” when the sample size is large. However, such advice misunderstands the nature of the problem, as the problem is not with the tests themselves. In fact their performance is consistent no matter the size of the sample, the problem lies in the inherent implausibility of the null hypothesis. While negative results are more likely to occur when the sample size is low, due to the lower power, any and all of these negative results are false negatives by default and this is universally true for every normality test. Tests of equal variance are somewhat more plausible, as we could for example expect two groups in an experimental study to have same variance, as long they come from the same population and the treatment was assigned at random. Still, there is little reason to expect equal variance in observation studies.</p>
-<p>On second, related note, it is not required to fulfill the assumptions of the linear model fully. While the tests and techniques are derived under the assumptions of perfect normality, homoscedasticity and linearity, the models are to some extent robust to deviations and this robustness increases with sample size <span class="citation">(Lumley et al. 2002; Rochon, Gondan, and Kieser 2012)</span>. Because of this, we do not require the assumptions to be met perfectly, but only to the extend it is necessary in the context of our analysis. In other words, while the assumptions of linear regression can never be met exactly, we only require them to be met be met approximately. What “approximately” means, depends on the context.</p>
-<p>For these reasons, using statistical tests for assessing whether the assumptions of linear regression are met is at best pointless and at worst misleading. Consequently, the use of diagnostic graphs are preferred.</p>
+<p>Some researchers prefer to use statistical tests to judge whether the
+assumptions of linear regression has been met, rather than rely on
+diagnostic plots, such as <span class="citation">Ghasemi and Zahediasl
+(2012)</span> . These tests include Shapiro-Wilk’s test and
+Kolmogorov-Smirnov’s test for testing normality or Levene’s test for
+testing the quality of variances. However, use of tests is not
+recommended for two reasons.</p>
+<p>Firstly, the null hypotheses tested by the aformentioned tests are
+highly unrealistic. The normal distribution is a purely theoretical
+construct, that arises in circumstances not possible in real world, such
+as in infinitely large samples. No real data will follow data the normal
+distribution and because of that, any normality test will reject this
+hypothesis with large enough sample size <span class="citation">(Wells
+and Hintze 2007; Ruxton, Wilkinson, and Neuhäuser 2015)</span>. For
+these reasons, some authors argue that normality tests should be used
+only with small or medium sample, as the tests are “too sensitive” when
+the sample size is large. However, such advice misunderstands the nature
+of the problem, as the problem is not with the tests themselves. In fact
+their performance is consistent no matter the size of the sample, the
+problem lies in the inherent implausibility of the null hypothesis.
+While negative results are more likely to occur when the sample size is
+low, due to the lower power, any and all of these negative results are
+false negatives by default and this is universally true for every
+normality test. Tests of equal variance are somewhat more plausible, as
+we could for example expect two groups in an experimental study to have
+same variance, as long they come from the same population and the
+treatment was assigned at random. Still, there is little reason to
+expect equal variance in observation studies.</p>
+<p>On second, related note, it is not required to fulfill the
+assumptions of the linear model fully. While the tests and techniques
+are derived under the assumptions of perfect normality, homoscedasticity
+and linearity, the models are to some extent robust to deviations and
+this robustness increases with sample size <span
+class="citation">(Lumley et al. 2002; Rochon, Gondan, and Kieser
+2012)</span>. Because of this, we do not require the assumptions to be
+met perfectly, but only to the extend it is necessary in the context of
+our analysis. In other words, while the assumptions of linear regression
+can never be met exactly, we only require them to be met be met
+approximately. What “approximately” means, depends on the context.</p>
+<p>For these reasons, using statistical tests for assessing whether the
+assumptions of linear regression are met is at best pointless and at
+worst misleading. Consequently, the use of diagnostic graphs are
+preferred.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-casella1983" class="csl-entry">
-Casella, George. 1983. <span>“Leverage and Regression Through the Origin.”</span> <em>The American Statistician</em> 37 (2): 147–52. <a href="https://doi.org/10.2307/2685876">https://doi.org/10.2307/2685876</a>.
+Casella, George. 1983. <span>“Leverage and Regression Through the
+Origin.”</span> <em>The American Statistician</em> 37 (2): 147–52. <a
+href="https://doi.org/10.2307/2685876">https://doi.org/10.2307/2685876</a>.
 </div>
 <div id="ref-chatterjee1986" class="csl-entry">
-Chatterjee, Samprit, and Ali S. Hadi. 1986. <span>“Influential Observations, High Leverage Points, and Outliers in Linear Regression.”</span> <em>Statistical Science</em> 1 (3): 379–93. <a href="https://www.jstor.org/stable/2245477">https://www.jstor.org/stable/2245477</a>.
+Chatterjee, Samprit, and Ali S. Hadi. 1986. <span>“Influential
+Observations, High Leverage Points, and Outliers in Linear
+Regression.”</span> <em>Statistical Science</em> 1 (3): 379–93. <a
+href="https://www.jstor.org/stable/2245477">https://www.jstor.org/stable/2245477</a>.
 </div>
 <div id="ref-cook1977" class="csl-entry">
-Cook, R. Dennis. 1977. <span>“Detection of Influential Observation in Linear Regression.”</span> <em>Technometrics</em> 19 (1): 15–18. <a href="https://doi.org/10.2307/1268249">https://doi.org/10.2307/1268249</a>.
+Cook, R. Dennis. 1977. <span>“Detection of Influential Observation in
+Linear Regression.”</span> <em>Technometrics</em> 19 (1): 15–18. <a
+href="https://doi.org/10.2307/1268249">https://doi.org/10.2307/1268249</a>.
 </div>
 <div id="ref-cook1986" class="csl-entry">
-———. 1986. <span>“[Influential Observations, High Leverage Points, and Outliers in Linear Regression]: Comment.”</span> <em>Statistical Science</em> 1 (3): 393–97. <a href="https://www.jstor.org/stable/2245478">https://www.jstor.org/stable/2245478</a>.
+———. 1986. <span>“[Influential Observations, High Leverage Points, and
+Outliers in Linear Regression]: Comment.”</span> <em>Statistical
+Science</em> 1 (3): 393–97. <a
+href="https://www.jstor.org/stable/2245478">https://www.jstor.org/stable/2245478</a>.
 </div>
 <div id="ref-cook1982" class="csl-entry">
-Cook, R. Dennis, and Sanford Weisberg. 1982. <em>Residuals and Influence in Regression</em>. New York: Chapman; Hall. <a href="http://conservancy.umn.edu/handle/11299/37076">http://conservancy.umn.edu/handle/11299/37076</a>.
+Cook, R. Dennis, and Sanford Weisberg. 1982. <em>Residuals and Influence
+in Regression</em>. New York: Chapman; Hall. <a
+href="http://conservancy.umn.edu/handle/11299/37076">http://conservancy.umn.edu/handle/11299/37076</a>.
 </div>
 <div id="ref-fox1991" class="csl-entry">
-Fox, John. 1991. <em>Regression Diagnostics: An Introduction</em>. 1st edition. Newbury Park, Calif: SAGE Publications, Inc.
+Fox, John. 1991. <em>Regression Diagnostics: An Introduction</em>. 1st
+edition. Newbury Park, Calif: SAGE Publications, Inc.
 </div>
 <div id="ref-fox2015" class="csl-entry">
-———. 2015. <em>Applied Regression Analysis and Generalized Linear Models</em>. Third edition. Los Angeles: SAGE Publications, Inc.
+———. 2015. <em>Applied Regression Analysis and Generalized Linear
+Models</em>. Third edition. Los Angeles: SAGE Publications, Inc.
 </div>
 <div id="ref-ghasemiNormalityTestsStatistical2012" class="csl-entry">
-Ghasemi, Asghar, and Saleh Zahediasl. 2012. <span>“Normality Tests for Statistical Analysis: A Guide for Non-Statisticians.”</span> <em>International Journal of Endocrinology and Metabolism</em> 10 (2): 486–89. <a href="https://doi.org/10.5812/ijem.3505">https://doi.org/10.5812/ijem.3505</a>.
+Ghasemi, Asghar, and Saleh Zahediasl. 2012. <span>“Normality Tests for
+Statistical Analysis: A Guide for Non-Statisticians.”</span>
+<em>International Journal of Endocrinology and Metabolism</em> 10 (2):
+486–89. <a
+href="https://doi.org/10.5812/ijem.3505">https://doi.org/10.5812/ijem.3505</a>.
 </div>
 <div id="ref-kim2017" class="csl-entry">
-Kim, Myung Geun. 2017. <span>“A Cautionary Note on the Use of Cook<span>’</span>s Distance.”</span> <em>Communications for Statistical Applications and Methods</em> 24 (3): 317–24. <a href="https://doi.org/10.5351/CSAM.2017.24.3.317">https://doi.org/10.5351/CSAM.2017.24.3.317</a>.
+Kim, Myung Geun. 2017. <span>“A Cautionary Note on the Use of
+Cook<span>’</span>s Distance.”</span> <em>Communications for Statistical
+Applications and Methods</em> 24 (3): 317–24. <a
+href="https://doi.org/10.5351/CSAM.2017.24.3.317">https://doi.org/10.5351/CSAM.2017.24.3.317</a>.
 </div>
 <div id="ref-lumleyImportanceNormalityAssumption2002" class="csl-entry">
-Lumley, Thomas, Paula Diehr, Scott Emerson, and Lu Chen. 2002. <span>“The importance of the normality assumption in large public health data sets.”</span> <em>Annual Review of Public Health</em> 23: 151–69. <a href="https://doi.org/10.1146/annurev.publhealth.23.100901.140546">https://doi.org/10.1146/annurev.publhealth.23.100901.140546</a>.
+Lumley, Thomas, Paula Diehr, Scott Emerson, and Lu Chen. 2002.
+<span>“The importance of the normality assumption in large public health
+data sets.”</span> <em>Annual Review of Public Health</em> 23: 151–69.
+<a
+href="https://doi.org/10.1146/annurev.publhealth.23.100901.140546">https://doi.org/10.1146/annurev.publhealth.23.100901.140546</a>.
 </div>
 <div id="ref-rochonTestNotTest2012" class="csl-entry">
-Rochon, Justine, Matthias Gondan, and Meinhard Kieser. 2012. <span>“To Test or Not to Test: Preliminary Assessment of Normality When Comparing Two Independent Samples.”</span> <em>BMC Medical Research Methodology</em> 12 (1): 81. <a href="https://doi.org/10.1186/1471-2288-12-81">https://doi.org/10.1186/1471-2288-12-81</a>.
+Rochon, Justine, Matthias Gondan, and Meinhard Kieser. 2012. <span>“To
+Test or Not to Test: Preliminary Assessment of Normality When Comparing
+Two Independent Samples.”</span> <em>BMC Medical Research
+Methodology</em> 12 (1): 81. <a
+href="https://doi.org/10.1186/1471-2288-12-81">https://doi.org/10.1186/1471-2288-12-81</a>.
 </div>
 <div id="ref-ruxtonAdviceTestingNull2015" class="csl-entry">
-Ruxton, Graeme D., David M. Wilkinson, and Markus Neuhäuser. 2015. <span>“Advice on Testing the Null Hypothesis That a Sample Is Drawn from a Normal Distribution.”</span> <em>Animal Behaviour</em> 107 (September): 249–52. <a href="https://doi.org/10.1016/j.anbehav.2015.07.006">https://doi.org/10.1016/j.anbehav.2015.07.006</a>.
+Ruxton, Graeme D., David M. Wilkinson, and Markus Neuhäuser. 2015.
+<span>“Advice on Testing the Null Hypothesis That a Sample Is Drawn from
+a Normal Distribution.”</span> <em>Animal Behaviour</em> 107
+(September): 249–52. <a
+href="https://doi.org/10.1016/j.anbehav.2015.07.006">https://doi.org/10.1016/j.anbehav.2015.07.006</a>.
 </div>
 <div id="ref-wellsDealingAssumptionsUnderlying2007" class="csl-entry">
-Wells, Craig S., and John M. Hintze. 2007. <span>“Dealing with Assumptions Underlying Statistical Tests.”</span> <em>Psychology in the Schools</em> 44 (5): 495–502. https://doi.org/<a href="https://doi.org/10.1002/pits.20241">https://doi.org/10.1002/pits.20241</a>.
+Wells, Craig S., and John M. Hintze. 2007. <span>“Dealing with
+Assumptions Underlying Statistical Tests.”</span> <em>Psychology in the
+Schools</em> 44 (5): 495–502. https://doi.org/<a
+href="https://doi.org/10.1002/pits.20241">https://doi.org/10.1002/pits.20241</a>.
 </div>
 </div>
 </div>

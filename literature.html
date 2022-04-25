@@ -13,16 +13,16 @@
 
 <title>Course literature</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -56,6 +56,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -76,6 +77,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -228,7 +232,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -238,7 +242,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -283,7 +287,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -313,10 +317,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -347,7 +354,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -399,20 +406,45 @@ $(document).ready(function () {
 <div id="primary-literature" class="section level3">
 <h3>Primary literature</h3>
 <ul>
-<li>Gelman, A., Hill, J., &amp; Vehtari, A. (2020). Regression and Other Stories. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879" class="uri">https://doi.org/10.1017/9781139161879</a></li>
-<li>Harrell, F. (2001). Regression Modeling Strategies: With Applications to Linear Models, Logistic Regression, and Survival Analysis. Springer-Verlag. <a href="https://doi.org/10.1007/978-1-4757-3462-1" class="uri">https://doi.org/10.1007/978-1-4757-3462-1</a></li>
+<li>Gelman, A., Hill, J., &amp; Vehtari, A. (2020). Regression and Other
+Stories. Cambridge University Press. <a
+href="https://doi.org/10.1017/9781139161879"
+class="uri">https://doi.org/10.1017/9781139161879</a></li>
+<li>Harrell, F. (2001). Regression Modeling Strategies: With
+Applications to Linear Models, Logistic Regression, and Survival
+Analysis. Springer-Verlag. <a
+href="https://doi.org/10.1007/978-1-4757-3462-1"
+class="uri">https://doi.org/10.1007/978-1-4757-3462-1</a></li>
 </ul>
 <p><br></p>
 </div>
 <div id="secondary-literature" class="section level3">
 <h3>Secondary literature</h3>
 <ul>
-<li>Cole, S. R., Platt, R. W., Schisterman, E. F., Chu, H., Westreich, D., Richardson, D., &amp; Poole, C. (2010). Illustrating bias due to conditioning on a collider. International Journal of Epidemiology, 39(2), 417–420. <a href="https://doi.org/10.1093/ije/dyp334" class="uri">https://doi.org/10.1093/ije/dyp334</a></li>
-<li>Cook, R. D. (1977). Detection of Influential Observation in Linear Regression. Technometrics, 19(1), 15–18. <a href="https://doi.org/10.2307/1268249" class="uri">https://doi.org/10.2307/1268249</a></li>
-<li>Fox, J. (2015). Applied Regression Analysis and Generalized Linear Models (Third edition). SAGE Publications, Inc.</li>
-<li>Greenland, S., Senn, S. J., Rothman, K. J., Carlin, J. B., Poole, C., Goodman, S. N., &amp; Altman, D. G. (2016). Statistical tests, P values, confidence intervals, and power: A guide to misinterpretations. European Journal of Epidemiology, 31(4), 337–350. <a href="https://doi.org/10.1007/s10654-016-0149-3" class="uri">https://doi.org/10.1007/s10654-016-0149-3</a></li>
-<li>King, G., &amp; Roberts, M. E. (2015). How Robust Standard Errors Expose Methodological Problems They Do Not Fix, and What to Do About It. Political Analysis, 23(2), 159–179.</li>
-<li>Shmueli, G. (2010). To Explain or To Predict? (SSRN Scholarly Paper ID 1351252). Social Science Research Network. <a href="https://doi.org/10.2139/ssrn.1351252" class="uri">https://doi.org/10.2139/ssrn.1351252</a></li>
+<li>Cole, S. R., Platt, R. W., Schisterman, E. F., Chu, H., Westreich,
+D., Richardson, D., &amp; Poole, C. (2010). Illustrating bias due to
+conditioning on a collider. International Journal of Epidemiology,
+39(2), 417–420. <a href="https://doi.org/10.1093/ije/dyp334"
+class="uri">https://doi.org/10.1093/ije/dyp334</a></li>
+<li>Cook, R. D. (1977). Detection of Influential Observation in Linear
+Regression. Technometrics, 19(1), 15–18. <a
+href="https://doi.org/10.2307/1268249"
+class="uri">https://doi.org/10.2307/1268249</a></li>
+<li>Fox, J. (2015). Applied Regression Analysis and Generalized Linear
+Models (Third edition). SAGE Publications, Inc.</li>
+<li>Greenland, S., Senn, S. J., Rothman, K. J., Carlin, J. B., Poole,
+C., Goodman, S. N., &amp; Altman, D. G. (2016). Statistical tests, P
+values, confidence intervals, and power: A guide to misinterpretations.
+European Journal of Epidemiology, 31(4), 337–350. <a
+href="https://doi.org/10.1007/s10654-016-0149-3"
+class="uri">https://doi.org/10.1007/s10654-016-0149-3</a></li>
+<li>King, G., &amp; Roberts, M. E. (2015). How Robust Standard Errors
+Expose Methodological Problems They Do Not Fix, and What to Do About It.
+Political Analysis, 23(2), 159–179.</li>
+<li>Shmueli, G. (2010). To Explain or To Predict? (SSRN Scholarly Paper
+ID 1351252). Social Science Research Network. <a
+href="https://doi.org/10.2139/ssrn.1351252"
+class="uri">https://doi.org/10.2139/ssrn.1351252</a></li>
 </ul>
 </div>
 
