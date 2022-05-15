@@ -13,16 +13,16 @@
 
 <title>Heteroskedasticity</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -48,6 +48,7 @@ if (window.hljs) {
   }
 }
 </script>
+
 
 
 
@@ -98,6 +99,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -250,7 +254,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -260,7 +264,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -305,7 +309,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -335,10 +339,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -369,7 +376,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -417,51 +424,148 @@ $(document).ready(function () {
 </div>
 
 
-<p>In this section, we will describe one of the approaches to dealing with non-constant residual variance, namely using so called robust standard errors. We will demonstrate this on the United Nations data set building a model predicting infant mortality per 1000 of live births (<code>infantMortality</code>) by total fertility rate in a country (<code>tfr</code>). The data can be downloaded in the <em>Materials</em> section on this website.</p>
+<p>In this section, we will describe one of the approaches to dealing
+with non-constant residual variance, namely using so called robust
+standard errors. We will demonstrate this on the United Nations data set
+building a model predicting infant mortality per 1000 of live births
+(<code>infantMortality</code>) by total fertility rate in a country
+(<code>tfr</code>). The data can be downloaded in the <em>Materials</em>
+section on this website.</p>
 <p>First, we compute the model.</p>
 <pre class="r"><code>mod1 = lm(infantMortality ~ tfr, data = un)</code></pre>
-<p>We can check the assumption of homoscedasticity, i.e. the assumption that residuals have equal variance for all values of the independent variable, using a diagnostic residual plot:</p>
+<p>We can check the assumption of homoscedasticity, i.e. the assumption
+that residuals have equal variance for all values of the independent
+variable, using a diagnostic residual plot:</p>
 <pre class="r"><code>plot(mod1, which = 1)</code></pre>
 <p><img src="08_heterscedasticity_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p>From the plot above, we can see that the assumption of homoscedasticity has been violated, as the variance of residuals increases together with the predicted values of the dependent variables. (This is sometimes graphically described as <em>funnel shape</em> or simply as presence of heteroskedasticity.)</p>
+<p>From the plot above, we can see that the assumption of
+homoscedasticity has been violated, as the variance of residuals
+increases together with the predicted values of the dependent variables.
+(This is sometimes graphically described as <em>funnel shape</em> or
+simply as presence of heteroskedasticity.)</p>
 <p>Heteroskedasticity has two consequences:</p>
 <ol style="list-style-type: decimal">
-<li><p>The estimates of regression coefficients will be less efficient, i.e. we will require more observations to reach the same level of precision compared to a model which fulfills the homoscedasticity assumption. Our regression estimates will be correct on average (they will be unbiased), but each of them will be more likely further from the true value than if the estimates were efficient. Imagine you play darts. Being inefficient but unbiased means that you will not be systematically below, above, to the left or to the rigth of the bull’s-eye. But your average distance from the bull’s-eye will be greater than if you also were efficient. With large samples, this problem does not have to be to serious - you can still have good precision with heteroskedasticity when you have a lot of data.</p></li>
-<li><p>The standard errors will be biased, leading to systematically under/overestimated confidence of our results. This is a more concerning problem if our goal is inference. Using the standard approach to statistical hypothesis testing, we typically make conclusions on given level of confidence, say 95%. This means that if we conducted our survey 1000 times, we would expect our 95% confidence interval to overlap the true value in population 950 times. Only in 5% of the cases, we expect to have a false positive (a statistically significant finding where there is none). However, with biased standard errors, this will not be the case. Typically, when the assumption of homoskedasticity is violated, we will become overconfident (i.e., the estimated standard errors will be too narrow which will result in the rate of false positives rising above 5% without us being aware of it.).</p></li>
+<li><p>The estimates of regression coefficients will be less efficient,
+i.e. we will require more observations to reach the same level of
+precision compared to a model which fulfills the homoscedasticity
+assumption. Our regression estimates will be correct on average (they
+will be unbiased), but each of them will be more likely further from the
+true value than if the estimates were efficient. Imagine you play darts.
+Being inefficient but unbiased means that you will not be systematically
+below, above, to the left or to the rigth of the bull’s-eye. But your
+average distance from the bull’s-eye will be greater than if you also
+were efficient. With large samples, this problem does not have to be to
+serious - you can still have good precision with heteroskedasticity when
+you have a lot of data.</p></li>
+<li><p>The standard errors will be biased, leading to systematically
+under/overestimated confidence of our results. This is a more concerning
+problem if our goal is inference. Using the standard approach to
+statistical hypothesis testing, we typically make conclusions on given
+level of confidence, say 95%. This means that if we conducted our survey
+1000 times, we would expect our 95% confidence interval to overlap the
+true value in population 950 times. Only in 5% of the cases, we expect
+to have a false positive (a statistically significant finding where
+there is none). However, with biased standard errors, this will not be
+the case. Typically, when the assumption of homoskedasticity is
+violated, we will become overconfident (i.e., the estimated standard
+errors will be too narrow which will result in the rate of false
+positives rising above 5% without us being aware of it.).</p></li>
 </ol>
 <div id="classical-standard-errors" class="section level1">
 <h1>Classical Standard errors</h1>
-<p>To see why heteroskedasticity may be a problem, let’s see how classical standard errors for regression coefficients are computed. Formally, the classic standard error of a regression coefficient is:</p>
+<p>To see why heteroskedasticity may be a problem, let’s see how
+classical standard errors for regression coefficients are computed.
+Formally, the classic standard error of a regression coefficient is:</p>
 <p><span class="math display">\[
-SE_\beta = \frac{\sigma^2 \sum(x_i - \bar{x})^2}{[\sum(x_i - \bar{x})^2]^2} = \frac{\sigma^2}{\sum(x_i - \bar{x})^2}
+SE_\beta = \frac{\sigma^2 \sum(x_i - \bar{x})^2}{[\sum(x_i -
+\bar{x})^2]^2} = \frac{\sigma^2}{\sum(x_i - \bar{x})^2}
 \]</span></p>
-<p>Where <span class="math inline">\(\sigma^2\)</span> is the variance of residuals, also known as the mean squared error (under the assumption that our estimate is unbiased), and <span class="math inline">\(\sum(x_i-\bar{x})^2\)</span> is total sum of squares, i.e. the sum of squared differences between the observed values of the independent variable and their mean. The important thing to notice is that the variance of residuals (<span class="math inline">\(\sigma^2\)</span>) is a constant, a single value applied for all values of the independent variable.</p>
-<p>The reason why we compute the variance of all residuals regardless of the values of the independent variable is because of the fact that if several groups of data have the same variance, than all the data together will have also the same variance. For example, consider the following two groups of numbers plotted below:</p>
+<p>Where <span class="math inline">\(\sigma^2\)</span> is the variance
+of residuals, also known as the mean squared error (under the assumption
+that our estimate is unbiased), and <span
+class="math inline">\(\sum(x_i-\bar{x})^2\)</span> is total sum of
+squares, i.e. the sum of squared differences between the observed values
+of the independent variable and their mean. The important thing to
+notice is that the variance of residuals (<span
+class="math inline">\(\sigma^2\)</span>) is a constant, a single value
+applied for all values of the independent variable.</p>
+<p>The reason why we compute the variance of all residuals regardless of
+the values of the independent variable is because of the fact that if
+several groups of data have the same variance, than all the data
+together will have also the same variance. For example, consider the
+following two groups of numbers plotted below:</p>
 <p><img src="08_heterscedasticity_files/figure-html/homoscedascity-plot1-1.png" width="672" /></p>
-<p>The variance of of the first vector is 0.9. The second vector has the same variance of 0.9. If we were to combine the two groups together and then compute the variance of all, we would find that all the values together have the same variance as both groups separately, that is 0.9.</p>
+<p>The variance of of the first vector is 0.9. The second vector has the
+same variance of 0.9. If we were to combine the two groups together and
+then compute the variance of all, we would find that all the values
+together have the same variance as both groups separately, that is
+0.9.</p>
 <p><img src="08_heterscedasticity_files/figure-html/homoscedascity-plot2-1.png" width="672" /></p>
-<p>This provides an immensely useful computational shortcut, which allowed for computation of linear regression models long before computers became prevalent. By computing the variance of all residuals together, we will know variance of residuals for every value of the independent variable. However, as mentioned, this is only true if the variance of residuals across all values of the independent variable is equal, i.e. if the assumption of homoscedasticity is met.</p>
+<p>This provides an immensely useful computational shortcut, which
+allowed for computation of linear regression models long before
+computers became prevalent. By computing the variance of all residuals
+together, we will know variance of residuals for every value of the
+independent variable. However, as mentioned, this is only true if the
+variance of residuals across all values of the independent variable is
+equal, i.e. if the assumption of homoscedasticity is met.</p>
 </div>
 <div id="robust-standard-errors" class="section level1">
 <h1>Robust standard errors</h1>
-<p>What if the variance of residuals differ, based on the value of the independent variable?</p>
+<p>What if the variance of residuals differ, based on the value of the
+independent variable?</p>
 <p>Consider a different set of two vectors of numbers:</p>
 <p><img src="08_heterscedasticity_files/figure-html/heteroscedasticity-plot1-1.png" width="672" /></p>
-<p>The variance of the first vector is 0.2, while the variance of the second one is 1.4. Since those two vectors have different variances, it is no surprise that the variance of all the values together is not equal to any of the two groups (in this case, it is 0.8). Consequently, if the assumption of homoscedasticity is violated, we cannot infer variance of residuals for any level of the independent variable by simply computing the variance of all residuals.</p>
+<p>The variance of the first vector is 0.2, while the variance of the
+second one is 1.4. Since those two vectors have different variances, it
+is no surprise that the variance of all the values together is not equal
+to any of the two groups (in this case, it is 0.8). Consequently, if the
+assumption of homoscedasticity is violated, we cannot infer variance of
+residuals for any level of the independent variable by simply computing
+the variance of all residuals.</p>
 <p><img src="08_heterscedasticity_files/figure-html/heteroscedascity-plot2-1.png" width="672" /></p>
 <p><em>What should we to then?</em></p>
-<p>The answer is pretty straightforward. If knowing the total variance is not enough, we will have to compute the variance of residuals for all values of the independent variable, one by one. The formula for the standard error of a regression coefficient becomes <span class="citation">(Wooldridge, 2015, p. 245)</span> :</p>
+<p>The answer is pretty straightforward. If knowing the total variance
+is not enough, we will have to compute the variance of residuals for all
+values of the independent variable, one by one. The formula for the
+standard error of a regression coefficient becomes <span
+class="citation">(Wooldridge, 2015, p. 245)</span> :</p>
 <p><span class="math display">\[
-SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
+SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i -
+\bar{x})^2]^2}
 \]</span></p>
-<p>Notice that the only thing that changed from the previous formula is that we no longer compute the sum of squares (<span class="math inline">\(\sum(x_i - \bar{x})^2\)</span>) and then multiple it by the variance of residuals. Instead, we compute the variance of residuals for every level of the independent variable separately (<span class="math inline">\(\sigma_i^2\)</span>).</p>
-<p>This way of computing standard errors is known as robust standard errors, also known as heteroscedastic standard errors or sandwich errors. Note that if the variance of residuals is actually the same for all levels of independent variable, i.e. if the residuals are actually homoscedastic, both formulas give the same result.</p>
+<p>Notice that the only thing that changed from the previous formula is
+that we no longer compute the sum of squares (<span
+class="math inline">\(\sum(x_i - \bar{x})^2\)</span>) and then multiple
+it by the variance of residuals. Instead, we compute the variance of
+residuals for every level of the independent variable separately (<span
+class="math inline">\(\sigma_i^2\)</span>).</p>
+<p>This way of computing standard errors is known as robust standard
+errors, also known as heteroscedastic standard errors or sandwich
+errors. Note that if the variance of residuals is actually the same for
+all levels of independent variable, i.e. if the residuals are actually
+homoscedastic, both formulas give the same result.</p>
 <div id="correction-for-finite-sample-size" class="section level2">
 <h2>Correction for finite sample size</h2>
-<p>The robust standard errors presented above work well as the sample size approaches infinity, but is biased for small samples. To account for this, numerous corrections have been proposed, usually denoted by letters <em>HC</em> <span class="citation">(Hayes &amp; Cai, 2007)</span>.</p>
-<p>The basic robust standard errors we already saw is called <em>HC0</em>. There are three other popular versions: <em>HC1</em> (which corrects using the degrees of freedom of the model), <em>HC2</em> (which is based on accounting for leverage) and <em>HC3</em> (which is similar to HC2, but puts bigger focus on observations with very high leverage).</p>
-<p>The exact nature of these corrections are beyond the scope of this course, but interested readers may refer to <span class="citation">Hayes &amp; Cai (2007)</span>. Also note that these are not the only corrections that exist, but they are the most prevalent.</p>
-<p>While the individual correction can perform slightly better or worse depending on the exact situation, generally speaking, the differences between them tend to be small. The table below shows estimated standard error of regression coefficient for total fertility rate from the model we saw above, i.e. <code>infantMortality ~ tfr</code>:</p>
+<p>The robust standard errors presented above work well as the sample
+size approaches infinity, but is biased for small samples. To account
+for this, numerous corrections have been proposed, usually denoted by
+letters <em>HC</em> <span class="citation">(Hayes &amp; Cai,
+2007)</span>.</p>
+<p>The basic robust standard errors we already saw is called
+<em>HC0</em>. There are three other popular versions: <em>HC1</em>
+(which corrects using the degrees of freedom of the model), <em>HC2</em>
+(which is based on accounting for leverage) and <em>HC3</em> (which is
+similar to HC2, but puts bigger focus on observations with very high
+leverage).</p>
+<p>The exact nature of these corrections are beyond the scope of this
+course, but interested readers may refer to <span class="citation">Hayes
+&amp; Cai (2007)</span>. Also note that these are not the only
+corrections that exist, but they are the most prevalent.</p>
+<p>While the individual correction can perform slightly better or worse
+depending on the exact situation, generally speaking, the differences
+between them tend to be small. The table below shows estimated standard
+error of regression coefficient for total fertility rate from the model
+we saw above, i.e. <code>infantMortality ~ tfr</code>:</p>
 <div id="ojmgiijwug" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
@@ -510,6 +614,8 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   font-weight: initial;
   padding-top: 4px;
   padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-bottom-color: #FFFFFF;
   border-bottom-width: 0;
 }
@@ -520,6 +626,8 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   font-weight: initial;
   padding-top: 0;
   padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
@@ -598,7 +706,10 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
 }
 
 #ojmgiijwug .gt_group_heading {
-  padding: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -670,7 +781,26 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   border-right-style: solid;
   border-right-width: 2px;
   border-right-color: #D3D3D3;
-  padding-left: 12px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ojmgiijwug .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ojmgiijwug .gt_row_group_first td {
+  border-top-width: 2px;
 }
 
 #ojmgiijwug .gt_summary_row {
@@ -684,13 +814,22 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
 }
 
 #ojmgiijwug .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ojmgiijwug .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ojmgiijwug .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
   padding-right: 5px;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
 }
 
 #ojmgiijwug .gt_grand_summary_row {
@@ -743,7 +882,10 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
 #ojmgiijwug .gt_footnote {
   margin: 0px;
   font-size: 90%;
-  padding: 4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 #ojmgiijwug .gt_sourcenotes {
@@ -762,7 +904,10 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
 
 #ojmgiijwug .gt_sourcenote {
   font-size: 90%;
-  padding: 4px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 #ojmgiijwug .gt_left {
@@ -794,10 +939,43 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   font-size: 65%;
 }
 
+#ojmgiijwug .gt_two_val_uncert {
+  display: inline-block;
+  line-height: 1em;
+  text-align: right;
+  font-size: 60%;
+  vertical-align: -0.25em;
+  margin-left: 0.1em;
+}
+
 #ojmgiijwug .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
-  font-size: 65%;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#ojmgiijwug .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ojmgiijwug .gt_slash_mark {
+  font-size: 0.7em;
+  line-height: 0.7em;
+  vertical-align: 0.15em;
+}
+
+#ojmgiijwug .gt_fraction_numerator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: 0.45em;
+}
+
+#ojmgiijwug .gt_fraction_denominator {
+  font-size: 0.6em;
+  line-height: 0.6em;
+  vertical-align: -0.05em;
 }
 </style>
 <table class="gt_table">
@@ -824,51 +1002,103 @@ SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
   
 </table>
 </div>
-<p>As we can see, the biggest differences is between the classical standard error (i.e. the one assuming homoscedasticity) and all variants of the robust standard error. While there are some small differences depending on the correction used, for all types of robust standard error it is clear that the robust standard error is about 33% larger than the classical one.</p>
+<p>As we can see, the biggest differences is between the classical
+standard error (i.e. the one assuming homoscedasticity) and all variants
+of the robust standard error. While there are some small differences
+depending on the correction used, for all types of robust standard error
+it is clear that the robust standard error is about 33% larger than the
+classical one.</p>
 </div>
 </div>
 <div id="robust-standard-errors-in-r" class="section level1">
 <h1>Robust Standard errors in R</h1>
-<p>Many packages offer options for computing robust standard errors. Perhaps the most straightforward to use is the <code>estimatr</code> package. To fit a regression model without assuming homoscedasticity, we can use the <code>lm_robust()</code> function:</p>
+<p>Many packages offer options for computing robust standard errors.
+Perhaps the most straightforward to use is the <code>estimatr</code>
+package. To fit a regression model without assuming homoscedasticity, we
+can use the <code>lm_robust()</code> function:</p>
 <pre class="r"><code>mod1 = lm_robust(infantMortality ~ tfr, se_type = &quot;HC2&quot;, data = un)</code></pre>
-<p>We can specify the type of robust standard error we want using the <code>se_type</code> argument. By default, <code>lm_robust()</code> computes <code>HC2</code> standard errors, but also offers option for <code>HC0</code>, <code>HC1</code>, <code>HC3</code> and <code>classical</code> (i.e. the nonrobust one). The output of the function behaves in a similar way as objects created by <code>lm()</code>, e.g. we can use <code>summary()</code> to see the results.</p>
-<p>While the output of the <code>lm_robust()</code> function cannot be easily passed into <code>ggpredict()</code>, we can compute the simple model using <code>lm()</code> and then compute robust standard error during plotting, to visualize the model using marginal effects plot:</p>
+<p>We can specify the type of robust standard error we want using the
+<code>se_type</code> argument. By default, <code>lm_robust()</code>
+computes <code>HC2</code> standard errors, but also offers option for
+<code>HC0</code>, <code>HC1</code>, <code>HC3</code> and
+<code>classical</code> (i.e. the nonrobust one). The output of the
+function behaves in a similar way as objects created by
+<code>lm()</code>, e.g. we can use <code>summary()</code> to see the
+results.</p>
+<p>While the output of the <code>lm_robust()</code> function cannot be
+easily passed into <code>ggpredict()</code>, we can compute the simple
+model using <code>lm()</code> and then compute robust standard error
+during plotting, to visualize the model using marginal effects plot:</p>
 <pre class="r"><code>mod2 = lm(infantMortality ~ tfr, data = un)
 
 plot(ggpredict(mod2, vcov.fun = &quot;vcovHC&quot;, vcov.type = &quot;HC2&quot;, terms = &quot;tfr&quot;))</code></pre>
+<pre><code>## Could not compute variance-covariance matrix of predictions. No confidence intervals are returned.</code></pre>
 <p><img src="08_heterscedasticity_files/figure-html/robust-marginal-1.png" width="672" /></p>
-<p>Note that we need to specify both the function used to compute the robust standard errors (<code>vcov.fun = "vcovHC"</code>) and the type of error to be computed (<code>vcov.type = "HC2"</code>). Otherwise, classical standard errors will be computed.</p>
+<p>Note that we need to specify both the function used to compute the
+robust standard errors (<code>vcov.fun = "vcovHC"</code>) and the type
+of error to be computed (<code>vcov.type = "HC2"</code>). Otherwise,
+classical standard errors will be computed.</p>
 </div>
-<div id="why-not-always-use-robust-standard-errors" class="section level1">
+<div id="why-not-always-use-robust-standard-errors"
+class="section level1">
 <h1>Why not always use robust standard errors?</h1>
-<p>If robust standard errors are valid even under heteroscedasticity, why not use them all the time?</p>
+<p>If robust standard errors are valid even under heteroscedasticity,
+why not use them all the time?</p>
 <p>There are at least <em>three reasons</em>:</p>
-<p><em>First reason</em>, robust standard errors are only proven to work with large samples <span class="citation">Wooldridge (2015, p. 247)</span>.</p>
+<p><em>First reason</em>, robust standard errors are only proven to work
+with large samples <span class="citation">Wooldridge (2015, p.
+247)</span>.</p>
 <p>There are two problems related to this:</p>
 <ul>
-<li>Firstly, even with a <em>HC</em> correction, robust standard errors may be biased when the sample size is small, especially if the variance of residuals is actually constant.</li>
-<li>Secondly, even if the standard error estimate is unbiased, the test statistic for classical tests of regression coefficients won’t have the appropriate (Student’s) distribution in small samples.</li>
+<li>Firstly, even with a <em>HC</em> correction, robust standard errors
+may be biased when the sample size is small, especially if the variance
+of residuals is actually constant.</li>
+<li>Secondly, even if the standard error estimate is unbiased, the test
+statistic for classical tests of regression coefficients won’t have the
+appropriate (Student’s) distribution in small samples.</li>
 </ul>
-<p>Consequently, normal tests are not valid for regression models with robust standard errors and small sample size.</p>
-<p><em>Second reason</em>, robust standard errors are less efficient than the classical ones <span class="citation">(Hinkley &amp; Wang, 1991)</span>. This means that larger samples are needed to reach the same level of precision, compared to the classical standard errors.</p>
-<p>Consequently, when homoscedasticity can be assumed, classical standard errors are preferred.</p>
-<p><em>Third reason</em>, heteroscedasticity can be a sign of model misspecification <span class="citation">(King &amp; Roberts, 2015)</span>. In other words, heteroscedastic residuals can be a sign that an important variable is missing in the model or that an incorrect type of relationship is assumed between variables (e.g. an incorrect assumption of linearity).</p>
-<p>Robust standard errors should therefore not be applied blindly, but only after considering other improvements of our model.</p>
+<p>Consequently, normal tests are not valid for regression models with
+robust standard errors and small sample size.</p>
+<p><em>Second reason</em>, robust standard errors are less efficient
+than the classical ones <span class="citation">(Hinkley &amp; Wang,
+1991)</span>. This means that larger samples are needed to reach the
+same level of precision, compared to the classical standard errors.</p>
+<p>Consequently, when homoscedasticity can be assumed, classical
+standard errors are preferred.</p>
+<p><em>Third reason</em>, heteroscedasticity can be a sign of model
+misspecification <span class="citation">(King &amp; Roberts,
+2015)</span>. In other words, heteroscedastic residuals can be a sign
+that an important variable is missing in the model or that an incorrect
+type of relationship is assumed between variables (e.g. an incorrect
+assumption of linearity).</p>
+<p>Robust standard errors should therefore not be applied blindly, but
+only after considering other improvements of our model.</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="refs" class="references csl-bib-body hanging-indent"
+line-spacing="2">
 <div id="ref-hayes2007" class="csl-entry">
-Hayes, A. F., &amp; Cai, L. (2007). Using heteroskedasticity-consistent standard error estimators in OLS regression: An introduction and software implementation. <em>Behavior Research Methods</em>, <em>39</em>(4), 709–722. <a href="https://doi.org/10.3758/BF03192961">https://doi.org/10.3758/BF03192961</a>
+Hayes, A. F., &amp; Cai, L. (2007). Using heteroskedasticity-consistent
+standard error estimators in OLS regression: An introduction and
+software implementation. <em>Behavior Research Methods</em>,
+<em>39</em>(4), 709–722. <a
+href="https://doi.org/10.3758/BF03192961">https://doi.org/10.3758/BF03192961</a>
 </div>
 <div id="ref-hinkley1991" class="csl-entry">
-Hinkley, D. V., &amp; Wang, S. (1991). Efficiency of robust standard errors for regression coefficients. <em>Communications in Statistics - Theory and Methods</em>, <em>20</em>(1), 1–11. <a href="https://doi.org/10.1080/03610929108830479">https://doi.org/10.1080/03610929108830479</a>
+Hinkley, D. V., &amp; Wang, S. (1991). Efficiency of robust standard
+errors for regression coefficients. <em>Communications in Statistics -
+Theory and Methods</em>, <em>20</em>(1), 1–11. <a
+href="https://doi.org/10.1080/03610929108830479">https://doi.org/10.1080/03610929108830479</a>
 </div>
 <div id="ref-king2015" class="csl-entry">
-King, G., &amp; Roberts, M. E. (2015). How robust standard errors expose methodological problems they do not fix, and what to do about it. <em>Political Analysis</em>, <em>23</em>(2), 159179.
+King, G., &amp; Roberts, M. E. (2015). How robust standard errors expose
+methodological problems they do not fix, and what to do about it.
+<em>Political Analysis</em>, <em>23</em>(2), 159179.
 </div>
 <div id="ref-wooldridge2015" class="csl-entry">
-Wooldridge, J. M. (2015). <em>Introductory econometrics: A modern approach</em> (006 edition). Cengage Learning.
+Wooldridge, J. M. (2015). <em>Introductory econometrics: A modern
+approach</em> (006 edition). Cengage Learning.
 </div>
 </div>
 </div>

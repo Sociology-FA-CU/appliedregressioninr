@@ -13,16 +13,16 @@
 
 <title>Model visualization - Excercises</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -57,6 +57,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -77,6 +78,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -232,7 +236,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +246,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -287,7 +291,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -317,10 +321,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -351,7 +358,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -393,7 +400,7 @@ $(document).ready(function () {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -411,11 +418,20 @@ $(document).ready(function () {
 library(ggeffects)
 countries = read.csv(&quot;data/countries.csv&quot;)
 un &lt;- read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
-<p>We will be using the ‘countries’ and the ‘un’ data sets for this set of exercises. You will be asked to run models we ran earlier in the course (use this as an opportunity for revision) and then add a visual representation of the model. Either marginal effects or point plots</p>
+<p>We will be using the ‘countries’ and the ‘un’ data sets for this set
+of exercises. You will be asked to run models we ran earlier in the
+course (use this as an opportunity for revision) and then add a visual
+representation of the model. Either marginal effects or point plots</p>
 <div id="tasks" class="section level1">
 <h1>Tasks</h1>
 <ol style="list-style-type: decimal">
-<li>Use the ‘countries’ data set. Regress ‘per capita GDP’ (you will need to construct this) on ‘uni_prc’ and ‘dem_index’. Then use ‘ggpredict’ function to see predicted values of ‘per capita GDP’ for various values of dem_index when the percentage of people with degree is kept constant at its mean. And what if the percentage of people with degree is held at its maximum? And minimum? Do you expect the predicted values to be very different?</li>
+<li>Use the ‘countries’ data set. Regress ‘per capita GDP’ (you will
+need to construct this) on ‘uni_prc’ and ‘dem_index’. Then use
+‘ggpredict’ function to see predicted values of ‘per capita GDP’ for
+various values of dem_index when the percentage of people with degree is
+kept constant at its mean. And what if the percentage of people with
+degree is held at its maximum? And minimum? Do you expect the predicted
+values to be very different?</li>
 </ol>
 <pre class="r"><code># computing per_capita_gdp
 countries &lt;-
@@ -436,7 +452,8 @@ ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = min(count
 
 # Notice that the predicted values are somewhat higher when percentage of people with degree is held at its maximum rather then mean. And lower when held at their minimum. This should be expected, the coefficient for uni_prc is positive. However, the differences are not huge (no wonder again, uni_prc was not statistically significant.)</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Now make a marginal plot for all the three predictions made in previous task.</li>
+<li>Now make a marginal plot for all the three predictions made in
+previous task.</li>
 </ol>
 <pre class="r"><code>ggpredict(mod1, terms = c(&quot;dem_index&quot;)) %&gt;% plot()
 
@@ -446,7 +463,12 @@ ggpredict(mod1, terms = &quot;dem_index&quot;, condition = c(uni_prc = min(count
 
 # This is really simple. Just apply &#39;plot&#39; function on the output of &#39;ggpredict&#39;. Notice the changing width of the estimation error (shaded area). When &#39;uni_prc&#39; is held at its maximum, estimates are not very precise for values of low &#39;dem_index&#39; - the combination of high &#39;uni_prc and low &#39;dem_index&#39; is rare in the data, so the estimation lacks precision. </code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Take the ‘un’ dataset. Regress ‘infantMortality’ on ‘lifeFemale’, ‘illiteracyFemale’, and ‘region’. Apart from main effects, also include interaction between ‘lifeFemale’ and ‘illiteracyFemale’. To make interpretation of main effect easier, centralize ‘lifeFemale’ and ‘illiteracyFemale’ before you run the model. Interpret the model from the table.</li>
+<li>Take the ‘un’ dataset. Regress ‘infantMortality’ on ‘lifeFemale’,
+‘illiteracyFemale’, and ‘region’. Apart from main effects, also include
+interaction between ‘lifeFemale’ and ‘illiteracyFemale’. To make
+interpretation of main effect easier, centralize ‘lifeFemale’ and
+‘illiteracyFemale’ before you run the model. Interpret the model from
+the table.</li>
 </ol>
 <pre class="r"><code># first, centralize the the predictors which are used in interaction
 un &lt;- 
@@ -471,14 +493,24 @@ un %&gt;% filter(region == &quot;Africa&quot;) %&gt;% summarise(mean_imr = mean(
 # ... countries with female illiteracy higher by one percentage point than the average female illiteracy have infant mortality rate higher by 0.19 on average
 # ... [the interaction term]... this interaction term is very hard to interpret directly from the table. Since the estimate is negative, it says somethings along the lines that if both life expectancy and illiteracy go up, the predicted fertility rate is a bit lower than expected simply from the main effects. But both the predictors are measured in different units and both push infant mortality in opposite directions (life expectancy is negatively associated with it, illiteracy positively.) So it is quite hard to imagine anything meaningful behind the coefficient. </code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>To better understand the effect of the interaction above, we will now use marginal effects. First, plot the marginal effect of female life expectancy on infant mortality rates for illiteracy fixed at its mean and at one standard deviation under and above the mean.</li>
+<li>To better understand the effect of the interaction above, we will
+now use marginal effects. First, plot the marginal effect of female life
+expectancy on infant mortality rates for illiteracy fixed at its mean
+and at one standard deviation under and above the mean.</li>
 </ol>
 <pre class="r"><code># Default - marginal effect of female life expectancy on infant mortality rates for illiteracy fixed at its mean and at one standard deviation under and above the mean. 
 ggpredict(mod2, terms = c(&quot;lifeFemale_c&quot;, &quot;illiteracyFemale_c&quot;)) %&gt;% plot()
 
 # We see that for low values of illiteracy, the slope is a little less steep compared to high values of illiteracy. In other words, differences in life expectancy lead us to predicting bigger differences in mortality when illiteracy is high. When illiteracy is low, increase in life expectancy predicts slightly smaller drop of mortality rate.</code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>In the previous task, you may have thought it is somewhat inconvenient to work with marginal effects on centered variables. Indeed, when interpreting regression with marginal effects, you can use the raw values and interpret them. Re-run the model with predictors in raw form and show the same marginal plot again. Then show an alternative marginal plot with the two predictors swaped - showing the marginal effect of illiteracy on mortality for different levels of life expectancy.</li>
+<li>In the previous task, you may have thought it is somewhat
+inconvenient to work with marginal effects on centered variables.
+Indeed, when interpreting regression with marginal effects, you can use
+the raw values and interpret them. Re-run the model with predictors in
+raw form and show the same marginal plot again. Then show an alternative
+marginal plot with the two predictors swaped - showing the marginal
+effect of illiteracy on mortality for different levels of life
+expectancy.</li>
 </ol>
 <pre class="r"><code>mod3 &lt;- lm(infantMortality ~ lifeFemale*illiteracyFemale + region, data = un)
 summary(mod3)
@@ -491,7 +523,16 @@ ggpredict(mod3, terms = c(&quot;illiteracyFemale&quot;, &quot;lifeFemale&quot;))
 # When we swap the predictors, we can learn about the marginal effect of illiteracy when life expectancy is fixed. Once life expectancy is high, infant mortality rate remains low irrespective of the level of illiteracy.  
 # For low life expectancy, however, growth in illiteracy predicts fairly strong growth in mortality. </code></pre>
 <ol start="6" style="list-style-type: decimal">
-<li>You should not forget that marginal effects are computed always at all other predictors in the model held constant. While we do not have to (and sometimes cannot if they are too many) include all other predictors in the plot, they are part of the story. Did you realize that all the figures so far have been for region held “Africa”? However, we know that the region variable did not enter the model in any interaction. Region is a categorical variable, so it will only change the intercept of the curves we have described so far. But see it for yourselves. Plot the marginal effect of illiteracy for the three levels of life expectancy and each of the continents.</li>
+<li>You should not forget that marginal effects are computed always at
+all other predictors in the model held constant. While we do not have to
+(and sometimes cannot if they are too many) include all other predictors
+in the plot, they are part of the story. Did you realize that all the
+figures so far have been for region held “Africa”? However, we know that
+the region variable did not enter the model in any interaction. Region
+is a categorical variable, so it will only change the intercept of the
+curves we have described so far. But see it for yourselves. Plot the
+marginal effect of illiteracy for the three levels of life expectancy
+and each of the continents.</li>
 </ol>
 <pre class="r"><code>ggpredict(mod3, terms = c(&quot;illiteracyFemale&quot;, &quot;lifeFemale&quot;, &quot;region&quot;)) %&gt;% plot()</code></pre>
 </div>

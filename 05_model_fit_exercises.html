@@ -13,16 +13,16 @@
 
 <title>Model fit - Excercises</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -57,6 +57,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -77,6 +78,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -232,7 +236,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +246,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -287,7 +291,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -317,10 +321,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -351,7 +358,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -393,7 +400,7 @@ $(document).ready(function () {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -409,18 +416,25 @@ $(document).ready(function () {
 
 <pre class="r fold-show"><code>library(tidyverse)
 un &lt;- read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
-<p>We will be using the ‘un’ data set, i.e., the data from United Nations organization.</p>
+<p>We will be using the ‘un’ data set, i.e., the data from United
+Nations organization.</p>
 <div id="tasks" class="section level1">
 <h1>Tasks</h1>
 <ol style="list-style-type: decimal">
-<li>Regress infant mortality on female life expectancy and female illiteracy rate (main effects only). What is the percentage of variance predicted by the two predictors?</li>
+<li>Regress infant mortality on female life expectancy and female
+illiteracy rate (main effects only). What is the percentage of variance
+predicted by the two predictors?</li>
 </ol>
 <pre class="r"><code>model1 &lt;- lm(infantMortality ~ lifeFemale + illiteracyFemale, data = un)
 summary(model1)
 
 # The answer is 89.84 %. That is a lot. Such a high value of R-squared very rarely occurs in sociological data on individual level, but it can happen sometimes on aggregate level (such as here - data on country level). </code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Compute another model where you also add interaction between life expectancy and female illiteracy rate as a third predictor. Also compute a third model where you also add region as main effect on top of that. Compare their values of R-squared. Which one of the models is best at predicting variance in the dependent variable?</li>
+<li>Compute another model where you also add interaction between life
+expectancy and female illiteracy rate as a third predictor. Also compute
+a third model where you also add region as main effect on top of that.
+Compare their values of R-squared. Which one of the models is best at
+predicting variance in the dependent variable?</li>
 </ol>
 <pre class="r"><code>model2 &lt;- lm(infantMortality ~ lifeFemale*illiteracyFemale, data = un)
 model3 &lt;- lm(infantMortality ~ lifeFemale*illiteracyFemale + region, data = un)
@@ -435,27 +449,64 @@ summary(model3)
 
 # Note, since the comparison is of models with dufferent number of predictors, the formally correct approach is comparing adjusted R-squared. This changes nothing about the fact the with each adding of complexity,the R-squared increases a little. So it looks like the most complex model has some value added over the less complex models beyond just random noise. However, the increase in predictive power is only very small. It would be prefectly justifiable here to to opt for the simplest model with simple and straightforward interpretation. Dependening on the modeling purpose. If you compete to make the best predictions and interprtability is secondary, you will probably wanto to pick the most complex model here.</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Use ‘anova’ function to conduct another comparison of the models.</li>
+<li>Use ‘anova’ function to conduct another comparison of the
+models.</li>
 </ol>
 <pre class="r"><code>anova(model1, model2)
 anova(model2, model3)
 
 # Quite in concord with the comparison in task 2, comparing models using anova also tells as that moving from model1 to model2 leads to statistically significant improvement in model fit (p-value is smaller than 0.05, so we can reject the null hypothesis of no difference in model fit, on the commonly used significance level). Similarly, moving from model2 to model3 also means statistically significant improvement in model fit. But again, we should also reflect that the improvement, while *statistically* significant,is *not really significant* for many purposes. </code></pre>
-<p>In the following tasks, you will not need to code anything. Just think and try to give your best answer before you look at our solution.</p>
+<p>In the following tasks, you will not need to code anything. Just
+think and try to give your best answer before you look at our
+solution.</p>
 <ol start="4" style="list-style-type: decimal">
-<li>You want to know if consumption of ice-cream causes people to drown. In your modeling, you make the assumption that the only thing which is in reality associated somehow with ice-cream consumption and drowning is the outside temperature. So you have measured three variables, ice-cream consumption on given day, number of people who drown, and outside temperature. It is obvious you will want to regress drowning on ice-cream, but should you also control for the outside temperature? It results in better model fit, indeed, but is it a correct model? Or should you not control for it?</li>
+<li>You want to know if consumption of ice-cream causes people to drown.
+In your modeling, you make the assumption that the only thing which is
+in reality associated somehow with ice-cream consumption and drowning is
+the outside temperature. So you have measured three variables, ice-cream
+consumption on given day, number of people who drown, and outside
+temperature. It is obvious you will want to regress drowning on
+ice-cream, but should you also control for the outside temperature? It
+results in better model fit, indeed, but is it a correct model? Or
+should you not control for it?</li>
 </ol>
 <pre class="r"><code># Of course, you DO need to control for outside temperature, because the only plausible explanation is that outside temperature preceeds and causes ice-cream consumption (people are hot and want to eat ice-cream) and drowning (are hot and want to swim).  </code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>You assume that your new program for unemployed people will result in their change of attitudes and this will help them find a job. You have an intervention group and a control group, but they were not randomized, so tou cannot rely on the fact that they are the same. So you measured their attitudes at the beginning to be able to compare the two groups. Then, the intervention took place. Next, you measured their attitudes again after the intervention. Finally, after three months, you looked if they managed to find a job. At the end of the day, you have four variables: clearly, your dependent variable is whether the person found a job or not after the three months. Clearly, your main independent variable is the group membership (intervention vs. control). You also have attitudes before the intervention and after it. Which one of them should you control for in the model? None of them? Only attitudes before the intervention? Only attitudes after the intervention? Both of them?</li>
+<li>You assume that your new program for unemployed people will result
+in their change of attitudes and this will help them find a job. You
+have an intervention group and a control group, but they were not
+randomized, so tou cannot rely on the fact that they are the same. So
+you measured their attitudes at the beginning to be able to compare the
+two groups. Then, the intervention took place. Next, you measured their
+attitudes again after the intervention. Finally, after three months, you
+looked if they managed to find a job. At the end of the day, you have
+four variables: clearly, your dependent variable is whether the person
+found a job or not after the three months. Clearly, your main
+independent variable is the group membership (intervention vs. control).
+You also have attitudes before the intervention and after it. Which one
+of them should you control for in the model? None of them? Only
+attitudes before the intervention? Only attitudes after the
+intervention? Both of them?</li>
 </ol>
 <pre class="r"><code># The correct answer is that you should only control for the attitudes before the intervention. They preceded the intervention, so you want to put them in the model to compare the intervention and control groups when their attitudes before the intervention are held constant. On the other hand, you should not control for the the attitudes after the intervention because they are a mediator, they are your causal mechanism (you believe it is the change of attitudes caused by the intervention which ultimately results in better chance of finding a job). Controlling for it would undermine your analysis - you would effectively filter out the effect that you are trying to find.     </code></pre>
 <ol start="6" style="list-style-type: decimal">
-<li>But what if you did not remember to measure the attitudes before the intervention. You only measured them afterwards. So probably, the difference in attitudes between the intervention and control group after the intervention partly reflects the difference prior to the intervention (remember, you were not able to use randomization), and it partly reflects the effect of the intervention. Should you control for it in the absence of knowing the prior attitudes?</li>
+<li>But what if you did not remember to measure the attitudes before the
+intervention. You only measured them afterwards. So probably, the
+difference in attitudes between the intervention and control group after
+the intervention partly reflects the difference prior to the
+intervention (remember, you were not able to use randomization), and it
+partly reflects the effect of the intervention. Should you control for
+it in the absence of knowing the prior attitudes?</li>
 </ol>
 <pre class="r"><code># No. The reason is still the same as above. In fact, when you failed to randomize and you also failed to measure the attitudes prior to the intervention, there is no way of knowing if your intervention had any effect. You do not know if any difference between the two groups in finding a job is caused by your intervention or prior differences in attitudes. A botched research design prevents you from making any conclusions. Well, it should prevent you from making any conclusions. It does not mean there are not such faulty conclusions out there...    </code></pre>
 <ol start="7" style="list-style-type: decimal">
-<li>Imagine your political views are progressive left. You notice that among your friends, those who study sociology are less aligned with your political views than those of your friends who do not study sociology. Can you make the conclusion that for some reason being sociology student makes people less progressive (either people who are less progressive go to sociology or the studying sociology itself makes them less progressive, the mechanism does not matter)? Why (not)?</li>
+<li>Imagine your political views are progressive left. You notice that
+among your friends, those who study sociology are less aligned with your
+political views than those of your friends who do not study sociology.
+Can you make the conclusion that for some reason being sociology student
+makes people less progressive (either people who are less progressive go
+to sociology or the studying sociology itself makes them less
+progressive, the mechanism does not matter)? Why (not)?</li>
 </ol>
 <pre class="r"><code># No, such a conclusion could be unwarranted, because it could suffer from the *conditioning on collider* bias. What you would be, in fact, doing is setting up a model in your head where the depending variable (less progressive views) would be caused by being sociology student BUT you would only observe the subset of people who are your friends. That is a big problem because how do people become your friends? For simplicity, we can assume two mechanisms - (a) they are sociology students, spend time with you, you have beers together, so you become friends, (b) they are similar to you, have similar political views, so you pick them as friends. In other words, studying sociology is one cause of friendship with you, being politically progressive is another. It means that the causal effect leads to &quot;friendship with you&quot; from both &quot;being sociology student&quot; and &quot;being progressive&quot;. This means that being friends with you is a collider in this analysis. And analyzing the relationship between studying sociology and political views ONLY among your friends is a form of conditioning on collider.</code></pre>
 </div>

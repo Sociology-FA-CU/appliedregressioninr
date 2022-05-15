@@ -13,16 +13,16 @@
 
 <title>Goals of regression analysis - Excercise</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -57,6 +57,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -77,6 +78,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -232,7 +236,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +246,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -287,7 +291,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -317,10 +321,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -351,7 +358,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -393,7 +400,7 @@ $(document).ready(function () {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -402,37 +409,46 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Goals of regression analysis - Excercise</h1>
+<h1 class="title toc-ignore">Goals of regression analysis -
+Excercise</h1>
 
 </div>
 
 
-<p>We distinguish four types of modeling approaches, differentiated by the purpose of our analysis:</p>
+<p>We distinguish four types of modeling approaches, differentiated by
+the purpose of our analysis:</p>
 <ul>
 <li>Descriptive modeling</li>
 <li>Sample-to-population inferential modeling</li>
 <li>Explanatory modeling</li>
 <li>Predictive modeling</li>
 </ul>
-<p>What type of modeling strategies best apply for the following questions? To see the correct answer click the <code>CODE</code> button.</p>
+<p>What type of modeling strategies best apply for the following
+questions? To see the correct answer click the <code>CODE</code>
+button.</p>
 <ol style="list-style-type: decimal">
-<li>What is the (causal) effect of raising the minimum wage on the unemployment rate?</li>
+<li>What is the (causal) effect of raising the minimum wage on the
+unemployment rate?</li>
 </ol>
 <pre class="r"><code>&quot;Explanatory&quot;</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>How much revenue can we expect the upcoming advertisement campaign to generate?</li>
+<li>How much revenue can we expect the upcoming advertisement campaign
+to generate?</li>
 </ol>
 <pre class="r"><code>&quot;Predictive&quot;</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Are single mothers in the Czech Republic more likely to be at the risk of poverty than mothers with husbands?</li>
+<li>Are single mothers in the Czech Republic more likely to be at the
+risk of poverty than mothers with husbands?</li>
 </ol>
 <pre class="r"><code>&quot;Sample-to-population inference&quot;</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Do regions in the Czech Republic with high unemployment rate also have higher children mortality?</li>
+<li>Do regions in the Czech Republic with high unemployment rate also
+have higher children mortality?</li>
 </ol>
 <pre class="r"><code>&quot;Descriptive&quot;</code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>Is there a relationship between education and pro-environmental attitudes in the population of Czech adults?</li>
+<li>Is there a relationship between education and pro-environmental
+attitudes in the population of Czech adults?</li>
 </ol>
 <pre class="r"><code>&quot;Sample-to-population inference&quot;</code></pre>
 

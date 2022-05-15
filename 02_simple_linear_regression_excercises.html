@@ -13,16 +13,16 @@
 
 <title>Simple linear regression - Excercises</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -57,6 +57,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -77,6 +78,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -232,7 +236,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +246,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -287,7 +291,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -317,10 +321,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -351,7 +358,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -393,7 +400,7 @@ $(document).ready(function () {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -410,7 +417,10 @@ $(document).ready(function () {
 <pre class="r"><code>library(tidyverse) # for pipes, count function and ggplot
 countries = read.csv(&quot;data/countries.csv&quot;)</code></pre>
 <ol style="list-style-type: decimal">
-<li>Using the <code>countries</code> data, create a regression model predicting the percentage of people at risk of poverty (<code>poverty_risk</code>) from the value of democracy index (<code>dem_index</code>).</li>
+<li>Using the <code>countries</code> data, create a regression model
+predicting the percentage of people at risk of poverty
+(<code>poverty_risk</code>) from the value of democracy index
+(<code>dem_index</code>).</li>
 </ol>
 <pre class="r"><code>countries %&gt;% ggplot(aes(x=dem_index, y=poverty_risk))+geom_point()+geom_smooth(method = &quot;lm&quot;) # remember to visualize before modeling 
 
@@ -424,11 +434,13 @@ mod1 = lm(poverty_risk ~ dem_index, data = countries)</code></pre>
 
 &quot;dem_index - the difference in the expected proportion of people at the risk of povery when the democracy index raises by one. According to our model, countries with 1 additional point on the democracy index have on average 5 percentage points smaller proportion of people at the risk of poverty&quot;</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Is the interpretation of the intercept in our model (as stated in previous solution) meaningful?</li>
+<li>Is the interpretation of the intercept in our model (as stated in
+previous solution) meaningful?</li>
 </ol>
 <pre class="r"><code>&quot;Not really, it is only technical. On inspection of the data, you will notice there are no countries in the sample even close to the democracy index of 0. So the interpetation is, in fact, a wild extrapolation to an area for which we have no data.&quot;</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Center the democracy index variable and fit the model again. How does the interpretation of the coefficients changes?</li>
+<li>Center the democracy index variable and fit the model again. How
+does the interpretation of the coefficients changes?</li>
 </ol>
 <pre class="r"><code>countries$dem_index_c = countries$dem_index - mean(countries$dem_index, na.rm = TRUE)
 
@@ -437,7 +449,9 @@ summary(mod2)
 
 &quot;The intercept now represents the proportion of people at the risk of poverty in a country with average democracy index (average within our sample, of course). This is much more useful. The interpretation of the slope coefficient does not change.&quot;</code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>Use the categorized democracy index instead, i.e., the variable di_cat as predictor. What do you need to do to include a categorical predictor in linear regression analysis? Interpret your model.</li>
+<li>Use the categorized democracy index instead, i.e., the variable
+di_cat as predictor. What do you need to do to include a categorical
+predictor in linear regression analysis? Interpret your model.</li>
 </ol>
 <pre class="r"><code>str(countries$di_cat) # check that the variable is not coded as numeric
 countries %&gt;% count(di_cat) # out of curiosity, we look at a basic frequency table
@@ -447,7 +461,10 @@ summary(mod3)
 
 &quot;We did not have to do anything special before running the model, just check that that the di_cat variable is not coded as numeric. Since it is not, R automatically transforms it into factor (if it is not a factor yet) and then to dummies. It automatically includes only k-1 of the dummies in the model. We see, looking at the intercepts, that full democracy have 6 percentage points less people living in poverty, on average, compared to Flawed democracies. Hybrid democracies, on the other hand, have 16 percentage points higher povery rate the Flawed democracies, on average. But what is the poverty rate of Flawed democracies to begin with? It is the intercept, i.e. 25.5 %.&quot;</code></pre>
 <ol start="6" style="list-style-type: decimal">
-<li>Regress per-capita gdp on eu_membership. Interpret the results. Note the terminology. We sometimes say regress Y on X. This means use Y as dependent and X as independent variable. You may need to first create the per capita variable.</li>
+<li>Regress per-capita gdp on eu_membership. Interpret the results. Note
+the terminology. We sometimes say regress Y on X. This means use Y as
+dependent and X as independent variable. You may need to first create
+the per capita variable.</li>
 </ol>
 <pre class="r"><code>countries &lt;-
   countries %&gt;% mutate(percapita_gdp = (gdp*1000000) / population)
@@ -459,7 +476,8 @@ summary(mod1)
 
 countries %&gt;% group_by(eu_member) %&gt;% summarise(mean = mean((gdp*1000000) / population, na.rm=TRUE))</code></pre>
 <ol start="7" style="list-style-type: decimal">
-<li>You may be surprised by the result of the previous task. Try to plot the data to get some additional insights.</li>
+<li>You may be surprised by the result of the previous task. Try to plot
+the data to get some additional insights.</li>
 </ol>
 <pre class="r"><code>countries %&gt;% 
   mutate(eu_member = as.numeric(eu_member==&quot;yes&quot;)) %&gt;% # need to transform to numeric for geom_smooth to work
@@ -467,7 +485,8 @@ countries %&gt;% group_by(eu_member) %&gt;% summarise(mean = mean((gdp*1000000) 
 
 &quot;There are many ways to plot data and get insights. Our solution shows that the countries which are not in EU are of two distinct kinds. They either have very low per-capita GDP, or very high per-capita GDP. On avarage, they have a little higher per-capita GDP than EU members, but there are actually no &#39;average&#39; non-EU countries.&quot;</code></pre>
 <ol start="8" style="list-style-type: decimal">
-<li>Given that Czech Republic is in the EU, by how much is its per-capita GDP bigger or smaller than that predicted by the model?</li>
+<li>Given that Czech Republic is in the EU, by how much is its
+per-capita GDP bigger or smaller than that predicted by the model?</li>
 </ol>
 <pre class="r"><code>countries %&gt;% filter(code == &quot;CZ&quot;) # Czechia is the 3rd row (variable X is the row number)
 

@@ -1,0 +1,249 @@
+---
+title: "Lesson 7: Modeling heteroscedasticity"
+subtitle: "Jaromír Mazák & Aleš Vomáčka"
+author: "Dpt. of Sociology, Faculty of Arts, Charles University"
+date: "Last updated in April 2022"
+output:
+  ioslides_presentation:
+    widescreen: true
+csl: "../apa.csl"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+library(tidyverse)
+library(estimatr)
+library(ggeffects)
+library(ggforce)
+library(patchwork)
+
+un = read.table("../data/UnitedNations.txt")
+```
+
+## Goals for Today
+
+- Learn how to deal heteroscedasticity
+- Learn how to deal with dependent errors
+
+# Heteroskedasticity
+
+## Heteroskedasticity
+
+- Heteroskedasticity is relatively common, e.g. in bounded data.
+
+```{r hetero-example, echo=TRUE}
+mod1 = lm(infantMortality ~ tfr, data = un)
+plot(mod1, which = 1)
+```
+
+## Effects of Heteroskedasticity
+
+- When the assumption of homoscedasticity is broken two things will happen:
+
+<br>
+
+1) Regression coefficients' estimates become less efficient.
+2) Standard errors will be biased (usually too narrow confidence intervals, too low p values)
+
+<br>
+
+- To solve this, let's remind ourself how variance works.
+
+## When Homoscedasticity holds
+
+```{r vars-equal, echo=FALSE}
+set.seed(123)
+vector1 = scale(rnorm(10))
+vector2 = scale(rnorm(10))
+#vector1 = c(0.8551603, -0.1219514,0.7444561, -1.6354559, 0.1577908)
+#vector2 = c(-0.00542261, -1.71423480, 0.51218859, 0.79087341, 0.41659541)
+vector3 = c(vector1,vector2)
+
+var1 = round(mean( (vector1 - mean(vector1))^2 ),2)
+var2 = round(mean( (vector2 - mean(vector2))^2 ),2)
+var3 = round(mean( (vector3 - mean(vector3))^2 ),2)
+
+```
+
+
+```{r homoscedascity-plot2, echo=FALSE, fig.width=10}
+df_homosced = tibble(value = c(vector1, vector2),
+                     group = c(rep("group 1", times = length(value) / 2), rep("group 2", times = length(value) / 2)))
+
+homosced_group <- ggplot(data = df_homosced, aes(x = group, y = value, color = group)) +
+  geom_point() +
+  geom_mark_ellipse() + 
+  annotate(geom = "text", x = 1, y = 2.3, color = "#F8766D", label = paste("varience =", var1)) +
+  annotate(geom = "text", x = 2, y = 2.2, color = "#00BFC4", label = paste("varience =", var2)) +
+  scale_y_continuous(limits = c(-3,5)) +
+  labs(x = element_blank(), y = element_blank()) +
+  theme(legend.position = "none")
+
+
+homosced_all <- ggplot(data = df_homosced, aes(x = group, y = value)) +
+  geom_point() +
+  geom_mark_ellipse(mapping = aes(group = 1)) +
+  annotate(geom = "text", x = 1.5, y = 2.1, label = paste("varience =", var3)) +
+  labs(x = element_blank(), y = element_blank()) +
+  scale_y_continuous(limits = c(-3,5)) +
+  theme(legend.position = "none")
+
+homosced_group + homosced_all
+```
+
+## When Homoscedasticity holds
+
+- If we assume homoskedasticity, we can estimate variance of residuals for every value of x be computing variance of all residuals at once:
+
+$$
+SE_\beta = \frac{\sigma^2 \sum(x_i - \bar{x})^2}{[\sum(x_i - \bar{x})^2]^2} = \frac{\sigma^2}{\sum(x_i - \bar{x})^2}
+$$
+
+<br>
+
+  - $SE_\beta$ = Standard error of regression coefficient
+  - $x_i$ = Observation *i* of the variable *x*
+  - $\bar{x}$ = Mean value of *x*
+  - $sigma^2$ = Variance of residuals
+  
+  
+## Wild Heteroskedasticity Appears!
+  
+  - What if the variances are not identical?
+  
+```{r vars-nonequal, echo=FALSE}
+set.seed(123)
+vector1 = scale(rnorm(10, sd = 0.5), scale = F)
+vector2 = scale(rnorm(10, sd = 1.2), scale = F)
+
+#vector1 = c(0.05329121, 0.47450291, 0.68218495, -0.92324431, -0.28673476)
+#vector2 = c(-1.04618281, 3.36022661, -1.62755560, -0.76224781, 0.07575961)
+vector3 = c(vector1,vector2)
+
+var1 = round(mean( (vector1 - mean(vector1))^2 ),2)
+var2 = round(mean( (vector2 - mean(vector2))^2 ),2)
+var3 = round(mean( (vector3 - mean(vector3))^2 ),2)
+
+```
+
+```{r heteroscedasticity-plot1, echo=FALSE}
+df_heterosced = tibble(value = c(vector1, vector2),
+                     group = c(rep("group 1", times = length(value) / 2), rep("group 2", times = length(value) / 2)))
+
+heterosced_group <- ggplot(data = df_heterosced, aes(x = group, y = value, color = group)) +
+  geom_mark_ellipse() + 
+  geom_point() +
+  annotate(geom = "text", x = 1, y = 1.7, color = "#F8766D", label = paste("varience =", var1)) +
+  annotate(geom = "text", x = 2, y = 2.4, color = "#00BFC4", label = paste("varience =", var2)) +
+  scale_y_continuous(limits = c(-3,3)) +
+  labs(x = element_blank(), y = element_blank()) +
+  theme(legend.position = "none")
+
+heterosced_group
+```
+
+## Wild Heteroskedasticity Appears!
+
+- The overall variance doesn't match any single group.
+
+```{r heteroscedascity-plot2, echo=FALSE, fig.width=10}
+heterosced_all <- ggplot(data = df_heterosced, aes(x = group, y = value)) +
+  geom_point() +
+  geom_mark_ellipse(aes(group = 1)) + 
+  annotate(geom = "text", x = 1.5, y = 1.9, label = paste("varience =", var3)) +
+  scale_y_continuous(limits = c(-3,3)) +
+  labs(x = element_blank(), y = element_blank()) +
+  theme(legend.position = "none")
+
+heterosced_group + heterosced_all
+```
+
+## Wild Heteroskedasticity Appears!
+
+- If the assumption of homoscedasticity is violated, we cannot use the total residual variance as an estimate for individual levels.
+
+```{r}
+plot(mod1, which = 1)
+```
+
+## Robust Standard Errors
+
+- We simply go through the work of estimating residual variance for each level.
+
+- From the classic formula:
+
+$$
+SE_\beta = \frac{\sigma^2 \sum(x_i - \bar{x})^2}{[\sum(x_i - \bar{x})^2]^2}
+$$
+
+- To a new one **not** assuming homoscedasticity:
+
+$$
+SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
+$$
+
+## Robust Standard Errors
+
+$$
+SE_\beta = \frac{\sum(x_i - \bar{x})^2*\sigma_i^2}{[\sum(x_i - \bar{x})^2]^2}
+$$
+
+<br>
+
+-   (Heteroscedastic) Robust Standard Error
+-   White's Standard Error
+-   Sandwich Error 
+-   HCO
+
+
+## Variants of Robust Errors 
+
+- The previous formula is the original approach
+- Works well in big samples, biased in small ones.
+- Various corrections proposed:
+
+  - HC1 (original correction, probably the worst one)
+  - HC2
+  - HC3
+  
+<br>
+- in R all implemented in the `estimatr` package
+  
+# InteRmezzo!
+
+
+## What Type of SE to use?
+
+- For moderately large sample sizes (hundreds and more), little difference between HC1-HC3
+- For very small samples (e.g. 30  observations), HC3 seems best
+
+# Why Don't Use Robust SE All the Time?
+
+## Why Don't Use Robust SE All the Time?
+
+- Many economists will tell you to do so. But!
+
+<br>
+
+- For small samples, robust SE and tests based on them may be biased (especially, if homoscedasticity holds).
+- Robust SE are less efficient.
+- Violations of homoscedasticity may be sign of a missing predictor or misspecification.
+
+
+<br>
+
+- In practice, robust SE are very useful (and very underutilized in sociology), but not a panacea.
+
+
+# Bonus: Clustered Standard Errors
+
+## Clustered Standard Errors
+
+- Linear regression assumes independece of errors.
+- Can be violated because of repeated measurments, cluster based sampling, etc.
+
+<br>
+
+- Fortunately robust standard errors can help here (sometimes).
+- Clustered Standard error estimates residual variance for each cluster separately.

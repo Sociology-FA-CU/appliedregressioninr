@@ -19,6 +19,7 @@ library(tidyverse)
 library(splines)
 library(lspline)
 library(ggeffects)
+library(patchwork)
 
 vote = read.csv("../data/parl_vote_2017.csv")
 un = read.table("../data/UnitedNations.txt")
@@ -70,8 +71,6 @@ plot(mod1, which = 1)
 ## Categorization
 
 -   Most basic way of dealing with nonlinearity
-
--   We can transform numeric predictors into discrete categories and model them as ordinal
 
 -   There are many different ways a numerical variable can be cut into categories:
 
@@ -198,10 +197,6 @@ plot(ggeffect(mod_poly, terms = "agea"))
 -   The advantage of raw polynomials is that regression coefficients have the classic interpretation
 -   The advantage of orthogonal polynomials is that it's easier to compute how much variance each of the forms predicts
 
-<br>
-
--   If you only want to control for a variable or are interpreting the model visualy, the choice doesn't matter
-
 # R Intermezzo!
 
 ## Polynomials - Pros and cons
@@ -270,6 +265,21 @@ ggplot(aes(x = agea, y = vote), data = vote) +
   geom_vline(xintercept = 75, linetype = "dashed")
 ```
 
+
+## Linear splines as a more flexible categorization
+
+```{r linear-as-cat, fig.width=7}
+ggplot(aes(x = agea, y = vote), data = vote) +
+  geom_point(alpha = 0.5) + 
+  geom_segment(aes(x = 15, xend = 25, y = mod_cat[1,2], yend = mod_cat[1,2]), size = 1, color = "red") +
+  geom_segment(aes(x = 25, xend = 55, y = mod_cat[2,2], yend = mod_cat[2,2]), size = 1, color = "red") +
+  geom_segment(aes(x = 55, xend = 90, y = mod_cat[3,2], yend = mod_cat[3,2]), size = 1, color = "red") +
+  geom_vline(xintercept = 25, linetype = "dashed") +
+  geom_vline(xintercept = 55, linetype = "dashed") +
+  geom_smooth(method = "lm", se = F, formula = y ~ lspline(x, c(25,55))) +
+  theme_ggeffects()
+```
+
 ## Linear splines
 
 -   We can think of linear splines as a more flexible version of categorization
@@ -304,6 +314,21 @@ ggplot(aes(x = agea, y = vote), data = vote) +
 
 -   Natural splines solve both the problems of categorization/linear splines (sudden changes in slope, arbitrary cutpoints) and simple polynomials (only capturing polynomial relationships, unstable at the ends)
 -   Natural splines are one of the most flexible ways for modeling nonlinearity in the context of linear models
+
+
+## Natural splines as a more flexible polynomials
+
+```{r ns-vs-poly-example, warning=FALSE, message=FALSE}
+ggplot(un, mapping = aes(x = GDPperCapita, y = infantMortality)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F, formula = y ~ ns(x, df = 6),
+              mapping = aes(color = "Cubic splines")) +
+  geom_smooth(method = "lm", se = F, formula = y ~ poly(x, 5),
+              mapping = aes(color = "Simple polynimial")) +
+  theme_ggeffects() +
+  labs(color = element_blank()) +
+  theme(legend.position = c(0.75, 0.75))
+```
 
 # R Intermezzo!
 
@@ -359,12 +384,18 @@ ggplot(aes(x = agea, y = vote), data = vote) +
 
 ## Nonlinearity - what to use?
 
-```{r ns-vs-poly-example, warning=FALSE, message=FALSE}
-ggplot(un, mapping = aes(x = GDPperCapita, y = infantMortality)) +
+```{r simple-polynomials-equivalence, fig.width=7}
+ggplot(data = vote, aes(x = agea, y = vote)) +
   geom_point() +
-  geom_smooth(method = "lm", se = F, formula = y ~ ns(x, df = 6)) +
-  geom_smooth(method = "lm", se = F, formula = y ~ poly(x, 5), color = "red") +
-  labs(caption = "Blue line = natural spline, red line = simple polynomial")
+  geom_smooth(method = "lm", se = FALSE,
+              formula = y ~ poly(x, 2),
+              mapping = aes(color = "Simple cubic polynomial")) +
+  geom_smooth(method = "lm", se = FALSE,
+              formula = y ~ ns(x, 2),
+              mapping = aes(color = "Cubic spline with only outer knots")) +
+  labs(color = element_blank()) +
+  theme_ggeffects() +
+  theme(legend.position = c(0.7, 0.25)) 
 ```
 
 ## References

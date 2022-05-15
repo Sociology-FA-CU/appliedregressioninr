@@ -13,16 +13,16 @@
 
 <title>Interactions</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -48,6 +48,7 @@ if (window.hljs) {
   }
 }
 </script>
+
 
 
 
@@ -98,6 +99,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -250,7 +254,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -260,7 +264,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -305,7 +309,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -335,10 +339,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -369,7 +376,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -417,10 +424,14 @@ $(document).ready(function () {
 </div>
 
 
-<p>The goals for this lecture is learning about interactions. The lecture notes here provide a basic insight into interactions using an example with simulated data.</p>
+<p>The goals for this lecture is learning about interactions. The
+lecture notes here provide a basic insight into interactions using an
+example with simulated data.</p>
 <div id="main-effects-and-interactions" class="section level1">
 <h1>Main effects and interactions</h1>
-<p>We will continue the example using the “countries” data set and regressing life expectancy on democratic index and share of people with university degree.</p>
+<p>We will continue the example using the “countries” data set and
+regressing life expectancy on democratic index and share of people with
+university degree.</p>
 <pre class="r"><code>fit1 &lt;- lm(life_exp ~ dem_index + uni_prc, data = countries)
 summary (fit1)</code></pre>
 <pre><code>## 
@@ -443,9 +454,33 @@ summary (fit1)</code></pre>
 ##   (3 observations deleted due to missingness)
 ## Multiple R-squared:  0.5517, Adjusted R-squared:  0.5237 
 ## F-statistic: 19.69 on 2 and 32 DF,  p-value: 2.664e-06</code></pre>
-<p>All the beta coefficients in the table above are so called main effects. We use this term to distinguish them from interactions. Let’s briefly stop on the term main effects before we proceed to interactions. There are two types of main effects. First, in simple linear regression, the main effect indicates the bivariate linear association between independent and dependent variable. Second, in MLR, the main effect is the conditional effect described in the previous lecture (i.e., the effect of an independent variable on a dependent variable conditional on all other variables in the model being held constant).</p>
-<p>Using only the main effects in MLR relies on the assumption that the effect of a given independent variable on the dependent variable is the same across all levels of other independent variables in the model, or more precisely, that rather than looking at different effects of our independent variable of interest (e.g. democratic index) for different levels of other independent variables (e.g. proportion of people with a degree), it is an acceptable simplification to take the average effect. When we do this, it is important to be aware of it. Maybe democratic index has different effect on life expectancy for countries with low proportion of university educated people and different effect for countries with high proportion of university educated people, but we would not be able to find out from the model above.</p>
-<p>In a model with just two predictors, such as ours, it is simple to check the assumption by adding the interaction term in the model. Either, we can use a syntax with an asterix, which includes both main effects and interactions. Alternatively, we can use syntax with a colon which only calls the interaction term, so we also need to call each of the main effects separately. The two models below are identical.</p>
+<p>All the beta coefficients in the table above are so called main
+effects. We use this term to distinguish them from interactions. Let’s
+briefly stop on the term main effects before we proceed to interactions.
+There are two types of main effects. First, in simple linear regression,
+the main effect indicates the bivariate linear association between
+independent and dependent variable. Second, in MLR, the main effect is
+the conditional effect described in the previous lecture (i.e., the
+effect of an independent variable on a dependent variable conditional on
+all other variables in the model being held constant).</p>
+<p>Using only the main effects in MLR relies on the assumption that the
+effect of a given independent variable on the dependent variable is the
+same across all levels of other independent variables in the model, or
+more precisely, that rather than looking at different effects of our
+independent variable of interest (e.g. democratic index) for different
+levels of other independent variables (e.g. proportion of people with a
+degree), it is an acceptable simplification to take the average effect.
+When we do this, it is important to be aware of it. Maybe democratic
+index has different effect on life expectancy for countries with low
+proportion of university educated people and different effect for
+countries with high proportion of university educated people, but we
+would not be able to find out from the model above.</p>
+<p>In a model with just two predictors, such as ours, it is simple to
+check the assumption by adding the interaction term in the model.
+Either, we can use a syntax with an asterix, which includes both main
+effects and interactions. Alternatively, we can use syntax with a colon
+which only calls the interaction term, so we also need to call each of
+the main effects separately. The two models below are identical.</p>
 <pre class="r"><code>fit2 &lt;- lm(life_exp ~ dem_index*uni_prc, data = countries)
 fit3 &lt;- lm(life_exp ~ dem_index + uni_prc + dem_index:uni_prc, data = countries)
 summary (fit3)</code></pre>
@@ -471,17 +506,42 @@ summary (fit3)</code></pre>
 ##   (3 observations deleted due to missingness)
 ## Multiple R-squared:  0.5518, Adjusted R-squared:  0.5084 
 ## F-statistic: 12.72 on 3 and 31 DF,  p-value: 1.372e-05</code></pre>
-<p>For now, we will only briefly notice the fact that none of the predictors is suddenly significant. Interactions require large samples (we discuss this below) and including an interaction in a model ran on just 38 observations inflates standard errors. In addition, there are issues with interpreting main effects once interactions are included (also discussed below). But we can interpret the interaction term: it is extremely low compared to its standard error. This does not necessarily say we can safely ignore the interaction and only focus on the main effect. Rather, it says that if the effect of the interaction exists, it is too slow to reliably detect with our sample size. In other words, we don’t have the data to focus on other than the average effect, i.e., the main effect. Or yet in other words, we fail to reject the null hypothesis about the 0 size of the interaction, so we leave it out of the model.</p>
-<div id="illustrating-interactions-with-a-simulated-example-a-crazy-one" class="section level2">
-<h2>Illustrating interactions with a simulated example (a crazy one)</h2>
-<p>But what does it look like when we have enough data and interactions are significant? We will illustrate it with a very unrealistic, but hopefully illustrative example,</p>
-<p>Imagine we want to model the effect of years of education on earnings and we also enter gender into the model (we assume it only takes two values, “man” or “woman”). To make things easier, we will make ourselves fully in control by simulating our own data which will comply with the following assumptions (we know, very unrealistic assumption, but train your imagination with us :))</p>
+<p>For now, we will only briefly notice the fact that none of the
+predictors is suddenly significant. Interactions require large samples
+(we discuss this below) and including an interaction in a model ran on
+just 38 observations inflates standard errors. In addition, there are
+issues with interpreting main effects once interactions are included
+(also discussed below). But we can interpret the interaction term: it is
+extremely low compared to its standard error. This does not necessarily
+say we can safely ignore the interaction and only focus on the main
+effect. Rather, it says that if the effect of the interaction exists, it
+is too slow to reliably detect with our sample size. In other words, we
+don’t have the data to focus on other than the average effect, i.e., the
+main effect. Or yet in other words, we fail to reject the null
+hypothesis about the 0 size of the interaction, so we leave it out of
+the model.</p>
+<div id="illustrating-interactions-with-a-simulated-example-a-crazy-one"
+class="section level2">
+<h2>Illustrating interactions with a simulated example (a crazy
+one)</h2>
+<p>But what does it look like when we have enough data and interactions
+are significant? We will illustrate it with a very unrealistic, but
+hopefully illustrative example,</p>
+<p>Imagine we want to model the effect of years of education on earnings
+and we also enter gender into the model (we assume it only takes two
+values, “man” or “woman”). To make things easier, we will make ourselves
+fully in control by simulating our own data which will comply with the
+following assumptions (we know, very unrealistic assumption, but train
+your imagination with us :))</p>
 <ul>
 <li>Men make LESS money with every year of education they get</li>
 <li>Women make MORE money with every year of education they get</li>
-<li>The strength of the relationship is the same for both genders, only reverse in its direction</li>
-<li>There is about the same number of men in women in the population</li>
-<li>Each person can have 10, 11, … 20 years of education and each category has the same size</li>
+<li>The strength of the relationship is the same for both genders, only
+reverse in its direction</li>
+<li>There is about the same number of men in women in the
+population</li>
+<li>Each person can have 10, 11, … 20 years of education and each
+category has the same size</li>
 <li>Gender and number of years of education are independent</li>
 </ul>
 <p>Based on these assumptions, we can simulate some data:</p>
@@ -511,7 +571,11 @@ income &lt;- c(income_w, income_m)
 # bind to data frame
 
 df &lt;- data.frame(gender, yoe, income)</code></pre>
-<p>Now, imagine we want predict income with years of education and gender and we only include main effecs (i.e., we assume that the linear association between the two continuous variables is the same for both genders or close enough that we can ignore the difference). We use the following model:</p>
+<p>Now, imagine we want predict income with years of education and
+gender and we only include main effecs (i.e., we assume that the linear
+association between the two continuous variables is the same for both
+genders or close enough that we can ignore the difference). We use the
+following model:</p>
 <p><span class="math display">\[
 earnings = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender
 \]</span></p>
@@ -537,18 +601,30 @@ summary(fit1)</code></pre>
 ## Residual standard error: 3276 on 1997 degrees of freedom
 ## Multiple R-squared:  6.119e-05,  Adjusted R-squared:  -0.0009403 
 ## F-statistic: 0.0611 on 2 and 1997 DF,  p-value: 0.9407</code></pre>
-<p>The interpretation of this model would be straightforward: Expected income for a man with 0 years of education is 25 149 CZK. For women, the number is almost identical (small estimate of the difference and large standard-errors indicate no difference between men and women), so gender does not seem to matter. Years of education do not do any difference.</p>
-<p>However, we know that there actually are fairly strong associations in the data, we simulated them. The problem is that by only considering main effects, we got the average effect in which the associations cancel out, as visualized below:</p>
+<p>The interpretation of this model would be straightforward: Expected
+income for a man with 0 years of education is 25 149 CZK. For women, the
+number is almost identical (small estimate of the difference and large
+standard-errors indicate no difference between men and women), so gender
+does not seem to matter. Years of education do not do any
+difference.</p>
+<p>However, we know that there actually are fairly strong associations
+in the data, we simulated them. The problem is that by only considering
+main effects, we got the average effect in which the associations cancel
+out, as visualized below:</p>
 <pre class="r"><code>df %&gt;% ggplot(aes(y = income, x = yoe)) + geom_point() + geom_smooth(method = &quot;lm&quot;)</code></pre>
 <p><img src="04_interactions_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
-<p>What we need to do to capture the different relationship between years of education and income for each gender is to include interaction. Visually this will look like this (we allow for different regression slopes for both genders).</p>
+<p>What we need to do to capture the different relationship between
+years of education and income for each gender is to include interaction.
+Visually this will look like this (we allow for different regression
+slopes for both genders).</p>
 <pre class="r"><code>df %&gt;% ggplot(aes(y = income, x = yoe, color = gender)) +
   geom_point() +
   geom_smooth(method = &quot;lm&quot;)</code></pre>
 <p><img src="04_interactions_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>This means our model will look like this:</p>
 <p><span class="math display">\[
-income = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender + \beta_3*yearsOfEducation*gender
+income = \beta_0 + \beta_1*yearsOfEducation + \beta_2*gender +
+\beta_3*yearsOfEducation*gender
 \]</span></p>
 <p>To run and explore it in R, we write the following code:</p>
 <pre class="r"><code>fit2 &lt;- lm(income ~ yoe*gender, data = df)
@@ -573,14 +649,38 @@ summary(fit2)</code></pre>
 ## Residual standard error: 502.9 on 1996 degrees of freedom
 ## Multiple R-squared:  0.9764, Adjusted R-squared:  0.9764 
 ## F-statistic: 2.758e+04 on 3 and 1996 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Suddenly, things have changed significantly. The intercept is now interpreted as expected income for a man with 0 years of education. That is the 40000 we entered in the simulation. The beta of years of education (ca -1000) is the slope for men (i.e. when comparing two men who differ by one 1 of education, we expect the one with more education have 1000 less income). Subtracting the beta for women from the intercept will give as the 10000 simulated for women with 0 years of education. Finally, the beta for the interaction (ca 2000) says how the effect of education on income will differ for women. For example, if you are a woman with 12 year of education, your expected income is ca 22 000. Note that you still get the 1000 per year of education penalty, but it is outweighed by the 2000 per year education bonus for women (the interaction term).</p>
+<p>Suddenly, things have changed significantly. The intercept is now
+interpreted as expected income for a man with 0 years of education. That
+is the 40000 we entered in the simulation. The beta of years of
+education (ca -1000) is the slope for men (i.e. when comparing two men
+who differ by one 1 of education, we expect the one with more education
+have 1000 less income). Subtracting the beta for women from the
+intercept will give as the 10000 simulated for women with 0 years of
+education. Finally, the beta for the interaction (ca 2000) says how the
+effect of education on income will differ for women. For example, if you
+are a woman with 12 year of education, your expected income is ca 22
+000. Note that you still get the 1000 per year of education penalty, but
+it is outweighed by the 2000 per year education bonus for women (the
+interaction term).</p>
 <p><span class="math display">\[
-39994 - 29942 - 999*12 + 1998*12*1 = 39994 - 29942 - 11988 + 23976 = 22040
-\]</span> This model with interaction is obviously a much better way to describe our data, but there are some issues. The value of intercept corresponds to 0 years of education, an unrealistic value which is not at all present in our data. There is another issue: the main effect of years of education is strong and negative, while we see the overall (average) effect in our data is 0. In more complicated situations, this can be confusing and the main effect is impossible to interpret in itself. Both these issues can be addressed with centering of predictors.</p>
+39994 - 29942 - 999*12 + 1998*12*1 = 39994 - 29942 - 11988 + 23976 =
+22040
+\]</span> This model with interaction is obviously a much better way to
+describe our data, but there are some issues. The value of intercept
+corresponds to 0 years of education, an unrealistic value which is not
+at all present in our data. There is another issue: the main effect of
+years of education is strong and negative, while we see the overall
+(average) effect in our data is 0. In more complicated situations, this
+can be confusing and the main effect is impossible to interpret in
+itself. Both these issues can be addressed with centering of
+predictors.</p>
 </div>
-<div id="centering-variables-in-models-with-interactions" class="section level2">
+<div id="centering-variables-in-models-with-interactions"
+class="section level2">
 <h2>Centering variables in models with interactions</h2>
-<p>We saw above that some of the interpretations of main effects can be difficult or not very useful when models contain interactions. However, we can use centering for better interpretability of main effects:</p>
+<p>We saw above that some of the interpretations of main effects can be
+difficult or not very useful when models contain interactions. However,
+we can use centering for better interpretability of main effects:</p>
 <pre class="r"><code># center predictors
 df &lt;- 
   df %&gt;% mutate(yoe_c = yoe - mean(yoe),
@@ -610,11 +710,27 @@ summary(fit3)</code></pre>
 ## Residual standard error: 502.9 on 1996 degrees of freedom
 ## Multiple R-squared:  0.9764, Adjusted R-squared:  0.9764 
 ## F-statistic: 2.758e+04 on 3 and 1996 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Now, the intercept shows the expected income for the average gender with mean years of education. More importantly, the main effects have a more meaningful interpretation: the 0 value for years of education indicates the average effect of years of education on income. The interaction is unchanged, but remember that the data has been transformed (centered), so the value of gender for women is now 0.5 and for men -0.5. It is these number that we have to multiply with the beta for interaction to get our expectations.</p>
+<p>Now, the intercept shows the expected income for the average gender
+with mean years of education. More importantly, the main effects have a
+more meaningful interpretation: the 0 value for years of education
+indicates the average effect of years of education on income. The
+interaction is unchanged, but remember that the data has been
+transformed (centered), so the value of gender for women is now 0.5 and
+for men -0.5. It is these number that we have to multiply with the beta
+for interaction to get our expectations.</p>
 </div>
-<div id="added-value-of-centering-in-models-with-interactions" class="section level2">
+<div id="added-value-of-centering-in-models-with-interactions"
+class="section level2">
 <h2>Added value of centering in models with interactions</h2>
-<p>We already knew from earlier that centering helps to give the intercept some meaningful interpretation. In case of models with interactions, it also helps give the main effects some meaningful interpretation. Imagine we continue our simulated example, but this time, there are still 1000 women in our sample, but only 300 men. When running the analysis with non-centred predictors, nothing much changed in the output table compared to the model on the full sample. Actually, the results are nearly identical, only the degrees of freedom differ (they are function of the sample size):</p>
+<p>We already knew from earlier that centering helps to give the
+intercept some meaningful interpretation. In case of models with
+interactions, it also helps give the main effects some meaningful
+interpretation. Imagine we continue our simulated example, but this
+time, there are still 1000 women in our sample, but only 300 men. When
+running the analysis with non-centred predictors, nothing much changed
+in the output table compared to the model on the full sample. Actually,
+the results are nearly identical, only the degrees of freedom differ
+(they are function of the sample size):</p>
 <pre class="r"><code># we only take the first 1300 observations, i.e., 1000 women and 300 men, and we repeat the centering.
 
 df_part &lt;- 
@@ -646,7 +762,10 @@ summary(fit4)</code></pre>
 ## Residual standard error: 500.4 on 1296 degrees of freedom
 ## Multiple R-squared:  0.977,  Adjusted R-squared:  0.9769 
 ## F-statistic: 1.834e+04 on 3 and 1296 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Next, we run the same model on centered data. As a result of centering, the main effect receives different interpretation: it is the average slope of the linear relationship of years of education and income, reflecting the bigger proportion of women in our sample:</p>
+<p>Next, we run the same model on centered data. As a result of
+centering, the main effect receives different interpretation: it is the
+average slope of the linear relationship of years of education and
+income, reflecting the bigger proportion of women in our sample:</p>
 <pre class="r"><code>fit5 &lt;- lm(income ~ yoe_c*gender_c, data = df_part)
 summary(fit5)</code></pre>
 <pre><code>## 
@@ -669,27 +788,76 @@ summary(fit5)</code></pre>
 ## Residual standard error: 500.4 on 1296 degrees of freedom
 ## Multiple R-squared:  0.977,  Adjusted R-squared:  0.9769 
 ## F-statistic: 1.834e+04 on 3 and 1296 DF,  p-value: &lt; 2.2e-16</code></pre>
-<p>Visually, we still see the opposite relationships in the two sub-samples, but the average effect is more strongly influenced by the bigger group. If we are interested in the average effect and also the sub-group effects, centering is a useful tool to read them both from one model specification.</p>
+<p>Visually, we still see the opposite relationships in the two
+sub-samples, but the average effect is more strongly influenced by the
+bigger group. If we are interested in the average effect and also the
+sub-group effects, centering is a useful tool to read them both from one
+model specification.</p>
 <pre class="r"><code>df_part %&gt;% ggplot(aes(x=yoe, y=income)) + geom_jitter() + geom_smooth(method = &quot;lm&quot;)</code></pre>
 <p><img src="04_interactions_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
-<div id="model-with-interaction-vs.-two-separate-models" class="section level2">
+<div id="model-with-interaction-vs.-two-separate-models"
+class="section level2">
 <h2>Model with interaction VS. two separate models</h2>
-<p>If we are interested in an interaction between two continuous variables, we have no other option than running a model with an interaction. However, when we are interested in an interaction between one continuous and one binary variable, we could also be tempted to run two separate models, one for men and one for women. This would not be a horrible solution. The estimated effected sizes would be the same. However, we would not be able to calculate the overall fit of the model (we will talk about model fit in one of the next lectures), and we would not have the estimate of standard error of the difference of slopes between men and women. So unlike in the model with interaction, we would not be able to say if the difference in slope between the two genders is statistically significant.</p>
+<p>If we are interested in an interaction between two continuous
+variables, we have no other option than running a model with an
+interaction. However, when we are interested in an interaction between
+one continuous and one binary variable, we could also be tempted to run
+two separate models, one for men and one for women. This would not be a
+horrible solution. The estimated effected sizes would be the same.
+However, we would not be able to calculate the overall fit of the model
+(we will talk about model fit in one of the next lectures), and we would
+not have the estimate of standard error of the difference of slopes
+between men and women. So unlike in the model with interaction, we would
+not be able to say if the difference in slope between the two genders is
+statistically significant.</p>
 </div>
 <div id="interaction-as-it-depends-effects" class="section level2">
 <h2>Interaction as “it depends effects”</h2>
-<p>Jim Frost offers in his <a href="https://cutt.ly/HkXcMY4">blog</a> a helpful way to think about interactions as of “it depends effects.” If the answer to the question ‘What is the effect of X on Y?’ is ‘It depends,’ we are dealing with interactions. From the perspective of explanatory models, interactions are the usual way to deal with the so called moderators (see discussion of confiders, colliders, mediators, and moderators elsewhere in this course).</p>
+<p>Jim Frost offers in his <a href="https://cutt.ly/HkXcMY4">blog</a> a
+helpful way to think about interactions as of “it depends effects”. If
+the answer to the question ‘What is the effect of X on Y?’ is ‘It
+depends’, we are dealing with interactions. From the perspective of
+explanatory models, interactions are the usual way to deal with the so
+called moderators (see discussion of confiders, colliders, mediators,
+and moderators elsewhere in this course).</p>
 </div>
 <div id="interactions-require-big-samples" class="section level2">
 <h2>Interactions require big samples</h2>
-<p>Adding interactions sometimes makes good sense theoretically, and sometimes it also helps achieve good model specification with good fit to the data. However, estimating interactions requires much bigger samples to identify the same effect size compared to just the main effect. And since we can mostly assume that the effect size of interactions will be smaller than that of main effects, we will mostly require MUCH bigger samples. In his <a href="https://statmodeling.stat.columbia.edu/2018/03/15/need-16-times-sample-size-estimate-interaction-estimate-main-effect/">blog</a>, Andrew Gelman shows that we will need 16 times the sample size to estimate an interaction which is half the size of the main effect if we want to have the same statistical power. This does not mean that interactions are beyond reach, we can still meaningfully estimate them when their effect size is large enough. But when their effect size is only small, they can be out of reach in common sociological, let alone psychological samples. When we look for interactions in explorative analysis, we “typically look for them for predictors that have large coefficients when not interacted (but this can be tricky as in the gender-income example above, it is always better to relly on theory if some is available). For a familiar example, smoking is strongly associated with cancer. In epidemiological studies of other carcinogens, it is crucial to adjust for smoking both as an uninteracted predictor and as an interaction, because the strength of association between other risk factors and cancer can depend on whether the individual is a smoker.” <span class="citation">(Gelman et al., 2020, p. 136)</span>.</p>
+<p>Adding interactions sometimes makes good sense theoretically, and
+sometimes it also helps achieve good model specification with good fit
+to the data. However, estimating interactions requires much bigger
+samples to identify the same effect size compared to just the main
+effect. And since we can mostly assume that the effect size of
+interactions will be smaller than that of main effects, we will mostly
+require MUCH bigger samples. In his <a
+href="https://statmodeling.stat.columbia.edu/2018/03/15/need-16-times-sample-size-estimate-interaction-estimate-main-effect/">blog</a>,
+Andrew Gelman shows that we will need 16 times the sample size to
+estimate an interaction which is half the size of the main effect if we
+want to have the same statistical power. This does not mean that
+interactions are beyond reach, we can still meaningfully estimate them
+when their effect size is large enough. But when their effect size is
+only small, they can be out of reach in common sociological, let alone
+psychological samples. When we look for interactions in explorative
+analysis, we “typically look for them for predictors that have large
+coefficients when not interacted (but this can be tricky as in the
+gender-income example above, it is always better to relly on theory if
+some is available). For a familiar example, smoking is strongly
+associated with cancer. In epidemiological studies of other carcinogens,
+it is crucial to adjust for smoking both as an uninteracted predictor
+and as an interaction, because the strength of association between other
+risk factors and cancer can depend on whether the individual is a
+smoker.” <span class="citation">(Gelman et al., 2020, p.
+136)</span>.</p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="unnumbered">References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="refs" class="references csl-bib-body hanging-indent"
+line-spacing="2">
 <div id="ref-gelman2020" class="csl-entry">
-Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
+Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other
+stories</em>. Cambridge University Press. <a
+href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
 </div>
 </div>
 </div>

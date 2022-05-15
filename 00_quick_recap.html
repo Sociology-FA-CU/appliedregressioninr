@@ -13,16 +13,16 @@
 
 <title>Quick recap before you enroll</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -50,6 +50,7 @@ if (window.hljs) {
   }
 }
 </script>
+
 
 
 
@@ -100,6 +101,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -252,7 +256,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -262,7 +266,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -307,7 +311,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -337,10 +341,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -371,7 +378,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -419,75 +426,217 @@ $(document).ready(function () {
 </div>
 
 
-<p>We encourage you to read through the following selected statistical concepts before enrolling in the course. You can think of these concepts as informal prerequisite for taking the course. We do not explain all the terms we use in this section, because you are already expected to know them on entering the course. If you are mostly familiar with what you read here, and perhaps only need to refresh on some details, chances are you are prepared to take the course. If it mostly looks unfamiliar, consider taking some introduction to statistics first. For our department’s students, Statistics I and Statistics II are prerequisites for this course (if you have passed them, you are good to go, but you may still want to read the rest of this section to refresh your memory).</p>
+<p>We encourage you to read through the following selected statistical
+concepts before enrolling in the course. You can think of these concepts
+as informal prerequisite for taking the course. We do not explain all
+the terms we use in this section, because you are already expected to
+know them on entering the course. If you are mostly familiar with what
+you read here, and perhaps only need to refresh on some details, chances
+are you are prepared to take the course. If it mostly looks unfamiliar,
+consider taking some introduction to statistics first. For our
+department’s students, Statistics I and Statistics II are prerequisites
+for this course (if you have passed them, you are good to go, but you
+may still want to read the rest of this section to refresh your
+memory).</p>
 <div id="variable-and-its-distribution" class="section level1">
 <h1>Variable and its distribution</h1>
-<p>A variable is an attribute, which can take different values. E.g. height is a variable as different people can have different height. So is an opinion about something. Or one’s age or gender.</p>
+<p>A variable is an attribute, which can take different values. E.g.
+height is a variable as different people can have different height. So
+is an opinion about something. Or one’s age or gender.</p>
 <div id="types-of-variables" class="section level2">
 <h2>Types of variables</h2>
 <p>There are three basic types of variables:</p>
 <ul>
 <li>nominal (such as town of birth)</li>
-<li>ordinal (such as achieved degree of education - can be ordered from lowest to highest)</li>
+<li>ordinal (such as achieved degree of education - can be ordered from
+lowest to highest)</li>
 <li>metric (such as height or temperature in Celsius degrees)</li>
 </ul>
-<p>Metric variables are also called cardinal and they fall into two subgroups: interval and ratio. For interval variables, the same interval in its value is the same quantity. For examples, the difference between 10 and 20 Celsius degrees is the same as between 20 and 30. For ratio variables, this is also true, but also we can refer to them as ratios: for example, when one person is 200 cm tall and the other is 100 cm tall, we can say the first person in twice as tall. This is not the case for temperature in Celsius degrees (which is interval, but not ratio): we cannot say that 20 degrees is twice as warm as 10 degrees. Interval variables have artificial 0, ratio variables have natural 0 (or in other words, for ratio variables, 0 means nothing, whereas for interval variables, 0 is arbitrary - different for Celsius and different for Fahrenheit, for example).</p>
-<p><strong>For the rest of this recap chapter, we will consider metric variables.</strong></p>
+<p>Metric variables are also called cardinal and they fall into two
+subgroups: interval and ratio. For interval variables, the same interval
+in its value is the same quantity. For examples, the difference between
+10 and 20 Celsius degrees is the same as between 20 and 30. For ratio
+variables, this is also true, but also we can refer to them as ratios:
+for example, when one person is 200 cm tall and the other is 100 cm
+tall, we can say the first person in twice as tall. This is not the case
+for temperature in Celsius degrees (which is interval, but not ratio):
+we cannot say that 20 degrees is twice as warm as 10 degrees. Interval
+variables have artificial 0, ratio variables have natural 0 (or in other
+words, for ratio variables, 0 means nothing, whereas for interval
+variables, 0 is arbitrary - different for Celsius and different for
+Fahrenheit, for example).</p>
+<p><strong>For the rest of this recap chapter, we will consider metric
+variables.</strong></p>
 </div>
 <div id="variable-distribution" class="section level2">
 <h2>Variable distribution</h2>
-<p>For a variable with known values, we can construct its distribution. Frequency distribution uses actual counts (it provides information such as that there are five people with height between 150 and 155 cm in a given group of 50 people). Probability distribution gives probabilities of occurrence of different possible values (e.g. the probability of having height between 150 and 155 cm is 10% etc.).</p>
-<p>Below, there are some commonly used plot types which help understand distribution of a variable visually.</p>
+<p>For a variable with known values, we can construct its distribution.
+Frequency distribution uses actual counts (it provides information such
+as that there are five people with height between 150 and 155 cm in a
+given group of 50 people). Probability distribution gives probabilities
+of occurrence of different possible values (e.g. the probability of
+having height between 150 and 155 cm is 10% etc.).</p>
+<p>Below, there are some commonly used plot types which help understand
+distribution of a variable visually.</p>
 <p><img src="00_quick_recap_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
-<p><em>Plot A</em> is a histogram displaying frequency distribution. Histograms use bins to categorize continuous variables. As a result, they are closely related to column charts.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
-<p><em>Plot B</em> uses probability density function to display probability distribution. While we cannot directly read number of occurrences for each value of variable <em>z</em>, we can perceive the relative likelihood of each value of <em>z</em>.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
-<p><em>Plot C</em> is a boxplot. Unlike histogram and density plot, what boxplot display is not directly linked to the raw data. Instead, it is constructed from selected distribution statistics (the 1st, 2nd, and 3rd quartile). For this reason, people sometimes like to overlay boxplot with actual data points (we use so called jitter to avoid overlapping - the horizontal differences in the data is purely random, only the vertical differences carry information). Note that the bimodality is not easy to spot in the data points themselves.</p>
-<p><em>Plot D</em> is a combination of a violin plot (which is itself a density plot simply turned by 90 degrees and mirrored on both sides, compare to plot B) and a boxplot. The violin plot helps to spot distributional peculiarities, the boxplot is there for the summary statistics.</p>
-<p><em>Plot E</em> is a raincloud plot. According to <a href="%22https://www.cedricscherer.com/2021/06/06/visualizing-distributions-with-raincloud-plots-with-ggplot2/%22">this blog</a> it was only presented in 2019 so it is a pretty new concept (unlike all the above). It combines density plot, so called slab intervals and raw data categorized into bins. The slab intervals shows IQR and 95% range of the data (so the middle part is just like in boxplot, but the ‘whiskers’ represent something else than in box plot).</p>
-<p><em>Plot F</em> is labeled as an alternative raincloud plot. People are not used to the slab intervals, so to avoid confusion, they have been replaced with a boxplot (this one is fine-tuned with indent around the median which represents roughly the 95% confidence interval around the median). In addition, the rain drops no longer represent individual data points as in plot E, but percentiles (instead of N dots, where N is the number of observations, there are 100 dots) - this is a useful simplification for large datasets.<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></p>
-<p>So which one should we use? It depends on the goal of our visualization. A and B can be fine if we are just interested in the shape of distribution of one variable (but we should try different values of the binning/smoothing parameter to make sure we are not mislead). When we try to compare distribution for various groups, we often want something which also displays summary statistics. C is fine for small Ns, but the overlaying points get less helpful when the number of observations is large. D is a fairly universal solution and is quick and easy to do in R. E and F require somewhat more effort to prepare, but they are very appealing both conceptually and visually.</p>
+<p><em>Plot A</em> is a histogram displaying frequency distribution.
+Histograms use bins to categorize continuous variables. As a result,
+they are closely related to column charts. <a href="#fn1"
+class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p><em>Plot B</em> uses probability density function to display
+probability distribution. While we cannot directly read number of
+occurrences for each value of variable <em>z</em>, we can perceive the
+relative likelihood of each value of <em>z</em>. <a href="#fn2"
+class="footnote-ref" id="fnref2"><sup>2</sup></a></p>
+<p><em>Plot C</em> is a boxplot. Unlike histogram and density plot, what
+boxplot display is not directly linked to the raw data. Instead, it is
+constructed from selected distribution statistics (the 1st, 2nd, and 3rd
+quartile). For this reason, people sometimes like to overlay boxplot
+with actual data points (we use so called jitter to avoid overlapping -
+the horizontal differences in the data is purely random, only the
+vertical differences carry information). Note that the bimodality is not
+easy to spot in the data points themselves.</p>
+<p><em>Plot D</em> is a combination of a violin plot (which is itself a
+density plot simply turned by 90 degrees and mirrored on both sides,
+compare to plot B) and a boxplot. The violin plot helps to spot
+distributional peculiarities, the boxplot is there for the summary
+statistics.</p>
+<p><em>Plot E</em> is a raincloud plot. According to <a
+href="%22https://www.cedricscherer.com/2021/06/06/visualizing-distributions-with-raincloud-plots-with-ggplot2/%22">this
+blog</a> it was only presented in 2019 so it is a pretty new concept
+(unlike all the above). It combines density plot, so called slab
+intervals and raw data categorized into bins. The slab intervals shows
+IQR and 95% range of the data (so the middle part is just like in
+boxplot, but the ‘whiskers’ represent something else than in box
+plot).</p>
+<p><em>Plot F</em> is labeled as an alternative raincloud plot. People
+are not used to the slab intervals, so to avoid confusion, they have
+been replaced with a boxplot (this one is fine-tuned with indent around
+the median which represents roughly the 95% confidence interval around
+the median). In addition, the rain drops no longer represent individual
+data points as in plot E, but percentiles (instead of N dots, where N is
+the number of observations, there are 100 dots) - this is a useful
+simplification for large datasets. <a href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a></p>
+<p>So which one should we use? It depends on the goal of our
+visualization. A and B can be fine if we are just interested in the
+shape of distribution of one variable (but we should try different
+values of the binning/smoothing parameter to make sure we are not
+mislead). When we try to compare distribution for various groups, we
+often want something which also displays summary statistics. C is fine
+for small Ns, but the overlaying points get less helpful when the number
+of observations is large. D is a fairly universal solution and is quick
+and easy to do in R. E and F require somewhat more effort to prepare,
+but they are very appealing both conceptually and visually.</p>
 </div>
 </div>
 <div id="variance-and-mean" class="section level1">
 <h1>Variance and mean</h1>
-<p>Variability within a variable can either be expressed visually (above), or it can be expressed with a numeric value, typically the variance or its favorite derivative called the standard deviation.</p>
-<p>Variance of the variable <em>z</em> is the expected value of the squared deviation from its mean, we use the following formula:</p>
+<p>Variability within a variable can either be expressed visually
+(above), or it can be expressed with a numeric value, typically the
+variance or its favorite derivative called the standard deviation.</p>
+<p>Variance of the variable <em>z</em> is the expected value of the
+squared deviation from its mean, we use the following formula:</p>
 <p><span class="math display">\[
 var(z) = E[(z_i-\mu_z)^2] = \frac{\sum (z_i - \bar{z})^2}{n}
 \]</span></p>
-<p>We typically work with the standard deviation (variance transformed by taking its square root) rather than the variance because standard deviation is on the original scale of the variable distribution. The formula is as follows:</p>
+<p>We typically work with the standard deviation (variance transformed
+by taking its square root) rather than the variance because standard
+deviation is on the original scale of the variable distribution. The
+formula is as follows:</p>
 <p><span class="math display">\[
 \sigma_z = \sqrt{var{(z)}}
 \]</span></p>
-<p>We also use point estimates to simplify a variable. A typical example is the arithmetic mean. We refer to the arithmetic mean of variable <em>z</em> as <em>E(z)</em> generally, or μ<sub>z</sub> to refer specifically to population mean or <span class="math inline">\(\overline{x}\)</span> to refer to sample mean.</p>
+<p>We also use point estimates to simplify a variable. A typical example
+is the arithmetic mean. We refer to the arithmetic mean of variable
+<em>z</em> as <em>E(z)</em> generally, or μ<sub>z</sub> to refer
+specifically to population mean or <span
+class="math inline">\(\overline{x}\)</span> to refer to sample mean.</p>
 </div>
 <div id="sampling-distribution" class="section level1">
 <h1>Sampling distribution</h1>
-<p>Imagine you collect a survey sample from a population. It is only one of many and many theoretical samples you could have collected (e.g, there are many ways you can sample 1000 people from the Czech population). It follows that when you use the sample to calculate some values (mean of a variable, variance of a variable, … regression coefficient for a specified model), these are not the only possible values. In fact, each of these values is just one data point from a theoretical distribution of all the different estimates you could obtain from all the possible samples. This theoretical distribution is called sampling distribution.</p>
+<p>Imagine you collect a survey sample from a population. It is only one
+of many and many theoretical samples you could have collected (e.g,
+there are many ways you can sample 1000 people from the Czech
+population). It follows that when you use the sample to calculate some
+values (mean of a variable, variance of a variable, … regression
+coefficient for a specified model), these are not the only possible
+values. In fact, each of these values is just one data point from a
+theoretical distribution of all the different estimates you could obtain
+from all the possible samples. This theoretical distribution is called
+sampling distribution.</p>
 <blockquote>
-<p>“The sampling distribution is the set of possible datasets that could have been observed if the data collection process had been re-done, …” <span class="citation">(Gelman et al., 2020, p. 50)</span></p>
+<p>“The sampling distribution is the set of possible datasets that could
+have been observed if the data collection process had been re-done, …”
+<span class="citation">(Gelman et al., 2020, p. 50)</span></p>
 </blockquote>
-<p>Obviously, we usually only have one sample, hence one data point from the sampling distribution for mean, variance or a specific regression coefficient. In other words, we typically observe no variation in our estimates. But we have variation in the data and that is what we use to estimate (or conceptualize) the expected variation in the estimates. (For regression coefficients, which will be much of our concern in this course, this is where assumptions are important, and we will talk about it in the lectures.)</p>
-<p>The picture below displays sampling distribution of an estimate, in this case a regression coefficient. We use the Greek letter <em>beta</em> for regression coefficients and the <em>hat</em> above the <em>beta</em> marks that it is an estimate of the regression coefficient from the data - of course, the real population <em>beta</em> could be different. How much different? We never know for sure, but we try to conceptualize it from the sampling distribution.</p>
+<p>Obviously, we usually only have one sample, hence one data point from
+the sampling distribution for mean, variance or a specific regression
+coefficient. In other words, we typically observe no variation in our
+estimates. But we have variation in the data and that is what we use to
+estimate (or conceptualize) the expected variation in the estimates.
+(For regression coefficients, which will be much of our concern in this
+course, this is where assumptions are important, and we will talk about
+it in the lectures.)</p>
+<p>The picture below displays sampling distribution of an estimate, in
+this case a regression coefficient. We use the Greek letter
+<em>beta</em> for regression coefficients and the <em>hat</em> above the
+<em>beta</em> marks that it is an estimate of the regression coefficient
+from the data - of course, the real population <em>beta</em> could be
+different. How much different? We never know for sure, but we try to
+conceptualize it from the sampling distribution.</p>
 <p><img src="images/sampling_distribution.PNG" width="50%" style="display: block; margin: auto;" /></p>
 <center>
-<p><font size="1">Sampling distribution of a regression coefficient. Source: <span class="citation">(Gelman et al., 2020, p. 51)</span></font></p>
+<p><font size="1">Sampling distribution of a regression coefficient.
+Source: <span class="citation">(Gelman et al., 2020, p.
+51)</span></font></p>
 </center>
-<p>The beautiful thing about sampling distribution is that it converges to normal distribution, no matter the distribution of the original variable. This is true for sampling distribution of a mean as well as for sampling distribution of a regression coefficient. Again, even if the original variable is non-normal, such as income in population, when you take many samples from the population and calculate the mean for each of them, the distribution of the means will be roughly normal. This statistical law is called Central limit theorem.</p>
-<p>In the picture of sampling distribution above, the <em>s.e</em> stands for standard error which is simply a name for the standard deviation of a sampling distribution. It is estimated from the raw data as follows:</p>
+<p>The beautiful thing about sampling distribution is that it converges
+to normal distribution, no matter the distribution of the original
+variable. This is true for sampling distribution of a mean as well as
+for sampling distribution of a regression coefficient. Again, even if
+the original variable is non-normal, such as income in population, when
+you take many samples from the population and calculate the mean for
+each of them, the distribution of the means will be roughly normal. This
+statistical law is called Central limit theorem.</p>
+<p>In the picture of sampling distribution above, the <em>s.e</em>
+stands for standard error which is simply a name for the standard
+deviation of a sampling distribution. It is estimated from the raw data
+as follows:</p>
 <p><span class="math display">\[
 \frac{\sigma}{\sqrt n}
 \]</span></p>
-<p>Confidence intervals are an extension of standard errors taking advantage of the known properties of normal distribution: the 95 % confidence intervals are constructed by subtracting/adding ca 2 standard errors to the point estimate, see picture below (beta-hat is the estimate of the regression coefficient beta from the data).</p>
+<p>Confidence intervals are an extension of standard errors taking
+advantage of the known properties of normal distribution: the 95 %
+confidence intervals are constructed by subtracting/adding ca 2 standard
+errors to the point estimate, see picture below (beta-hat is the
+estimate of the regression coefficient beta from the data).</p>
 </div>
-<div id="statistical-significance-and-hypothesis-testing" class="section level1">
+<div id="statistical-significance-and-hypothesis-testing"
+class="section level1">
 <h1>Statistical significance and hypothesis testing</h1>
-<p>Conventional wisdom says: statistical significance is p-value less than 0.05, relative to some null hypothesis (hypothesis of no difference). Fair enough, but remember that the 0.05 value is arbitrary.</p>
-<p>Yet regardless of the cut-point and whether it should be 0.05 or less as <a href="https://fantasticanachronism.com/2020/09/11/whats-wrong-with-social-science-and-how-to-fix-it/?fbclid=IwAR2o5Qd30sPBDh63cJjDGLYAmMSLiHDnZhIkLxD_p056cLi8Iqs9vrG7_VY">people have suggests</a>, what is the p-value? It is used so much that we really should have solid understanding.</p>
+<p>Conventional wisdom says: statistical significance is p-value less
+than 0.05, relative to some null hypothesis (hypothesis of no
+difference). Fair enough, but remember that the 0.05 value is
+arbitrary.</p>
+<p>Yet regardless of the cut-point and whether it should be 0.05 or less
+as <a
+href="https://fantasticanachronism.com/2020/09/11/whats-wrong-with-social-science-and-how-to-fix-it/?fbclid=IwAR2o5Qd30sPBDh63cJjDGLYAmMSLiHDnZhIkLxD_p056cLi8Iqs9vrG7_VY">people
+have suggests</a>, what is the p-value? It is used so much that we
+really should have solid understanding.</p>
 <blockquote>
-<p>“[p-value is] the probability under a specified statistical model that a statistical summary of the data (e.g., the sample mean difference between two compared groups) would be equal to or more extreme than its observed value” <span class="citation">(Wasserstein &amp; Lazar, 2016)</span></p>
+<p>“[p-value is] the probability under a specified statistical model
+that a statistical summary of the data (e.g., the sample mean difference
+between two compared groups) would be equal to or more extreme than its
+observed value” <span class="citation">(Wasserstein &amp; Lazar,
+2016)</span></p>
 </blockquote>
-<p>A statistical summary of the data can be a mean. Or a regression coefficient. Or a difference between two group means. As an example for the latter, assume we are interested in the difference of mean income between men and women. We collect the data for 50 randomly selected men and 50 randomly selected women and use a t-test to compare them. The table below shows the result.</p>
+<p>A statistical summary of the data can be a mean. Or a regression
+coefficient. Or a difference between two group means. As an example for
+the latter, assume we are interested in the difference of mean income
+between men and women. We collect the data for 50 randomly selected men
+and 50 randomly selected women and use a t-test to compare them. The
+table below shows the result.</p>
 <table class=" lightable-paper lightable-hover" style="font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -582,71 +731,202 @@ two.sided
 </tr>
 </tbody>
 </table>
-<p>We see the difference between the two groups is 1382 (say Czech Korunas per month) in favor of men. What can we conclude from this about the underlying population of women and men? This is where p-value comes in handy. Going back to the definition above, we can read that there is a 13% (p value of 0.13) probability that we could observe a difference of 1382 CZK or bigger (more extreme) under a specified statistical model.</p>
-<p>What is the specified statistical model? Well, in our case, it is a t-test for two independent samples assuming as null hypothesis that the difference in mean income between men and women is 0. T-test is a so called parametric test which assumes normality (normal distribution) of the tested difference of means between men and women. As we only observe one value of the difference of means (the value of 1382 CZK), we usually test this assumption by checking that the raw income variable is roughly normally distributed. Since the test in our example is two-sided, the probability of 13% concerns both values 1382 and more in favor of men and also in 1382 and more in favor of women. As the arbitrary cut-point is 5%, we would normally conclude that this p-value is not enough to reject the null hypothesis that there is no difference between men and women.</p>
-<p>There are many other tests than a t-test with a variety of assumptions and drawing on a variety of distributions, but the meaing of p-value is always analogous to the example above. The intuition behind statistical significance is as follows: an estimate is said to be NOT statistically significant if the observed value could reasonably be explained by chance.</p>
-<p>This approach to statistics is called null-hypothesis testing (NHT) and while dominant, it is subject to heavy and increasing criticism for both <em>its properties</em> and a variety of ways in which researcher <em>misuse p-values</em>.</p>
+<p>We see the difference between the two groups is 1382 (say Czech
+Korunas per month) in favor of men. What can we conclude from this about
+the underlying population of women and men? This is where p-value comes
+in handy. Going back to the definition above, we can read that there is
+a 13% (p value of 0.13) probability that we could observe a difference
+of 1382 CZK or bigger (more extreme) under a specified statistical
+model.</p>
+<p>What is the specified statistical model? Well, in our case, it is a
+t-test for two independent samples assuming as null hypothesis that the
+difference in mean income between men and women is 0. T-test is a so
+called parametric test which assumes normality (normal distribution) of
+the tested difference of means between men and women. As we only observe
+one value of the difference of means (the value of 1382 CZK), we usually
+test this assumption by checking that the raw income variable is roughly
+normally distributed. Since the test in our example is two-sided, the
+probability of 13% concerns both values 1382 and more in favor of men
+and also in 1382 and more in favor of women. As the arbitrary cut-point
+is 5%, we would normally conclude that this p-value is not enough to
+reject the null hypothesis that there is no difference between men and
+women.</p>
+<p>There are many other tests than a t-test with a variety of
+assumptions and drawing on a variety of distributions, but the meaing of
+p-value is always analogous to the example above. The intuition behind
+statistical significance is as follows: an estimate is said to be NOT
+statistically significant if the observed value could reasonably be
+explained by chance.</p>
+<p>This approach to statistics is called null-hypothesis testing (NHT)
+and while dominant, it is subject to heavy and increasing criticism for
+both <em>its properties</em> and a variety of ways in which researcher
+<em>misuse p-values</em>.</p>
 <div id="critique-of-nht-properties" class="section level2">
 <h2>Critique of NHT properties</h2>
 <ul>
-<li>NH (no difference) is unrealistic in social sciences where everything is linked to everything (it is only a matter of sample size whether something is statistically significant, with enough data, almost everything gets statistically significant)</li>
-<li>NH is theoretically uninteresting (effect size and variations in effect sizes in different groups is what really matters, not the unambitious claim that some difference exists)</li>
-<li>NH is a very low threshold for any analysis, because non-rejection tells us that there is not even enough information in the data to move beyond the banal null hypothesis of no difference.</li>
-<li>The whole logic is weird: we look at the probability of observing given data given a (banal) null hypothesis, whereas what we really should want is to assess the probability of (some realistic) hypothesis given observed data.</li>
-<li>Even statistically non-significant data can carry important information (e.g., for meta-analysis or updating our priors in Bayesian approach).</li>
+<li>NH (no difference) is unrealistic in social sciences where
+everything is linked to everything (it is only a matter of sample size
+whether something is statistically significant, with enough data, almost
+everything gets statistically significant)</li>
+<li>NH is theoretically uninteresting (effect size and variations in
+effect sizes in different groups is what really matters, not the
+unambitious claim that some difference exists)</li>
+<li>NH is a very low threshold for any analysis, because non-rejection
+tells us that there is not even enough information in the data to move
+beyond the banal null hypothesis of no difference.</li>
+<li>The whole logic is weird: we look at the probability of observing
+given data given a (banal) null hypothesis, whereas what we really
+should want is to assess the probability of (some realistic) hypothesis
+given observed data.</li>
+<li>Even statistically non-significant data can carry important
+information (e.g., for meta-analysis or updating our priors in Bayesian
+approach).</li>
 </ul>
-<p>Despite this critique, many believe that NHT can still be useful to set some shared threshold in a discipline, especially when we tend to use similar sample sizes. But it has to be used correctly. Often, it is not, see below.</p>
+<p>Despite this critique, many believe that NHT can still be useful to
+set some shared threshold in a discipline, especially when we tend to
+use similar sample sizes. But it has to be used correctly. Often, it is
+not, see below.</p>
 </div>
-<div id="critique-of-malpractice-in-using-p-value" class="section level2">
+<div id="critique-of-malpractice-in-using-p-value"
+class="section level2">
 <h2>Critique of malpractice in using p-value</h2>
 <ul>
-<li>p-value is often used as a license for making a claim of a scientific finding (or implied truth) while neglecting many other important considerations (“design of a study, the quality of the measurements, the external evidence for the phenomenon under study, and the validity of assumptions that underlie the data analysis.” <span class="citation">(Wasserstein &amp; Lazar, 2016)</span></li>
-<li>p-value is often used incorrectly (significance chasing a.k.a. p-hacking): (1) multiple statistical tests are conducted and only the significant one is reported - this is wrong, NHT is designed for a scenario when we first formulate a hypothesis, then collect the data and test it, (2) choice of data to be presented is based on statistical-significance of results, also see publication bias.</li>
-<li>p-value is often interpreted incorrectly, such as when non-significant p-value is considered evidence for no difference. Of course, we would like the test to work like that - if it does not provide evidence for difference, it should at least provide evidence for no difference. Unfortunately, p-value does not work that way. Non-significant p-value <em>absolutely cannot</em> be interpreted as evidence or support for no difference. This is why stats teachers across the globe emphasize: “We never accept the the null-hypothesis. We either reject it or we fail to reject it.”</li>
-<li>There is (usually almost) no difference between 5.1% and 4.9% significance level.</li>
+<li>p-value is often used as a license for making a claim of a
+scientific finding (or implied truth) while neglecting many other
+important considerations (“design of a study, the quality of the
+measurements, the external evidence for the phenomenon under study, and
+the validity of assumptions that underlie the data analysis.” <span
+class="citation">(Wasserstein &amp; Lazar, 2016)</span></li>
+<li>p-value is often used incorrectly (significance chasing a.k.a.
+p-hacking): (1) multiple statistical tests are conducted and only the
+significant one is reported - this is wrong, NHT is designed for a
+scenario when we first formulate a hypothesis, then collect the data and
+test it, (2) choice of data to be presented is based on
+statistical-significance of results, also see publication bias.</li>
+<li>p-value is often interpreted incorrectly, such as when
+non-significant p-value is considered evidence for no difference. Of
+course, we would like the test to work like that - if it does not
+provide evidence for difference, it should at least provide evidence for
+no difference. Unfortunately, p-value does not work that way.
+Non-significant p-value <em>absolutely cannot</em> be interpreted as
+evidence or support for no difference. This is why stats teachers across
+the globe emphasize: “We never accept the the null-hypothesis. We either
+reject it or we fail to reject it.”</li>
+<li>There is (usually almost) no difference between 5.1% and 4.9%
+significance level.</li>
 </ul>
 </div>
 </div>
-<div id="examining-relationship-between-variables" class="section level1">
+<div id="examining-relationship-between-variables"
+class="section level1">
 <h1>Examining relationship between variables</h1>
-<p>In social sciences, we often want to know how two variables are associated, i.e., how they vary together (co-vary).</p>
-<p>A basic measure of association between two metric variables is called covariance. Many measures of association draw on it one way or another. It is very closely related to variance. Inspect the the formulas below to see for yourself:</p>
+<p>In social sciences, we often want to know how two variables are
+associated, i.e., how they vary together (co-vary).</p>
+<p>A basic measure of association between two metric variables is called
+covariance. Many measures of association draw on it one way or another.
+It is very closely related to variance. Inspect the the formulas below
+to see for yourself:</p>
 <p><span class="math display">\[
-var(x) = E[(x_i - \mu_x)^2] = E[(x_i - \mu_x)*(x_i - \mu_x)] = \\ \frac{\sum[(x_i - \mu_x)*(x_z-\mu_x)]}{n}
+var(x) = E[(x_i - \mu_x)^2] = E[(x_i - \mu_x)*(x_i - \mu_x)] = \\
+\frac{\sum[(x_i - \mu_x)*(x_z-\mu_x)]}{n}
 \]</span></p>
 <p><br></p>
 <p><span class="math display">\[
-cov(x) =E[(x_i - \mu_x)*(y_i - \mu_y)] = \\ \frac{\sum[(x_i - \mu_x)*(y_i-\mu_y)]}{n}
+cov(x) =E[(x_i - \mu_x)*(y_i - \mu_y)] = \\ \frac{\sum[(x_i -
+\mu_x)*(y_i-\mu_y)]}{n}
 \]</span></p>
-<p>The value of covariance is rarely useful as the end product. Just like we prefer standard deviation as a scaled form of variance, we prefer correlation as scaled form of covariance. While standard deviation is scaled to the scale of the original variable, correlation is scaled to take a value between -1 and 1. In this sense, correlation is standardized covariance and measures strength of association.</p>
-<p>If you square Pearson correlation coefficient between two variables, you get the proportion of variance in one variable which can be predicted by knowledge of the value for the other variable. This relationship is symmetrical (if x explains 20% of variation in y, then y explains 20% of variation in x). When you think about it, this means that we should not understand correlation coefficient as linear in the sense that increase of correlation coefficient by 0.1 always represent the same increase in the strength of association. If the coefficient is 0.2, we can explain only 0.04, i.e., 4% of variance in x by knowing the value of y. If the coefficient is 0.3, it is 9%. If the coefficient is 0.4, it is 16%. So moving from 0.2 to 0.3 means 5 percentage point decrease of unexplained variance, whereas moving from 0.3 to 0.4 means 7 percentage point decrease of unexplained variance. And so on.</p>
-<p>Visual representation of different values of Pearson correlation coefficient puts things into perspective:</p>
+<p>The value of covariance is rarely useful as the end product. Just
+like we prefer standard deviation as a scaled form of variance, we
+prefer correlation as scaled form of covariance. While standard
+deviation is scaled to the scale of the original variable, correlation
+is scaled to take a value between -1 and 1. In this sense, correlation
+is standardized covariance and measures strength of association.</p>
+<p>If you square Pearson correlation coefficient between two variables,
+you get the proportion of variance in one variable which can be
+predicted by knowledge of the value for the other variable. This
+relationship is symmetrical (if x explains 20% of variation in y, then y
+explains 20% of variation in x). When you think about it, this means
+that we should not understand correlation coefficient as linear in the
+sense that increase of correlation coefficient by 0.1 always represent
+the same increase in the strength of association. If the coefficient is
+0.2, we can explain only 0.04, i.e., 4% of variance in x by knowing the
+value of y. If the coefficient is 0.3, it is 9%. If the coefficient is
+0.4, it is 16%. So moving from 0.2 to 0.3 means 5 percentage point
+decrease of unexplained variance, whereas moving from 0.3 to 0.4 means 7
+percentage point decrease of unexplained variance. And so on.</p>
+<p>Visual representation of different values of Pearson correlation
+coefficient puts things into perspective:</p>
 <p><img src="00_quick_recap_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p><font size="1"> Code by whuber from: <a href="https://stats.stackexchange.com/questions/15011/generate-a-random-variable-with-a-defined-correlation-to-an-existing-variables" class="uri">https://stats.stackexchange.com/questions/15011/generate-a-random-variable-with-a-defined-correlation-to-an-existing-variables</a></font></p>
-<p>Correlation coefficients and regression coefficients (which will be covered in the course) are conceptually a different thing. While correlation coefficient shows the strength of association, regression coefficient shows how, on average, the value of y changes when the value of x changes by one unit (we will talk about this more). The fact that the regression lines in the set of plots above get steeper and steeper as the correlation gets stronger results from the data generation process. But it is no necessity. There can be steeper regression lines between less correlated variables and <em>vice versa</em>. See another set of simulated data below which demonstrates it.</p>
+<p><font size="1"> Code by whuber from: <a
+href="https://stats.stackexchange.com/questions/15011/generate-a-random-variable-with-a-defined-correlation-to-an-existing-variables"
+class="uri">https://stats.stackexchange.com/questions/15011/generate-a-random-variable-with-a-defined-correlation-to-an-existing-variables</a></font></p>
+<p>Correlation coefficients and regression coefficients (which will be
+covered in the course) are conceptually a different thing. While
+correlation coefficient shows the strength of association, regression
+coefficient shows how, on average, the value of y changes when the value
+of x changes by one unit (we will talk about this more). The fact that
+the regression lines in the set of plots above get steeper and steeper
+as the correlation gets stronger results from the data generation
+process. But it is no necessity. There can be steeper regression lines
+between less correlated variables and <em>vice versa</em>. See another
+set of simulated data below which demonstrates it.</p>
 <p><img src="00_quick_recap_files/figure-html/unnamed-chunk-6-1.png" width="480" style="display: block; margin: auto;" /></p>
-<p>The four plots below show that the message sent out by visualization of a relationship between two variables can differ based on the tools we use. The plots below all visualize association between the same two continuous variables. Plotting just the regression line or just the points can send out a fairly different message about the association. Combination of the two seems more appropriate in this particular situation. Also remember that using straight line is not the only way to model association between two variables. In this case, we let the line in model D follow the data more closely (the line bends a little). However, the departure from straight line is so minor that straight line actually does seem a good approximation in this example.</p>
+<p>The four plots below show that the message sent out by visualization
+of a relationship between two variables can differ based on the tools we
+use. The plots below all visualize association between the same two
+continuous variables. Plotting just the regression line or just the
+points can send out a fairly different message about the association.
+Combination of the two seems more appropriate in this particular
+situation. Also remember that using straight line is not the only way to
+model association between two variables. In this case, we let the line
+in model D follow the data more closely (the line bends a little).
+However, the departure from straight line is so minor that straight line
+actually does seem a good approximation in this example.</p>
 <p><img src="00_quick_recap_files/figure-html/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Similarly, the message sent out by visualization can be strongly influenced by plotting decisions (or defaults) which have no relation to the data. See below two plots of the same relationship, but plotted with different width and y scale limits. Greater width makes the slope of the line seem less steep. Looser y scale limits (70 to 90 as opposed to 74 to 82 further strengthen this effect).</p>
+<p>Similarly, the message sent out by visualization can be strongly
+influenced by plotting decisions (or defaults) which have no relation to
+the data. See below two plots of the same relationship, but plotted with
+different width and y scale limits. Greater width makes the slope of the
+line seem less steep. Looser y scale limits (70 to 90 as opposed to 74
+to 82 further strengthen this effect).</p>
 <p><img src="00_quick_recap_files/figure-html/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" line-spacing="2">
+<div id="refs" class="references csl-bib-body hanging-indent"
+line-spacing="2">
 <div id="ref-gelman2020" class="csl-entry">
-Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other stories</em>. Cambridge University Press. <a href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
+Gelman, A., Hill, J., &amp; Vehtari, A. (2020). <em>Regression and other
+stories</em>. Cambridge University Press. <a
+href="https://doi.org/10.1017/9781139161879">https://doi.org/10.1017/9781139161879</a>
 </div>
 <div id="ref-wasserstein2016" class="csl-entry">
-Wasserstein, R. L., &amp; Lazar, N. A. (2016). The ASA statement on p-values: Context, process, and purpose. <em>The American Statistician</em>, <em>70</em>(2), 129–133. <a href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>
+Wasserstein, R. L., &amp; Lazar, N. A. (2016). The ASA statement on
+p-values: Context, process, and purpose. <em>The American
+Statistician</em>, <em>70</em>(2), 129–133. <a
+href="https://doi.org/10.1080/00031305.2016.1154108">https://doi.org/10.1080/00031305.2016.1154108</a>
 </div>
 </div>
 </div>
-<div class="footnotes">
+<div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p>While not our concern here, the impression from a histogram can be <a href="https://www.researchgate.net/figure/Influence-of-the-number-of-bins-on-the-histogram-The-number-of-bins-chosen-by-the_fig7_276354826">strongly influenced by the number of bins</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Beware, density plot is sometimes recommended as a solution to the arbitrariness of number of bins in histogram, but it actually suffers from a similar problem - the final appearance depends on a smoothing parameter, so the same data can also produce multiple differently looking density plots.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p>Notice that the density shape in plots B and D is different than in E and F even though it is the same data. This is because in E and F, we set a different smoothing parameter. So indeed, there is some arbitrariness in density plots,just like in histograms.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>While not our concern here, the impression from a
+histogram can be <a
+href="https://www.researchgate.net/figure/Influence-of-the-number-of-bins-on-the-histogram-The-number-of-bins-chosen-by-the_fig7_276354826">strongly
+influenced by the number of bins</a>.<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Beware, density plot is sometimes recommended as a
+solution to the arbitrariness of number of bins in histogram, but it
+actually suffers from a similar problem - the final appearance depends
+on a smoothing parameter, so the same data can also produce multiple
+differently looking density plots.<a href="#fnref2"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Notice that the density shape in plots B and D is
+different than in E and F even though it is the same data. This is
+because in E and F, we set a different smoothing parameter. So indeed,
+there is some arbitrariness in density plots,just like in histograms.<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

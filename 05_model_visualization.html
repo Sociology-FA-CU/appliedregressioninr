@@ -13,16 +13,16 @@
 
 <title>Ploting regression models, marginal effects</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -56,6 +56,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -76,6 +77,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -228,7 +232,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -238,7 +242,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -283,7 +287,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -313,10 +317,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -347,7 +354,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -390,15 +397,29 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Ploting regression models, marginal effects</h1>
+<h1 class="title toc-ignore">Ploting regression models, marginal
+effects</h1>
 
 </div>
 
 
-<p>We will introduce two ways of presenting regression models visually. First, we will introduce so called point-range plots, which are a very straightforward way to graphically display information from regression coefficients tables. Second, we will focus on so called margianl effects and their visualization - a technique which requires some some new conptual insights and is especially useful for dealing with complex models and/or models with interactions.</p>
+<p>We will introduce two ways of presenting regression models visually.
+First, we will introduce so called point-range plots, which are a very
+straightforward way to graphically display information from regression
+coefficients tables. Second, we will focus on so called margianl effects
+and their visualization - a technique which requires some some new
+conptual insights and is especially useful for dealing with complex
+models and/or models with interactions.</p>
 <div id="point-range-plots" class="section level1">
 <h1>Point-range plots</h1>
-<p>We live in a visual time and we think this is a good thing. Using point-range plots to present multiple-regression models is especially useful for a large number of predictors. For example, consider the following model with five predictors (which is not that many). Unless you fall for the practice which we very much try to discourage, i.e. only looking where the stars are, but you want to appreciate the different estimates and their standard errors more carefully, going through the table can take some time and effort.</p>
+<p>We live in a visual time and we think this is a good thing. Using
+point-range plots to present multiple-regression models is especially
+useful for a large number of predictors. For example, consider the
+following model with five predictors (which is not that many). Unless
+you fall for the practice which we very much try to discourage,
+i.e. only looking where the stars are, but you want to appreciate the
+different estimates and their standard errors more carefully, going
+through the table can take some time and effort.</p>
 <pre class="r"><code>m1 &lt;- lm(life_exp ~ dem_index + hdi + uni_prc + poverty_risk + material_dep, data = countries)
 summary(m1)</code></pre>
 <pre><code>## 
@@ -425,7 +446,14 @@ summary(m1)</code></pre>
 ##   (5 observations deleted due to missingness)
 ## Multiple R-squared:  0.6621, Adjusted R-squared:  0.5995 
 ## F-statistic: 10.58 on 5 and 27 DF,  p-value: 1.052e-05</code></pre>
-<p>Point-range plots visualize regression estimates as points along with confidence intervals making it easy to quickly absorb the results.The most straightforward tidyverse approach is using the function <em>tidy</em> from the <em>broom</em> package to convert the regression results into a data frame (tibble, more specifically). We then apply ggplot with a special geom called <em>geom_pointrange</em>. The resulting plot below shows the regression coefficient for each predictor with its 95% confidence interval.</p>
+<p>Point-range plots visualize regression estimates as points along with
+confidence intervals making it easy to quickly absorb the results.The
+most straightforward tidyverse approach is using the function
+<em>tidy</em> from the <em>broom</em> package to convert the regression
+results into a data frame (tibble, more specifically). We then apply
+ggplot with a special geom called <em>geom_pointrange</em>. The
+resulting plot below shows the regression coefficient for each predictor
+with its 95% confidence interval.</p>
 <pre class="r"><code>m1_tibble &lt;- tidy(m1) # convert m1 coefficients table into tibble
 
 m1_tibble %&gt;% 
@@ -436,7 +464,16 @@ m1_tibble %&gt;%
   geom_pointrange() +
   geom_vline(xintercept = 0, color = &quot;grey&quot;, alpha = 0.8)</code></pre>
 <p><img src="05_model_visualization_files/figure-html/point-range-1.png" width="672" /></p>
-<p>The plot above is nothing but a staightforward visual representation of the regression table. Since the raw coefficients cannot be compared to each other as each predictor is measured in different units, the same holds for the plotted values: We should consider them separately rather than in a comparative perspective. This is perhaps harder to do with a plot than a table. That’s why we usually prefer plotting standardized betas, which can be roughly compared to each other. In that case, it can be a good idea to arrange estimates by their size (it would be a rather misleading thing to do in the previous graph where comparison do not make sense).</p>
+<p>The plot above is nothing but a staightforward visual representation
+of the regression table. Since the raw coefficients cannot be compared
+to each other as each predictor is measured in different units, the same
+holds for the plotted values: We should consider them separately rather
+than in a comparative perspective. This is perhaps harder to do with a
+plot than a table. That’s why we usually prefer plotting standardized
+betas, which can be roughly compared to each other. In that case, it can
+be a good idea to arrange estimates by their size (it would be a rather
+misleading thing to do in the previous graph where comparison do not
+make sense).</p>
 <pre class="r"><code>countries_scaled &lt;- 
   mutate(.data = countries,
          across(.cols = c(&quot;life_exp&quot;, &quot;dem_index&quot;, &quot;hdi&quot;, 
@@ -460,16 +497,23 @@ tidy(m2) %&gt;%
 <p><img src="05_model_visualization_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 <div id="ready-made-tools" class="section level2">
 <h2>Ready-made tools</h2>
-<p>There are also multiple packages which you can use for some quickly available additional effects. In our work, we have used the <em>jtools</em> package, which produces elegant plots, but there are others out there.</p>
+<p>There are also multiple packages which you can use for some quickly
+available additional effects. In our work, we have used the
+<em>jtools</em> package, which produces elegant plots, but there are
+others out there.</p>
 <pre class="r"><code>plot_summs(m1)</code></pre>
 <p><img src="05_model_visualization_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>You can scale from within the <em>plot_summs</em> function:</p>
 <pre class="r"><code>plot_summs(m1, scale = TRUE)</code></pre>
 <p><img src="05_model_visualization_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>The package also makes it easy to combine multiple confidence intervals into one plot. 95% is the default, but you can add an inner interval.</p>
+<p>The package also makes it easy to combine multiple confidence
+intervals into one plot. 95% is the default, but you can add an inner
+interval.</p>
 <pre class="r"><code>plot_summs(m1, scale = TRUE, inner_ci_level = .8) # compate two models</code></pre>
 <p><img src="05_model_visualization_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Finally, it is really easy to compare multiple models visually. Here, adding eu_membership, in itself a statistically insignificant predictor, does almost nothing to the other predictors.</p>
+<p>Finally, it is really easy to compare multiple models visually. Here,
+adding eu_membership, in itself a statistically insignificant predictor,
+does almost nothing to the other predictors.</p>
 <pre class="r"><code>m2 &lt;- update(m1, . ~ . + eu_member) # add another predictor
 plot_summs(m1, m2, scale = TRUE, inner_ci_level = .8)</code></pre>
 <p><img src="05_model_visualization_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
@@ -477,7 +521,11 @@ plot_summs(m1, m2, scale = TRUE, inner_ci_level = .8)</code></pre>
 </div>
 <div id="marginal-effects" class="section level1">
 <h1>Marginal effects</h1>
-<p>Once the regression models become more complex, e.g., they include interactions, quadratic terms, or combination of them, the challenge is not having to go through a lot of values, but even making sense of the values in the first place. For example, consider a model involving a quadratic term and an interaction such as below.</p>
+<p>Once the regression models become more complex, e.g., they include
+interactions, quadratic terms, or combination of them, the challenge is
+not having to go through a lot of values, but even making sense of the
+values in the first place. For example, consider a model involving a
+quadratic term and an interaction such as below.</p>
 <pre class="r"><code>m3 = lm(life_exp ~ poly(dem_index, 2) * postsoviet,data = countries[!is.na(countries$dem_index),])
 summary(m3)</code></pre>
 <pre><code>## 
@@ -503,16 +551,41 @@ summary(m3)</code></pre>
 ## Residual standard error: 1.288 on 31 degrees of freedom
 ## Multiple R-squared:  0.8209, Adjusted R-squared:  0.792 
 ## F-statistic: 28.42 on 5 and 31 DF,  p-value: 1.034e-10</code></pre>
-<p>The model becomes almost impossible to interpret from the table. Sure, we can still proceed with the technical, algorithmic interpretation: if we compare hypothetical two groups of countries which are both post-soviet, have the base democratic index 0, but the first group has the quadratic democratic index higher by 1 than the second, then we would expect in this group the life expectancy to be 12.7 - 3.3 = 9.4 years higher, on average, than in the second group. While technically hopefully correct, this information is also completely undecipherable. (We will leave aside what it actually means that the base democratic index is 0 and the quadratic term is higher by 1 in one group than another. While it is theoretically impossible for such a country to even exist (once democratic index is 0, its quadratic term can be nothing but a 0, too),the linear (i.e. additive) model can make such a prediction.)</p>
-<p>Fortunately, we have another way to interpret our model: displaying visually the marginal effects</p>
+<p>The model becomes almost impossible to interpret from the table.
+Sure, we can still proceed with the technical, algorithmic
+interpretation: if we compare hypothetical two groups of countries which
+are both post-soviet, have the base democratic index 0, but the first
+group has the quadratic democratic index higher by 1 than the second,
+then we would expect in this group the life expectancy to be 12.7 - 3.3
+= 9.4 years higher, on average, than in the second group. While
+technically hopefully correct, this information is also completely
+undecipherable. (We will leave aside what it actually means that the
+base democratic index is 0 and the quadratic term is higher by 1 in one
+group than another. While it is theoretically impossible for such a
+country to even exist (once democratic index is 0, its quadratic term
+can be nothing but a 0, too),the linear (i.e. additive) model can make
+such a prediction.)</p>
+<p>Fortunately, we have another way to interpret our model: displaying
+visually the marginal effects</p>
 <div id="what-are-marginal-effects" class="section level2">
 <h2>What are marginal effects?</h2>
-<p>Marginal effects (also adjusted predictions) are expected values of the dependent variable for given values of selected independent variable while other independent variables are held constant (preferably at some reasonable value such as mean, this is important for models with interactions where keeping other variables constant at 0 can be rather unhelpful).</p>
-<p>In R, there are several packages for computing marginal effects (as there are for nearly everything). The package <code>ggeffects</code> is especially well suited for the <code>tidyverse</code> environment, so it will be our go-to package for visualizing marginal effects in this course.</p>
+<p>Marginal effects (also adjusted predictions) are expected values of
+the dependent variable for given values of selected independent variable
+while other independent variables are held constant (preferably at some
+reasonable value such as mean, this is important for models with
+interactions where keeping other variables constant at 0 can be rather
+unhelpful).</p>
+<p>In R, there are several packages for computing marginal effects (as
+there are for nearly everything). The package <code>ggeffects</code> is
+especially well suited for the <code>tidyverse</code> environment, so it
+will be our go-to package for visualizing marginal effects in this
+course.</p>
 </div>
 <div id="calculating-marginal-effects" class="section level2">
 <h2>Calculating marginal effects</h2>
-<p>Before plotting them, we need to calculate marginal effects. We do this using the <em>ggpredict</em> function from the <em>ggeffects</em> package. For the model above, we could do:</p>
+<p>Before plotting them, we need to calculate marginal effects. We do
+this using the <em>ggpredict</em> function from the <em>ggeffects</em>
+package. For the model above, we could do:</p>
 <pre class="r"><code>ggpredict(m3, terms = c(&quot;dem_index&quot;))</code></pre>
 <pre><code>## # Predicted values of life_exp
 ## 
@@ -529,7 +602,14 @@ summary(m3)</code></pre>
 ## 
 ## Adjusted for:
 ## * postsoviet = no</code></pre>
-<p>Note, the output gives us predicted values of life_expectancy for several values (here selected automatically by default) of democracy index for non-postsoviet countries, based on the model specification above. Let us say it again, the predicted values are linked to the model specification. We can quickly demonstrate this by calculating other models and comparing the predictions. This time, we will specify values of democracy index for which we want our predictions to make the output comparable:</p>
+<p>Note, the output gives us predicted values of life_expectancy for
+several values (here selected automatically by default) of democracy
+index for non-postsoviet countries, based on the model specification
+above. Let us say it again, the predicted values are linked to the model
+specification. We can quickly demonstrate this by calculating other
+models and comparing the predictions. This time, we will specify values
+of democracy index for which we want our predictions to make the output
+comparable:</p>
 <pre class="r"><code>m4 &lt;- lm(life_exp ~ dem_index,data = countries)
 m5 &lt;- lm(life_exp ~ dem_index + postsoviet ,data = countries)
 ggpredict(m3, terms = &quot;dem_index [4:9]&quot;)</code></pre>
@@ -571,8 +651,12 @@ ggpredict(m3, terms = &quot;dem_index [4:9]&quot;)</code></pre>
 ## 
 ## Adjusted for:
 ## * postsoviet = no</code></pre>
-<p>While the command is the same, each predictions are different because we refer to models with different specifications.</p>
-<p>We can also specify more terms for which to calculate predictions, such as in the following code which produces same values as the respective command above, but also adds predictions for post soviet countries.</p>
+<p>While the command is the same, each predictions are different because
+we refer to models with different specifications.</p>
+<p>We can also specify more terms for which to calculate predictions,
+such as in the following code which produces same values as the
+respective command above, but also adds predictions for post soviet
+countries.</p>
 <pre class="r"><code>ggpredict(m3, terms = c(&quot;dem_index [4:9]&quot;, &quot;postsoviet&quot;))</code></pre>
 <pre><code>## # Predicted values of life_exp
 ## 
@@ -597,7 +681,15 @@ ggpredict(m3, terms = &quot;dem_index [4:9]&quot;)</code></pre>
 ##         7 |     76.68 | [75.91, 77.46]
 ##         8 |     78.62 | [77.55, 79.69]
 ##         9 |     82.06 | [79.23, 84.88]</code></pre>
-<p>Now, we can specify as many as four terms in one ggpredict command. The predictions are then made for a few level of each predictors which are algorithmically selected. We showed above how this default can be overwritten in square brackets. There is a third option if we do not want to rely on default values and we also don’t want to hand pick values ourselves - we can use following shorthands: <em>[meansd]</em> for predictions for the values one standard deviation below the mean, the mean, and one standard deviation above the mean; <em>[quart2]</em> for the three quartiles. Examples follow:</p>
+<p>Now, we can specify as many as four terms in one ggpredict command.
+The predictions are then made for a few level of each predictors which
+are algorithmically selected. We showed above how this default can be
+overwritten in square brackets. There is a third option if we do not
+want to rely on default values and we also don’t want to hand pick
+values ourselves - we can use following shorthands: <em>[meansd]</em>
+for predictions for the values one standard deviation below the mean,
+the mean, and one standard deviation above the mean; <em>[quart2]</em>
+for the three quartiles. Examples follow:</p>
 <pre class="r"><code>ggpredict(m3, terms = c(&quot;dem_index [meansd]&quot;, &quot;postsoviet&quot;))</code></pre>
 <pre><code>## # Predicted values of life_exp
 ## 
@@ -634,7 +726,11 @@ ggpredict(m3, terms = &quot;dem_index [4:9]&quot;)</code></pre>
 ##      6.67 |     76.37 | [75.59, 77.16]
 ##      7.71 |     77.90 | [77.04, 78.76]
 ##      8.68 |     80.79 | [78.69, 82.90]</code></pre>
-<p>Finally, you can also use the <em>condition</em> parameter to hold covariates constant on a specific level rather than their mean. Compare the following two lines of code. The first gives prediction for both level of post_soviet holding the democracy index constant at its mean. The second hold it constant at its theoretical maximum.</p>
+<p>Finally, you can also use the <em>condition</em> parameter to hold
+covariates constant on a specific level rather than their mean. Compare
+the following two lines of code. The first gives prediction for both
+level of post_soviet holding the democracy index constant at its mean.
+The second hold it constant at its theoretical maximum.</p>
 <pre class="r"><code>ggpredict(m3, terms = c(&quot;postsoviet&quot;))</code></pre>
 <pre><code>## # Predicted values of life_exp
 ## 
@@ -655,32 +751,46 @@ ggpredict(m3, terms = &quot;dem_index [4:9]&quot;)</code></pre>
 </div>
 <div id="plotting-marginal-effects" class="section level2">
 <h2>Plotting marginal effects</h2>
-<p>Now for the fun part. The easiest way to plot the marginal effects is by using a generic function <em>plot</em> on the object created by ggpredict. Again, the plot corresponds to the respective model specification, so do not forget to provide it along with your plot.</p>
+<p>Now for the fun part. The easiest way to plot the marginal effects is
+by using a generic function <em>plot</em> on the object created by
+ggpredict. Again, the plot corresponds to the respective model
+specification, so do not forget to provide it along with your plot.</p>
 <pre class="r"><code>ggpredict(m3, terms = c(&quot;dem_index&quot;, &quot;postsoviet&quot;)) %&gt;% plot()</code></pre>
 <p><img src="05_model_visualization_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<p>Conveniently, applying plot on the ggpredict-generated object creates a <em>ggplot</em> object, so you can edit it with the usual ggplot syntax.</p>
+<p>Conveniently, applying plot on the ggpredict-generated object creates
+a <em>ggplot</em> object, so you can edit it with the usual ggplot
+syntax.</p>
 <pre class="r"><code>ggpredict(m3, terms = c(&quot;dem_index&quot;, &quot;postsoviet&quot;)) %&gt;% 
   plot () + 
   labs(x=&quot;Democracy index&quot;, y=&quot;Life expectancy&quot;, title = &quot;Predicted values of life expectancy&quot;, subtitle = &quot;formula = life_exp ~ poly(dem_index, 2) * postsoviet&quot;) +
   scale_x_continuous(breaks = c(5:10))</code></pre>
 <p><img src="05_model_visualization_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
-<p>The look of the resulting plot will depend on the order of terms as they are entered in the ggpredict function. The mapping follows these rules:</p>
+<p>The look of the resulting plot will depend on the order of terms as
+they are entered in the ggpredict function. The mapping follows these
+rules:</p>
 <ul>
 <li>dependent variable is given by the model = y axis</li>
 <li>first term = x axis</li>
 <li>second term = color</li>
 <li>third term = one level of facetting</li>
-<li>fourth term = another level of facetting (You probably do not want to use this unless absolutely inevitable.)</li>
+<li>fourth term = another level of facetting (You probably do not want
+to use this unless absolutely inevitable.)</li>
 </ul>
-<p>A great feature of the generic <em>plot</em> function when applied to a <em>ggpredict</em> object is its parameter <em>add.data</em> to draw the actual data points and thus visually assess the model fit.</p>
+<p>A great feature of the generic <em>plot</em> function when applied to
+a <em>ggpredict</em> object is its parameter <em>add.data</em> to draw
+the actual data points and thus visually assess the model fit.</p>
 <pre class="r"><code>ggpredict(m3, terms = c(&quot;dem_index&quot;, &quot;postsoviet&quot;)) %&gt;% plot(add.data = TRUE)</code></pre>
 <p><img src="05_model_visualization_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="ggpredict-object" class="section level2">
 <h2><em>ggpredict</em> object</h2>
-<p>When you apply <em>ggpredict</em>, it produces this output which looks like an array. However, there is a standard data frame in the background - of course, this is tidyverse, right. To force it shows its true face, you just apply a function such as as_tibble or View and magic happens.</p>
+<p>When you apply <em>ggpredict</em>, it produces this output which
+looks like an array. However, there is a standard data frame in the
+background - of course, this is tidyverse, right. To force it shows its
+true face, you just apply a function such as as_tibble or View and magic
+happens.</p>
 <pre class="r"><code>ggpredict(m3, terms = c(&quot;dem_index&quot;, &quot;postsoviet&quot;)) %&gt;% as_tibble()</code></pre>
-<pre><code>## # A tibble: 72 x 6
+<pre><code>## # A tibble: 72 × 6
 ##        x predicted std.error conf.low conf.high group
 ##    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;
 ##  1  4.37      75.6     1.18      73.3      77.9 no   
@@ -693,11 +803,12 @@ ggpredict(m3, terms = &quot;dem_index [4:9]&quot;)</code></pre>
 ##  8  5.87      76.3     0.499     75.3      77.3 yes  
 ##  9  5.98      79.2     0.577     78.0      80.3 no   
 ## 10  5.98      76.3     0.466     75.3      77.2 yes  
-## # ... with 62 more rows</code></pre>
-<p>Knowing now the true appearance of the object, you can also work produce a ggplot from the scratch. First, apply plot:</p>
+## # … with 62 more rows</code></pre>
+<p>Knowing now the true appearance of the object, you can also work
+produce a ggplot from the scratch. First, apply plot:</p>
 <pre class="r"><code>df &lt;- ggpredict(m3, terms = c(&quot;postsoviet&quot;, &quot;dem_index&quot;)) # notice we now reverse the terms to change appearance
 df %&gt;% as_tibble()</code></pre>
-<pre><code>## # A tibble: 6 x 6
+<pre><code>## # A tibble: 6 × 6
 ##   x     predicted std.error conf.low conf.high group
 ##   &lt;fct&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;
 ## 1 no         79.8     0.534     78.7      80.8 6.34 
@@ -720,7 +831,19 @@ df %&gt;% as_tibble()</code></pre>
 </div>
 <div id="ggeffects-options" class="section level2">
 <h2>ggeffects options</h2>
-<p>The <code>ggeffects</code> package offers three options for computing marginal effects. We have only use <code>ggpredict()</code>. This functions is based on the <code>predict()</code> function from the base R. The second options is <code>ggeffect()</code>, which requires the <code>effects</code> package. The main difference between between the two is in their treatment of categorical predictors. <code>ggpredict()</code> fixes categorical at the reference category when computing marginal effects, while <code>ggeffect()</code> computes a “sort of average of the categorical predictors” (as it is stated in the manual). The last option, <code>ggemmeans()</code>, treats categorical predictors in a similar way as <code>ggeffect()</code>, see documentation for detail. It also require the <code>emmeans</code> package.</p>
+<p>The <code>ggeffects</code> package offers three options for computing
+marginal effects. We have only use <code>ggpredict()</code>. This
+functions is based on the <code>predict()</code> function from the base
+R. The second options is <code>ggeffect()</code>, which requires the
+<code>effects</code> package. The main difference between between the
+two is in their treatment of categorical predictors.
+<code>ggpredict()</code> fixes categorical at the reference category
+when computing marginal effects, while <code>ggeffect()</code> computes
+a “sort of average of the categorical predictors” (as it is stated in
+the manual). The last option, <code>ggemmeans()</code>, treats
+categorical predictors in a similar way as <code>ggeffect()</code>, see
+documentation for detail. It also require the <code>emmeans</code>
+package.</p>
 </div>
 </div>
 

@@ -1,0 +1,239 @@
+---
+title: "Bootstrapping for Linear Regression"
+date: "`r Sys.Date()`"
+output: html_document
+bibliography: 09_bootstrap.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(tidyverse)
+
+countries <- read_csv("data/countries.csv", locale = locale(encoding = "Windows-1250"))
+```
+
+By now, it should be clear that point estimates are often of a limited usefulness in real world. Whether we are doing inference or predictions, we are not just interested in what is our modeling telling to us. We also need to know how much we can trust the results. One of the ways we can look int the "trustworthiness" of our model is to look at the standard errors of our estimates, that is, how much we would expect the results to vary across multiple samples.
+
+When figuring out the (un)certainty of our estimates, we most often rely on analytical solutions. That is, we accept some parametric assumptions about the population we are trying to analyze and then you a formula to get the result. One of the most common application is estimating the standard error of the mean using the $\sqrt{\frac{VAR_X}{n}}$ formula or estimating the standard error of regression coefficients using the $\sqrt{\frac{1}{n -2}* \frac{\sum{(y_i - \bar{y})^2}}{\sum{(x_i - \bar{x})^2}}}$ formula. However, these formulas rely on a set of assumptions that may be far away from reality. In the previous lectures, we have seen how these assumptions can be circumcised using other formulas (for example, when using robust standard errors). However, these solutions may not always be available. In fact, for some statistics, there is no formula to compute standard errors at all! And even if there is , it may be hard to find or may not be implemented in the software we are using. Can we estimate the (un)certainty of our estimates in cases such as these?
+
+Fortunately, with the technological development that has happened in the past few decades, we have seen raise of a particular technique that allows us to estimate standard errors and confidence intervals for virtually any statistic, with just a few mild assumptions. This simulation based technique is called bootstrapping.
+
+# Bootstraping
+
+The idea behind bootstrapping is fairly straightforward. To get an idea how much variation can we expect to see from sample to sample, we can resample the data at hand multiple (in fact, many many) times. As it turns out, this can give us a very good idea how would much variations in estimates we can expect. Schematically, the most basic bootstrap can be done as follows:
+
+1)  Pick a statistic you want to construct confidence intervals for (e.g. adjusted R squared).
+2)  Take the data you have available and repeatedly draw new samples from them, **with replacement** (if we would have drawn without replacement, we would end up with the same data as is the original sample).
+3)  Compute the statistic of your choosing from the new "virtual" data. Save the result somewhere safe.
+4)  Repeat steps 2 and 3 large amount of times, say ten thousands or more. You will end up with many estimates of your statistic, each computed on a virtual data set created from your original sample.
+5)  Compute quantiles of the distribution of your estimates related to the desired confidence interval. For example, for a 95% confidence interval, we would compute the 0.025 and 0.975 quantiles.
+6)  That's it! The quantiles you have computed are the bounds of your confidence interval. No formulas needed.
+
+# Bootstrapping in R: Difference in medians
+
+As practical example, let's start with something simple: computing confidence intervals for adjusted coefficient of determination. Getting a point estimate is pretty easy:
+
+```{r median-simple-difference, echo=TRUE}
+m1 <- lm(life_exp ~ postsoviet, data = countries)
+
+summary(m1)$adj.r.squared
+```
+
+However, we know that due to the sampling error, we cannot take this simple result for granted. The estimate of `r round(summary(m1)$adj.r.squared, 2)` % may be true in our sample, but is not necessarily the true population value (since we are working with country level data, it may be a bit weird to be talking about samples and populations, but hopefully you get the idea). In other world, we need to check how much variations we would expect across multiple samples.
+
+Since there is no formula for getting a confidence interval of adjusted $R^2$ (at least not without rather strong assumptions), we will opt for bootstrapping. We will draw a one thousand samples from our original dataset, compute the linear model and the corresponding adjusted $R^2$ for each of them, and then compute the 95% confidence interval. As we will will see, the operation is quite straightforward, complicated only by the fact that there are actually multiple ways to do it in R.
+
+## Bootstrap using for loops
+
+The first option is to use a so-called *for loop*. For loop is general programming operation, using which we can tell the computer to repeat some action across multiple objects or just a specified number of times. A for loop for our specific purpose would look like this:
+
+```{r median-bootstarp-loop, echo=TRUE}
+adj_r_squares <- numeric(length = 1000)
+
+set.seed(123)
+
+for (i in 1:1000) {
+  
+  boot_countries <- slice_sample(countries, n = 38, replace = TRUE)
+  
+  m1 <- lm(life_exp ~ postsoviet, data = boot_countries)
+  
+  adj_r_squares[i] <- summary(m1)$adj.r.squared
+}
+```
+
+Let's look at the code line by line. The first line, `adj_r_squares <- numeric(length = 1000)`, is not strictly necessary, but it reflects a good practice. We are creating a new numeric vector with a thousand elements, in which we will eventually store our bootstrapped estimates. This tell R to prepare some of the computer's memory for the task, which will in turn makes the loop go faster.
+
+The second line is where the for loop itself starts. By using `for (i in 1:1000)`, we are telling R that for each iteration `i`, from the first one to the thousandth one (that's what the `1:1000` is for), it should repeat the operation in the `{}` brackets.
+
+On the third line, we create a new "virtual" sample by resampling the original data. There are many ways this step can be done but for tidyverse user, the `slice_sample` function will probably feel the most natural. We specify that the new sample should have the same amount of rows as the original one (38) and that the sampling should be done with replacement. The result is stored in a new dataframe called `boot_countries`.
+
+The fourth line is almost identical to the code we used to compute the simple point estimate, except we are using the new `boot_countries` dataframe.
+
+The last line with code is used to compute the adjusted $R^2$ and is almost identical to the simple difference example. The only difference is that the result is stored in the vector `adj_r_squares`, created in the beginning. Notice the `[i]`. This is the same `i` in as in `for (i in 1:1000)` and tells R it should store the result of the first iteration in the first element of the `adj_r_squares` vector, the result of the second iteration in the second place, and so on.
+
+Now that we have our one thousand estimates we can quite simply compute the 95% confidence interval we are looking for:
+
+```{r median-bootstarp-loop-quantile, echo=TRUE}
+quantile(adj_r_squares, probs = c(0.025, 0.975))
+```
+
+As we can see, the bootstrapped 95% confidence interval ranges from `r round(quantile(adj_r_squares, 0.025),2)` to `r round(quantile(adj_r_squares, 0.975),2)`. This gives us an idea of how large differences we would see across samples. And as we can see, the differences would be quite large! And not unexpectedly, given our small sample size.
+
+## Bootstrap using the boot package
+
+Another option for obtaining a bootstrapped interval estimates is to use the the boot package. This package is installed with the base version of R, but isn't loaded by default. To use it, we therefore need to call it deliberately:
+
+```{r boot-library, echo=TRUE}
+library(boot)
+```
+
+The boot package also uses loops internally, but the workflow is a bit different. Instead of writing down the for loop by ourselves, we create a custom function, which gives us the statistics of interest, and then pass it into the `boot()` function. The main advantage of this approach is that it will allows us to estimate more advanced (and often more accurate) types of bootstrap intervals.
+
+The first step is to create a new function, which will calculate the difference in medians between the postsoviet and the western countries:
+
+```{r boot-custom-function, echo=TRUE}
+adj_r_squared <- function(data, i) {
+  boot_countries <- data[i, ]
+  
+  m1 <- lm(life_exp ~ postsoviet, data = boot_countries)
+  
+  summary(m1)$adj.r.squared
+}
+```
+
+A new function can be created by using the `function()` function, followed by `{}` parentheses. Functions in R behave like any other object and you can store them by assigning them a name using the `<-` operator. In this case, our new function will be called *adj_r_squared*. Note, that our new function has two arguments, `data` and `i`, which are mandatory if we are planning to use the function for bootstrapping (though you can choose different names for them, if you want). The `data` argument will simply refer to the dataset we will be bootstrapping, while the `i` referes to the iteration number, just as we saw in the for loop approach.
+
+Inside the function itself, note the first line, `boot_countries <- data[i, ]`. This line is what's telling R which part of the our data we want to resample from. The `data[i, ]` means we will be resampling rows (as denoted by `[i, ]`) from the dataframe `data`. The resampled data will be stored inside an object called `boot_countries`. If you are planning to use the *boot* package, you custom function should always start like this.
+
+The rest of the function is the same as we have already seen. The only thing to note is that the output of the last line, i.e. the extraction of the adjusted $R^2$, is not stored in any object. Instead, it's just returned as is.
+
+After we have created our custom function, we can finally start with bootstrapping itself. This can be done using the `boot()` function from the *boot* package:
+
+```{r boot-custom, echo=TRUE}
+set.seed(1234)
+
+adj_r_squared_bootstraps <- boot(data = countries, statistic = adj_r_squared, R = 1000)
+```
+
+The `boot()` function has three mandatory arguments. The first is `data`, which is the data we will be bootstrapping from. In our case, the dataset is called `countries`. The second is the statistic we want to bootstrap, which for us is `adj_r_squared` (This is the custom function we made!). Lastly, the `R` argument sets the number of bootstrap samples we want to create. Just as in the for loop section, we 1000 new samples. The results are stored in an object called `adj_r_squared_bootstraps`.
+
+The `adj_r_squared_bootstraps` object is not a single vector. Instead, it's a list including the original data, the resampled statistic, information about weights used (if any) and more. As we can already see, the `boot()` function gives us much more options than the simple for loop from earlier.
+
+However, we still haven't computed the confidence intervals we are looking for. To do this, we will call the `boot.ci()` function, which unsurprisingly stands for "bootstrapped confidence intervals":
+
+```{r boot-ci, echo=TRUE, warning=FALSE}
+boot.ci(adj_r_squared_bootstraps, conf = 0.95)
+```
+
+As we can see, the `boot.ci()` function be default computes four different types of interval estimates (technical details can be found in chapter 5 of @davison1997):
+
+-   **Normal** - This confidence interval is in essence computed very similarly to the classic parametric one, but instead of computing standard error by formula, it uses the variance of the bootstrap samples, plus a small bias correction. This assumes the sampling distribution of the statistic in question is normal and will behave especially bad if the sampling distribution is not symmetrical. You can reproduce these intervals by hand quite easily:
+
+```{r normal-ci-hand, echo=TRUE}
+# adj_r_squared_bootstraps$t is the vector of the bootstrapped samples
+# adj_r_squared_bootstraps$t0 is the point estimate from the original (real) data
+bias <- mean(adj_r_squared_bootstraps$t) - adj_r_squared_bootstraps$t0 
+
+c(
+"lower_bound" = adj_r_squared_bootstraps$t0 - bias - 1.96*sd(adj_r_squared_bootstraps$t),
+"upper_bound" =adj_r_squared_bootstraps$t0 - bias + 1.96*sd(adj_r_squared_bootstraps$t)
+)
+```
+
+-   **Percentile** - This interval is constructed by taking the distribution of the bootstrap samples and computing their relevant quantiles. It is also the same interval we got by using the for loop earlier, though due how the `boot()` works, the results won't match exactly even when the same seed is set just before calling both functions. This version of bootstrap strongly relies on the the distribution of the original sample being the same as the distribution of the population (arguably more so than the other options). You can replicate it by hand in the following manner (note the use of non-default quantile type):
+
+```{r percentile-ci-hand, echo=TRUE}
+quantile(adj_r_squared_bootstraps$t, probs = c(0.025, 0.975), type = 6)
+```
+
+-   **Basic** - In more recent literature known as empirical bootstrap. Similar to the percentile bootstrap, but instead of being based on just the bootstrapped estimates themselves, it is based on the differences between the original sample and the bootstrapped ones. This way, we can estimate the average difference between the population value and individual samples, which in turn makes it somewhat more robust and accurate to situations where the sampling distribution of the statistic in question is skewed, compared to the percentile method. See [this high quality post](https://stats.stackexchange.com/a/357498) on StackExchange for comparison between basic and percentile confidence intervals. Without going into technical details, it can be reproduced like this:
+
+```{r basic-ci-hand, echo=FALSE}
+2*adj_r_squared_bootstraps$t0 - quantile(adj_r_squared_bootstraps$t,
+                                         c(0.025, 0.975), type = 6)
+```
+
+-   **Bias Corrected Accelerated (BCa)** - Sometimes a systemic difference may appear between the expected value of the original sample and the bootstrapped samples (e.g. between the observed median difference and the average median difference of the bootstrap samples), essentially meaning that the entire distribution of the bootstrapped samples is shifted compared to the original data. This leads to bias in the confidence interval bounds. Fortunately, there is a fix for that. The bias corrected accelerated bootstrap computes the difference between the expected value of the original sample and the expected value of the bootstrapped distribution. Using this, we can shift the bootstrap distribution back to where it should be. The BCa also account for the fact that sampling distribution could be skewed (by going through the effort of computing skewness of the bootstrapped samples), which would present problem for the normal bootstrap. Therefore, for large samples, the BCa confidence intervals are generally the best option of the four presented by the `boot.ci()`, though it also takes the longest to compute. However, in very small samples, the BCa intervals will have trouble estimating the skewness of bootstrap samples and the results may not therefore be reliable. R will warn you about this by printing a somewhat arcane warning `Some BCa intervals may be unstable`. In such cases, you either need to pick a narrow confidence interval (e.g. 90%) or rely on another estimation method. The reproduction of this bootstrap apprach is unfortunately beyond scope of this course.
+
+```{r bca-ci-hand, echo=FALSE, eval=FALSE}
+
+# zscore of bias defined as the prop of bootstrapped samples smaller than the observed value
+bias_zscore <- qnorm(mean(adj_r_squared_bootstraps$t < adj_r_squared_bootstraps$t0))
+
+
+# Jack-knife samples to be used for skew estimation
+adj_rsq_jk <- numeric(nrow(countries))
+
+for (i in 1:nrow(countries)) {
+  countries_jk <- countries[-i, ]
+  m <- lm(lm(life_exp ~ postsoviet, data = countries_jk))
+  adj_rsq_jk[i] <- summary(m)$adj.r.squared
+}
+
+# Estimated skew of the sampling distribution (called "acceleration", hence "a")
+a <- sum((adj_r_squared_bootstraps$t0-adj_rsq_jk)^3)/(6*sum((adj_r_squared_bootstraps$t0-adj_rsq_jk)^2)^(3/2))
+
+
+q.lb <- pnorm(bias_zscore+(bias_zscore+qnorm(0.025))/(1-a*(bias_zscore+qnorm(0.025))))
+q.ub <- pnorm(bias_zscore+(bias_zscore+qnorm(0.975))/(1-a*(bias_zscore+qnorm(0.975))))
+
+c(
+"lower_bound" <- quantile(adj_r_squared_bootstraps$t,q.lb, type = 6),
+"upper_bound" <- quantile(adj_r_squared_bootstraps$t,q.ub, type = 6)
+)
+```
+
+
+# More involved example: difference between two models
+
+The example above gave a simple example of how can bootstrap be used to estimate uncertainty of our estimates. For motivation, we can also give a slightly more complicated example, comparing adjusted $R^2$ of two nested models. What if we tried adding the proportion of university educated citizens to our first model? Would it improved its predictive power? The point estimate suggests so:
+
+```{r r-diff-point,echo=TRUE}
+m1 <- lm(life_exp ~ postsoviet, data = countries)
+m2 <- lm(life_exp ~ postsoviet + uni_prc, data = countries)
+
+summary(m2)$adj.r.squared - summary(m1)$adj.r.squared
+```
+
+However, this is merely a sample estimate, so we need to take into account uncertainty due to sampling error. To do this using the `boot()` approach, we first define a custom function:
+
+```{r r-diff-function, echo=TRUE}
+adj_r2_diff <- function(data, i){
+  countries_boot <- data[i,]
+  
+  m1 <- lm(life_exp ~ postsoviet, data = countries_boot)
+  m2 <- lm(life_exp ~ postsoviet + uni_prc, data = countries_boot)
+  
+  summary(m2)$adj.r.squared - summary(m1)$adj.r.squared
+}
+```
+
+Then simply pass it into the the `boot()` function followed by `boot.ci()`:
+
+```{r r-diff-ci, warning=FALSE}
+adj_r_diff <- boot(countries, adj_r2_diff, R = 1000)
+
+boot.ci(adj_r_diff)
+```
+As we can see, all the estimated confidence intervals overlap zero. Consequently, it's not really clear if adding the proportion of university educated will actually help our model!
+
+# Bootstrap assumptions
+
+While bootstrap methods generally rest on fewer assumptions compared to the parametric ones, they are no magic. Apart from the assumptions we mentioned above, all the showcased techniques also rely on the following two main assumptions:
+
+
+- **Representativity** - All bootstrap estimates strongly rely on the assumption that the available sample is representative of its population. More specifically, they assume that the distribution of the sample is the same as the distribution of the population. This makes bootstrap problematic to use on small samples, which often differ considerably from their population. Bootstrap is therefore best used for medium and large sample (as is tradition, what constitutes "medium" or "large" sample depends on the amount of error we are willing to accept in our results).
+
+- **Indepdence of observations** - You may have notice that in the examples above, we are resampling entire rows of the original dataset using simple random sampling. This approach requires us to assume that the observations in the original sample are independent, i.e. that choosing one observation doesn't change the probability of choosing another one. This assumption is similar to the assumption of independent errors discussed previously and is most often violated in cluster designs and when analyzing time series and spatial data. Not all bootstrap methods require independence of observations, but the one we have shown do.
+
+# Why not use bootstrap all the time
+
+With the relative small number of assumptions, one may ask why not use bootstrap every time instead of banking on parametric methods. The answer is that you can and sometimes you even have to (in some complicated models, there is literally no other options). However, the big show stopper are the computation requirements need to perform bootstrap. Computing confidence intervals for regression coefficient using the standard formula takes fraction of a second. Doing the same using bootstrap will take seconds, minutes or even hours depending the size of your dataset and the complexity of your model. Some people may even need to wait days for their results. In cases such as these, we are usually highly motivated to find a faster solution.
+
+Secondly, for some statistics bootstrap simply doesn't work. Trying to estimate confidence intervals for minimums, maximums or anything that has *very* skewed sampling distribution (such as [log normal](https://stats.stackexchange.com/questions/186957/is-there-a-reliable-nonparametric-confidence-interval-for-the-mean-of-a-skewed-d)) will simply fail. In these cases, another solution is needed.
+
+Still, bootstrap is a powerful technique that allows applied researchers to estimate uncertainty without drowning themselves in statistical theory or waiting for someone else to implement the right function into their favorite software. And for that, it deserves to be a part of our repertoire.
+
+# References

@@ -13,16 +13,16 @@
 
 <title>Multiple linear regression - Excercises</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -57,6 +57,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -77,6 +78,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -232,7 +236,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +246,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -287,7 +291,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -317,10 +321,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -351,7 +358,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -393,7 +400,7 @@ $(document).ready(function () {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -402,7 +409,8 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Multiple linear regression - Excercises</h1>
+<h1 class="title toc-ignore">Multiple linear regression -
+Excercises</h1>
 
 </div>
 
@@ -410,13 +418,20 @@ $(document).ready(function () {
 <pre class="r fold-show"><code>library(tidyverse)
 countries = read.csv(&quot;data/countries.csv&quot;)
 un &lt;- read.table(&quot;data/UnitedNations.txt&quot;) # you will need to download as .txt the UnitedNations data set</code></pre>
-<p>First, we will be using both the familiar ‘countries’ data set for this set of exercises (task 1), and then a new dataset, United Nations, for the rest. You will need to download this new dataset from the course webpage and make yourself familiar with it.</p>
+<p>First, we will be using both the familiar ‘countries’ data set for
+this set of exercises (task 1), and then a new dataset, United Nations,
+for the rest. You will need to download this new dataset from the course
+webpage and make yourself familiar with it.</p>
 <pre class="r fold-show"><code>browseURL(&quot;https://sociology-fa-cu.github.io/appliedregressioninr/course_data.html&quot;) 
 # browseURL function enables to quickly open webpages from your script</code></pre>
 <div id="tasks" class="section level1">
 <h1>Tasks</h1>
 <ol style="list-style-type: decimal">
-<li>Use the countries dataset. Regress per-capita GDP (must create first) on the percentage of university educated (‘uni_prc’). Then regress per-capita GDP on both percentage of university educated (‘uni_prc’) and democratic index (‘dem_index’) in a single multiple regression model. Interpret the results.</li>
+<li>Use the countries dataset. Regress per-capita GDP (must create
+first) on the percentage of university educated (‘uni_prc’). Then
+regress per-capita GDP on both percentage of university educated
+(‘uni_prc’) and democratic index (‘dem_index’) in a single multiple
+regression model. Interpret the results.</li>
 </ol>
 <pre class="r"><code># compute percapita_gdp
 countries &lt;-
@@ -433,7 +448,8 @@ summary(mod2)
 
 &quot;The difference in per-capita GDP between countries which differ by one point in their democratic index (ten point scale) AND have the same proportion of university educated is 16310 EUR on average. This is a huge difference substantially and it is also statistically significant. Notice that the coefficient for &#39;uni_prc&#39; went down dramatically to only 34543 EUR. In other words, for two countries with the same democratic index and differing by 1 percentage point in their proportion of university educated, the difference in per capita GDP only 345 EUR, a number which is likely some random noise given the broad standard errors.&quot;</code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Use the UN dataset. Regress total fertility rate (tfr) on illiteracy.</li>
+<li>Use the UN dataset. Regress total fertility rate (tfr) on
+illiteracy.</li>
 </ol>
 <pre class="r"><code>un %&gt;% glimpse() # when inspecting the dataset, you will notice there are two variables for illiteracy - one for males and one for females. Let&#39;s see what happens when we use the male illiteracy, the female illiteracy and when we use both.
 
@@ -468,13 +484,20 @@ un &lt;-
 
 mod6 &lt;- lm(tfr ~ imc + ifc, data = un)
 summary(mod6)</code></pre>
-<p>We have mostly (or even only) used two predictor terms in our examples so far to keep things simple. Try now to regress ‘infantMortality’ on ‘tfr’, ‘economicActivityFemale’, and ‘illiteracyFemale’.</p>
+<p>We have mostly (or even only) used two predictor terms in our
+examples so far to keep things simple. Try now to regress
+‘infantMortality’ on ‘tfr’, ‘economicActivityFemale’, and
+‘illiteracyFemale’.</p>
 <ol start="3" style="list-style-type: decimal">
-<li>Before we start modeling, plot the dependent variable using geom_density.</li>
+<li>Before we start modeling, plot the dependent variable using
+geom_density.</li>
 </ol>
 <pre class="r"><code>ggplot(aes(x=infantMortality), data=un) + geom_density() # it is skewed, but we will proceed with the variable as is, without transformation. However, it is especially important to check assumptuions when this kind of distribution happens for the dependent variable. (We wil cover testing for assumptions later in the course.)</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Now, plot the bivariate relationship between each predictor variable and the dependent variable, i.e. three plots in total. Use combination of geom_point and geom_smooth with the defualt method, i.e. loess curve.</li>
+<li>Now, plot the bivariate relationship between each predictor variable
+and the dependent variable, i.e. three plots in total. Use combination
+of geom_point and geom_smooth with the defualt method, i.e. loess
+curve.</li>
 </ol>
 <pre class="r"><code>ggplot(aes(y=infantMortality, x = tfr), data=un) + geom_point() + geom_smooth()
 # no surprise here, higher fertility associated with higher infant mortality (both typical of less developed countries). However, notice the spread seems to get bigger for higher values of total fertility rate. This could indicate issues to be covered later in the course.  
@@ -488,7 +511,9 @@ ggplot(aes(y=infantMortality, x = economicActivityFemale), data=un) + geom_point
 ggplot(aes(y=infantMortality, x = illiteracyFemale), data=un) + geom_point() + geom_smooth(method = &quot;lm&quot;)
 # this is a fairly good looking linear association</code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>Run the model. Regress ‘infantMortality’ on ‘tfr’, ‘economicActivityFemale’, and ‘illiteracyFemale’. Only use the main effects. Interpret the model.</li>
+<li>Run the model. Regress ‘infantMortality’ on ‘tfr’,
+‘economicActivityFemale’, and ‘illiteracyFemale’. Only use the main
+effects. Interpret the model.</li>
 </ol>
 <pre class="r"><code>fit1 &lt;- lm(infantMortality ~ tfr + economicActivityFemale + illiteracyFemale, data = un)
 summary(fit1)
@@ -505,7 +530,12 @@ summary(fit1)
 
 # In addition, we have not checked the assumption of normality (we will learn how to do it later in the course). So we have no guarantee that the linear fit is the best model specification. </code></pre>
 <ol start="6" style="list-style-type: decimal">
-<li>There is of course some uncertainty in our estimates. Find 90%, 95% and 99% confidence intervals of the three betas. Use the function confint for that and use help to learn about the function parameter you need to change to change the confidence interval from the 95% default. Before you do that, say which one set of them will be the narrowest and why.</li>
+<li>There is of course some uncertainty in our estimates. Find 90%, 95%
+and 99% confidence intervals of the three betas. Use the function
+confint for that and use help to learn about the function parameter you
+need to change to change the confidence interval from the 95% default.
+Before you do that, say which one set of them will be the narrowest and
+why.</li>
 </ol>
 <pre class="r"><code># 95
 confint(fit1)
@@ -516,7 +546,10 @@ confint(fit1, level = 0.9) # the narrowest intervals are these because they prov
 # 99
 confint(fit1, level = 0.99)</code></pre>
 <ol start="7" style="list-style-type: decimal">
-<li>We now want to compare the coefficients to each other to compare the relative size of independent contributions of each of our predictors to the explanatory power of our model. Use standardized betas to do that.</li>
+<li>We now want to compare the coefficients to each other to compare the
+relative size of independent contributions of each of our predictors to
+the explanatory power of our model. Use standardized betas to do
+that.</li>
 </ol>
 <pre class="r"><code>fit2 &lt;- lm(scale(infantMortality) ~ scale(tfr) + scale(economicActivityFemale) + scale(illiteracyFemale), 
            data = un)

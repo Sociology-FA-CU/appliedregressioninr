@@ -13,16 +13,16 @@
 
 <title>Interactions - Excercises</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -57,6 +57,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -77,6 +78,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -232,7 +236,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -242,7 +246,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -287,7 +291,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -317,10 +321,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -351,7 +358,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -393,7 +400,7 @@ $(document).ready(function () {
 <div id="header">
 
 <div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
 <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
 <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
 <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
@@ -409,14 +416,27 @@ $(document).ready(function () {
 
 <pre class="r fold-show"><code>library(tidyverse)
 un = read.table(&quot;data/UnitedNations.txt&quot;)</code></pre>
-<p>This time, we will be using the ‘un’ data set which can be downloaded from the data section as ‘UnitedNations.txt’. Note it is a ‘.txt’ file, use ‘read.table’ function to read it into R. For variables description, run the following browseURL - it will open the documentation in your browser.</p>
+<p>This time, we will be using the ‘un’ data set which can be downloaded
+from the data section as ‘UnitedNations.txt’. Note it is a ‘.txt’ file,
+use ‘read.table’ function to read it into R. For variables description,
+run the following browseURL - it will open the documentation in your
+browser.</p>
 <pre class="r fold-show"><code>browseURL(&quot;https://socialsciences.mcmaster.ca/jfox/Books/Applied-Regression-3E/datasets/UnitedNations.pdf&quot;)</code></pre>
 <div id="tasks" class="section level1">
 <h1>Tasks</h1>
 <ol style="list-style-type: decimal">
-<li>Copy-paste the simulation we did in class (or use your class script). Change parameters to some more plausible values (even if not realistic). For example the intercept for women stays 8000, the one for men is 12000. Beta for years of education for women stays 1000, the one for men is only 500. Sigma for women is newly 2000, the one for men is 2200. Or make up your own values.</li>
+<li>Copy-paste the simulation we did in class (or use your class
+script). Change parameters to some more plausible values (even if not
+realistic). For example the intercept for women stays 8000, the one for
+men is 12000. Beta for years of education for women stays 1000, the one
+for men is only 500. Sigma for women is newly 2000, the one for men is
+2200. Or make up your own values.</li>
 </ol>
-<p>Run the same model as in the class (predict income with gender and years of education using also the interaction between the two) on raw predictors and centered predictors. Interpret both models and explain how the parameters hard-coded in the simulation are “hidden” in the regression coefficients</p>
+<p>Run the same model as in the class (predict income with gender and
+years of education using also the interaction between the two) on raw
+predictors and centered predictors. Interpret both models and explain
+how the parameters hard-coded in the simulation are “hidden” in the
+regression coefficients</p>
 <pre class="r"><code># START SIMULATION
 # gender
 gender &lt;- c(rep(&quot;woman&quot;, 1000), rep(&quot;man&quot;, 1000))
@@ -485,7 +505,9 @@ summary(fit2)
 # years of education. As a bonus, the interaction effect does not change: it is still the extimate of the 
 # difference in slopes between men and women. </code></pre>
 <ol start="2" style="list-style-type: decimal">
-<li>Use the countries data set, predict human development index hdi with life_exp a uni_prc, also try interaction between the two and compare the two predictors with each other.</li>
+<li>Use the countries data set, predict human development index hdi with
+life_exp a uni_prc, also try interaction between the two and compare the
+two predictors with each other.</li>
 </ol>
 <pre class="r"><code>fit3 &lt;- lm(hdi ~ life_exp + uni_prc, data = countries)
 summary (fit3) 

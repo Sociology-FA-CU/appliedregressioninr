@@ -13,16 +13,16 @@
 
 <title>Přesnost předvoleních průzkům v USA</title>
 
-<script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 <link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
 <link href="site_libs/_Fira Sans-0.4.0/font.css" rel="stylesheet" />
 <link href="site_libs/_Fira Code-0.4.0/font.css" rel="stylesheet" />
-<script src="site_libs/bs3compat-0.3.0/transition.js"></script>
-<script src="site_libs/bs3compat-0.3.0/tabs.js"></script>
-<script src="site_libs/bs3compat-0.3.0/bs3compat.js"></script>
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -56,6 +56,7 @@ if (window.hljs) {
 
 
 
+
 <style type = "text/css">
 .main-container {
   max-width: 940px;
@@ -76,6 +77,9 @@ button.code-folding-btn:focus {
 }
 summary {
   display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
 }
 pre code {
   padding: 0;
@@ -228,7 +232,7 @@ $(document).ready(function () {
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -238,7 +242,7 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Lecture Notes
      
     <span class="caret"></span>
@@ -283,7 +287,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Slides
      
     <span class="caret"></span>
@@ -313,10 +317,13 @@ $(document).ready(function () {
     <li>
       <a href="07_slides_nonlinearity.html">Linearity</a>
     </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Exercise
      
     <span class="caret"></span>
@@ -347,7 +354,7 @@ $(document).ready(function () {
   </ul>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Materials
      
     <span class="caret"></span>
@@ -397,51 +404,108 @@ $(document).ready(function () {
 
 <div id="úvod" class="section level1">
 <h1>Úvod</h1>
-<p>V rámci našeho dobrovolného úkolu se podíváme na téma, které se pravidelně stává populární každých pár let: přesnost předvolebních průzkumů. Konkrétně budeme pracovat s daty poskytnutými organizací <a href="https://fivethirtyeight.com/">FiveThirtyEight</a>. FiveThirtyEight je americkou organizací zabývající se datovou žurnalistikou, a to zejména tématy politiky a sportu. Spravuje také jeden z nejpopulárnějších agregátorů průzkumů veřejného mínění s politickou tématikou.</p>
-<p>My budeme pracovat s daty o jednotlivých předvolebních průzkumech v USA za posledních zhruba 20 let.</p>
+<p>V rámci našeho dobrovolného úkolu se podíváme na téma, které se
+pravidelně stává populární každých pár let: přesnost předvolebních
+průzkumů. Konkrétně budeme pracovat s daty poskytnutými organizací <a
+href="https://fivethirtyeight.com/">FiveThirtyEight</a>. FiveThirtyEight
+je americkou organizací zabývající se datovou žurnalistikou, a to
+zejména tématy politiky a sportu. Spravuje také jeden z
+nejpopulárnějších agregátorů průzkumů veřejného mínění s politickou
+tématikou.</p>
+<p>My budeme pracovat s daty o jednotlivých předvolebních průzkumech v
+USA za posledních zhruba 20 let.</p>
 </div>
 <div id="zadání" class="section level1">
 <h1>Zadání</h1>
 <p>V rámci domácího úkolů se pokuste zodpovědět následující otázku:</p>
-<p><em>Liší se přesnost předvolebních průzkumů (proměnná <strong>error</strong>) v závislosti na metodologii sběru dat (<strong>methodology</strong>)?</em></p>
+<p><em>Liší se přesnost předvolebních průzkumů (proměnná
+<strong>error</strong>) v závislosti na metodologii sběru dat
+(<strong>methodology</strong>)?</em></p>
 <p>Data k analýze si stáhněte pomocí následujícího kódu:</p>
 <pre class="r"><code>polls =  read.csv(&quot;https://raw.githubusercontent.com/fivethirtyeight/data/master/pollster-ratings/raw-polls.csv&quot;)
 polls =  subset(polls, methodology ==  c(&quot;IVR&quot;, &quot;Live Phone&quot;, &quot;Online&quot;))</code></pre>
-<p>(Z dat si také pro zjednodušení vyfiltrujeme pouze určité kategorie methodology. Za malé bezvýznamné plus se můžete podívat na celková data a zamyslet se nad tím, proč jsem vybral jen tyhle tři.)</p>
-<p>Popis dat najdete v tabulce zde: <a href="https://github.com/fivethirtyeight/data/tree/master/pollster-ratings">https://github.com/fivethirtyeight/data/tree/master/pollster-ratings</a></p>
-<p>Pro inspiraci a pro kontext si můžete přečíst následující článek: <a href="https://fivethirtyeight.com/features/the-death-of-polling-is-greatly-exaggerated/">The Death Of Polling Is Greatly Exaggerated</a>.</p>
+<p>(Z dat si také pro zjednodušení vyfiltrujeme pouze určité kategorie
+methodology. Za malé bezvýznamné plus se můžete podívat na celková data
+a zamyslet se nad tím, proč jsem vybral jen tyhle tři.)</p>
+<p>Popis dat najdete v tabulce zde: <a
+href="https://github.com/fivethirtyeight/data/tree/master/pollster-ratings">https://github.com/fivethirtyeight/data/tree/master/pollster-ratings</a></p>
+<p>Pro inspiraci a pro kontext si můžete přečíst následující článek: <a
+href="https://fivethirtyeight.com/features/the-death-of-polling-is-greatly-exaggerated/">The
+Death Of Polling Is Greatly Exaggerated</a>.</p>
 </div>
 <div id="co-by-měla-vaše-práce-obsahovat" class="section level1">
 <h1>Co by měla vaše práce obsahovat</h1>
-<div id="diskuze-o-výběru-relevantních-proměnných" class="section level2">
+<div id="diskuze-o-výběru-relevantních-proměnných"
+class="section level2">
 <h2>Diskuze o výběru relevantních proměnných</h2>
-<p>Předtím, než se pustíte do modelování, zamyslete se nad tím, jestli by náš model měl obsahovat ještě nějaké další proměnné. Jsou nějaké jiné proměnné, pro které bychom měli kontrolovat, abychom získali lepší/přesnější odpověď na naši otázku? Jsou nějaké proměnné, kterým bychom se naopak měli vyhnout? A může se se vztah mezi závislou a nezávislou proměnnou lišit v závislosti na třetí proměnné (tj. vyplatí se přidat do našeho modelu nějakou interakci)?</p>
+<p>Předtím, než se pustíte do modelování, zamyslete se nad tím, jestli
+by náš model měl obsahovat ještě nějaké další proměnné. Jsou nějaké jiné
+proměnné, pro které bychom měli kontrolovat, abychom získali
+lepší/přesnější odpověď na naši otázku? Jsou nějaké proměnné, kterým
+bychom se naopak měli vyhnout? A může se se vztah mezi závislou a
+nezávislou proměnnou lišit v závislosti na třetí proměnné (tj. vyplatí
+se přidat do našeho modelu nějakou interakci)?</p>
 <p>Věnujte výběru proměnných jeden až dva odstavce.</p>
 </div>
-<div id="základní-popis-proměnných-se-kterými-pracujeme" class="section level2">
+<div id="základní-popis-proměnných-se-kterými-pracujeme"
+class="section level2">
 <h2>Základní popis proměnných, se kterými pracujeme</h2>
-<p>Až si vyberete své proměnné, krátce si je prohlédněte, abyste získali představu o datech, se kterými pracujete. Podívejte se na jejich rozdělení a popisné statistiky, a poznamenejte si vše, co vám přijde zajímavé nebo potenciálně důležité. Např. jaká je průměrná chyba předvolebních průzkumů a jak vypadá jejich rozdělení? Kolik průzkumů využívá každou z metod sběru dat? Podívejte se i na další relevantní proměnné, které jste vybrali v předchozím kroku.</p>
-<p>Věnujte téhle části znovu jeden až dva odstavce. Nebojte se připojit graf, pokud vám přijde relevantní</p>
+<p>Až si vyberete své proměnné, krátce si je prohlédněte, abyste získali
+představu o datech, se kterými pracujete. Podívejte se na jejich
+rozdělení a popisné statistiky, a poznamenejte si vše, co vám přijde
+zajímavé nebo potenciálně důležité. Např. jaká je průměrná chyba
+předvolebních průzkumů a jak vypadá jejich rozdělení? Kolik průzkumů
+využívá každou z metod sběru dat? Podívejte se i na další relevantní
+proměnné, které jste vybrali v předchozím kroku.</p>
+<p>Věnujte téhle části znovu jeden až dva odstavce. Nebojte se připojit
+graf, pokud vám přijde relevantní</p>
 </div>
 <div id="vytvoření-a-interpretace-modelu" class="section level2">
 <h2>Vytvoření a interpretace modelu</h2>
-<p>Na základě předchozích kroků vytvořte model, pomocí kterého budeme moct zodpovědět naši výzkumnou otázku.</p>
-<p>Zkuste model interpretovat pomocí tabulky regresních koeficientů, i pomocí grafů marginálních efektů (balíček ggeffects, který jste si ukazovali s Járou). Nezapomeňte, že vizuální interpretace je často jednoduší! Interpretujte jak bodové odhady (regresní koeficienty nebo predikované hodnoty), tak i míru nejistoty s nimi spojenou (standardní chyba nebo intervaly spolehlivosti).</p>
-<p>Nebojte se v této části více rozepsat a napsat vše, co vás k interpretaci napadne. Přidejte grafy marginálních efektů, pokud vám přijdou relevantní.</p>
+<p>Na základě předchozích kroků vytvořte model, pomocí kterého budeme
+moct zodpovědět naši výzkumnou otázku.</p>
+<p>Zkuste model interpretovat pomocí tabulky regresních koeficientů, i
+pomocí grafů marginálních efektů (balíček ggeffects, který jste si
+ukazovali s Járou). Nezapomeňte, že vizuální interpretace je často
+jednoduší! Interpretujte jak bodové odhady (regresní koeficienty nebo
+predikované hodnoty), tak i míru nejistoty s nimi spojenou (standardní
+chyba nebo intervaly spolehlivosti).</p>
+<p>Nebojte se v této části více rozepsat a napsat vše, co vás k
+interpretaci napadne. Přidejte grafy marginálních efektů, pokud vám
+přijdou relevantní.</p>
 </div>
 <div id="hodnocení-modelu-a-diagnostika" class="section level2">
 <h2>Hodnocení modelu a diagnostika</h2>
-<p>Zhodnoťte model jako celek. Začněte tím, jak moc náš model sedí na data. V jakém ohledu je tato informace relevantní vzhledem k naší výzkumné otázce? Dále se podívejte na předpoklady modelu.</p>
-<p>Zamyslete se nad všemi předpoklady, které s vaším modelem souvisí. Tam, kde to bude možné, je zkontrolujte pomocí diagnostických grafů. Klidně si s daty pohrajte (např. pokud vám bude připadat, že nějaké pozorování je přehnaně vlivné, zkuste model spočítat bez něj). Nestresujte se ovšem, pokud váš model nebude vypadat učebnicově a splňovat předpoklady do puntíku. Zaměřte se se spíše na jejich zhodnocení a kriticky se zamyslete, k čemu může vést jejich porušení.</p>
+<p>Zhodnoťte model jako celek. Začněte tím, jak moc náš model sedí na
+data. V jakém ohledu je tato informace relevantní vzhledem k naší
+výzkumné otázce? Dále se podívejte na předpoklady modelu.</p>
+<p>Zamyslete se nad všemi předpoklady, které s vaším modelem souvisí.
+Tam, kde to bude možné, je zkontrolujte pomocí diagnostických grafů.
+Klidně si s daty pohrajte (např. pokud vám bude připadat, že nějaké
+pozorování je přehnaně vlivné, zkuste model spočítat bez něj).
+Nestresujte se ovšem, pokud váš model nebude vypadat učebnicově a
+splňovat předpoklady do puntíku. Zaměřte se se spíše na jejich
+zhodnocení a kriticky se zamyslete, k čemu může vést jejich
+porušení.</p>
 </div>
 <div id="celkové-zhodnocení" class="section level2">
 <h2>Celkové zhodnocení</h2>
-<p>Na základě všeho předchozího odpovězte naši výzkumnou otázku. Zamyslete se nad tím, jak moc jste se svojí odpovědí spokojení. Získali jste jednoznačnou odpověď nebo zůstávají ještě nějaké dílčí otázky. Jak moc důvěřujete svému modelu? Napadá vás něco dalšího, čím by se dal model potencionálně vylepšit (např. nechybí nám v datech nějaká důležité proměnná? Má model nějakou slabinu, kterou byste chtěli podchytit, ale nenapadá vás jak?)?</p>
+<p>Na základě všeho předchozího odpovězte naši výzkumnou otázku.
+Zamyslete se nad tím, jak moc jste se svojí odpovědí spokojení. Získali
+jste jednoznačnou odpověď nebo zůstávají ještě nějaké dílčí otázky. Jak
+moc důvěřujete svému modelu? Napadá vás něco dalšího, čím by se dal
+model potencionálně vylepšit (např. nechybí nám v datech nějaká důležité
+proměnná? Má model nějakou slabinu, kterou byste chtěli podchytit, ale
+nenapadá vás jak?)?</p>
 </div>
 </div>
 <div id="formát-a-termín-odevzdání" class="section level1">
 <h1>Formát a termín odevzdání</h1>
-<p>Text, obsahující všechny výše zmíněné body, odevzdejte jako Word nebo PDF soubor. Přiložte i R skript, který bude obsahovat postup analýzy. Celý skript by měl být samostatně funkční, tzn. mělo by možné ho spustit celý najedou a replikovat všechny vaše výsledky. Úkoly posílejte na <a href="mailto:ales@vomacka.io" class="email">ales@vomacka.io</a>.</p>
+<p>Text, obsahující všechny výše zmíněné body, odevzdejte jako Word nebo
+PDF soubor. Přiložte i R skript, který bude obsahovat postup analýzy.
+Celý skript by měl být samostatně funkční, tzn. mělo by možné ho spustit
+celý najedou a replikovat všechny vaše výsledky. Úkoly posílejte na <a
+href="mailto:ales@vomacka.io" class="email">ales@vomacka.io</a>.</p>
 </div>
 
 <br>

@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2022-05-12" />
+
+<title>Bootstrapping for Linear Regression</title>
+
+<script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<link href="site_libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script>
+<link href="site_libs/_Fira Sans-0.4.1/font.css" rel="stylesheet" />
+<link href="site_libs/_Fira Code-0.4.1/font.css" rel="stylesheet" />
+<script src="site_libs/bs3compat-0.3.1/transition.js"></script>
+<script src="site_libs/bs3compat-0.3.1/tabs.js"></script>
+<script src="site_libs/bs3compat-0.3.1/bs3compat.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Applied Regression in R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Lecture Notes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00_quick_recap.html">0. Quick recap before you enroll</a>
+    </li>
+    <li>
+      <a href="01_goals.html">1. Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_variable_selection.html">2. Variable selection</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression.html">3. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression.html">4. Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_interactions.html">5. Interactions</a>
+    </li>
+    <li>
+      <a href="05_model_visualization.html">6. Ploting regression models</a>
+    </li>
+    <li>
+      <a href="05_model_fit.html">Model fit</a>
+    </li>
+    <li>
+      <a href="06_assumptions.html">Assumptions of linear models</a>
+    </li>
+    <li>
+      <a href="06_diagnostics.html">Regression diagnostics</a>
+    </li>
+    <li>
+      <a href="07_linearity_and_normality.html">Linearity</a>
+    </li>
+    <li>
+      <a href="08_heterscedasticity.html">Homoscedasticity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Slides
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_slides_goals.html">1. Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_slides_simple_linear_regression.html">2. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_slides_multiple_linear_regression.html">3. Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_slides_interactions.html">4. Interactions</a>
+    </li>
+    <li>
+      <a href="05_slides_model_visualization.html">5. Ploting regression models</a>
+    </li>
+    <li>
+      <a href="05_slides_model_fit.html">Model fit</a>
+    </li>
+    <li>
+      <a href="06_slides_model_assumptions.html">Assumptions of linear models and diagnostics</a>
+    </li>
+    <li>
+      <a href="07_slides_nonlinearity.html">Linearity</a>
+    </li>
+    <li>
+      <a href="08_slides_heteroscedasticity.html">Homoscedasticity</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Exercise
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_goals_excercises.html">1. Goals of regression analysis</a>
+    </li>
+    <li>
+      <a href="02_simple_linear_regression_excercises.html">2. Simple linear regression</a>
+    </li>
+    <li>
+      <a href="03_multiple_linear_regression_excercises.html">3. Multiple linear regression</a>
+    </li>
+    <li>
+      <a href="04_interactions_excercises.html">4. Interactions</a>
+    </li>
+    <li>
+      <a href="04_model_visualization_exercises.html">Ploting regression models, marginal effects</a>
+    </li>
+    <li>
+      <a href="05_model_fit_exercises.html">Model fit</a>
+    </li>
+    <li class="dropdown-header">Assumptions of linear models</li>
+    <li class="dropdown-header">Regression diagnostics</li>
+    <li class="dropdown-header">Linearity</li>
+    <li class="dropdown-header">Homoscedasticity</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Materials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="homework_midterm_eng.html">Final homework</a>
+    </li>
+    <li>
+      <a href="course_data.html">Datasets</a>
+    </li>
+    <li>
+      <a href="literature.html">Literature</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="syllabus.html">Completion requirements</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://ksoc.ff.cuni.cz/">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/Sociology-FA-CU/appliedregressioninr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Bootstrapping for Linear Regression</h1>
+<h4 class="date">2022-05-12</h4>
+
+</div>
+
+
+<p>By now, it should be clear that point estimates are often of a
+limited usefulness in real world. Whether we are doing inference or
+predictions, we are not just interested in what is our modeling telling
+to us. We also need to know how much we can trust the results. One of
+the ways we can look int the “trustworthiness” of our model is to look
+at the standard errors of our estimates, that is, how much we would
+expect the results to vary across multiple samples.</p>
+<p>When figuring out the (un)certainty of our estimates, we most often
+rely on analytical solutions. That is, we accept some parametric
+assumptions about the population we are trying to analyze and then you a
+formula to get the result. One of the most common application is
+estimating the standard error of the mean using the <span
+class="math inline">\(\sqrt{\frac{VAR_X}{n}}\)</span> formula or
+estimating the standard error of regression coefficients using the <span
+class="math inline">\(\sqrt{\frac{1}{n -2}* \frac{\sum{(y_i -
+\bar{y})^2}}{\sum{(x_i - \bar{x})^2}}}\)</span> formula. However, these
+formulas rely on a set of assumptions that may be far away from reality.
+In the previous lectures, we have seen how these assumptions can be
+circumcised using other formulas (for example, when using robust
+standard errors). However, these solutions may not always be available.
+In fact, for some statistics, there is no formula to compute standard
+errors at all! And even if there is , it may be hard to find or may not
+be implemented in the software we are using. Can we estimate the
+(un)certainty of our estimates in cases such as these?</p>
+<p>Fortunately, with the technological development that has happened in
+the past few decades, we have seen raise of a particular technique that
+allows us to estimate standard errors and confidence intervals for
+virtually any statistic, with just a few mild assumptions. This
+simulation based technique is called bootstrapping.</p>
+<div id="bootstraping" class="section level1">
+<h1>Bootstraping</h1>
+<p>The idea behind bootstrapping is fairly straightforward. To get an
+idea how much variation can we expect to see from sample to sample, we
+can resample the data at hand multiple (in fact, many many) times. As it
+turns out, this can give us a very good idea how would much variations
+in estimates we can expect. Schematically, the most basic bootstrap can
+be done as follows:</p>
+<ol style="list-style-type: decimal">
+<li>Pick a statistic you want to construct confidence intervals for
+(e.g. adjusted R squared).</li>
+<li>Take the data you have available and repeatedly draw new samples
+from them, <strong>with replacement</strong> (if we would have drawn
+without replacement, we would end up with the same data as is the
+original sample).</li>
+<li>Compute the statistic of your choosing from the new “virtual” data.
+Save the result somewhere safe.</li>
+<li>Repeat steps 2 and 3 large amount of times, say ten thousands or
+more. You will end up with many estimates of your statistic, each
+computed on a virtual data set created from your original sample.</li>
+<li>Compute quantiles of the distribution of your estimates related to
+the desired confidence interval. For example, for a 95% confidence
+interval, we would compute the 0.025 and 0.975 quantiles.</li>
+<li>That’s it! The quantiles you have computed are the bounds of your
+confidence interval. No formulas needed.</li>
+</ol>
+</div>
+<div id="bootstrapping-in-r-difference-in-medians"
+class="section level1">
+<h1>Bootstrapping in R: Difference in medians</h1>
+<p>As practical example, let’s start with something simple: computing
+confidence intervals for adjusted coefficient of determination. Getting
+a point estimate is pretty easy:</p>
+<pre class="r"><code>m1 &lt;- lm(life_exp ~ postsoviet, data = countries)
+
+summary(m1)$adj.r.squared</code></pre>
+<pre><code>## [1] 0.5699424</code></pre>
+<p>However, we know that due to the sampling error, we cannot take this
+simple result for granted. The estimate of 0.57 % may be true in our
+sample, but is not necessarily the true population value (since we are
+working with country level data, it may be a bit weird to be talking
+about samples and populations, but hopefully you get the idea). In other
+world, we need to check how much variations we would expect across
+multiple samples.</p>
+<p>Since there is no formula for getting a confidence interval of
+adjusted <span class="math inline">\(R^2\)</span> (at least not without
+rather strong assumptions), we will opt for bootstrapping. We will draw
+a one thousand samples from our original dataset, compute the linear
+model and the corresponding adjusted <span
+class="math inline">\(R^2\)</span> for each of them, and then compute
+the 95% confidence interval. As we will will see, the operation is quite
+straightforward, complicated only by the fact that there are actually
+multiple ways to do it in R.</p>
+<div id="bootstrap-using-for-loops" class="section level2">
+<h2>Bootstrap using for loops</h2>
+<p>The first option is to use a so-called <em>for loop</em>. For loop is
+general programming operation, using which we can tell the computer to
+repeat some action across multiple objects or just a specified number of
+times. A for loop for our specific purpose would look like this:</p>
+<pre class="r"><code>adj_r_squares &lt;- numeric(length = 1000)
+
+set.seed(123)
+
+for (i in 1:1000) {
+  
+  boot_countries &lt;- slice_sample(countries, n = 38, replace = TRUE)
+  
+  m1 &lt;- lm(life_exp ~ postsoviet, data = boot_countries)
+  
+  adj_r_squares[i] &lt;- summary(m1)$adj.r.squared
+}</code></pre>
+<p>Let’s look at the code line by line. The first line,
+<code>adj_r_squares &lt;- numeric(length = 1000)</code>, is not strictly
+necessary, but it reflects a good practice. We are creating a new
+numeric vector with a thousand elements, in which we will eventually
+store our bootstrapped estimates. This tell R to prepare some of the
+computer’s memory for the task, which will in turn makes the loop go
+faster.</p>
+<p>The second line is where the for loop itself starts. By using
+<code>for (i in 1:1000)</code>, we are telling R that for each iteration
+<code>i</code>, from the first one to the thousandth one (that’s what
+the <code>1:1000</code> is for), it should repeat the operation in the
+<code>{}</code> brackets.</p>
+<p>On the third line, we create a new “virtual” sample by resampling the
+original data. There are many ways this step can be done but for
+tidyverse user, the <code>slice_sample</code> function will probably
+feel the most natural. We specify that the new sample should have the
+same amount of rows as the original one (38) and that the sampling
+should be done with replacement. The result is stored in a new dataframe
+called <code>boot_countries</code>.</p>
+<p>The fourth line is almost identical to the code we used to compute
+the simple point estimate, except we are using the new
+<code>boot_countries</code> dataframe.</p>
+<p>The last line with code is used to compute the adjusted <span
+class="math inline">\(R^2\)</span> and is almost identical to the simple
+difference example. The only difference is that the result is stored in
+the vector <code>adj_r_squares</code>, created in the beginning. Notice
+the <code>[i]</code>. This is the same <code>i</code> in as in
+<code>for (i in 1:1000)</code> and tells R it should store the result of
+the first iteration in the first element of the
+<code>adj_r_squares</code> vector, the result of the second iteration in
+the second place, and so on.</p>
+<p>Now that we have our one thousand estimates we can quite simply
+compute the 95% confidence interval we are looking for:</p>
+<pre class="r"><code>quantile(adj_r_squares, probs = c(0.025, 0.975))</code></pre>
+<pre><code>##      2.5%     97.5% 
+## 0.3049819 0.8298733</code></pre>
+<p>As we can see, the bootstrapped 95% confidence interval ranges from
+0.3 to 0.83. This gives us an idea of how large differences we would see
+across samples. And as we can see, the differences would be quite large!
+And not unexpectedly, given our small sample size.</p>
+</div>
+<div id="bootstrap-using-the-boot-package" class="section level2">
+<h2>Bootstrap using the boot package</h2>
+<p>Another option for obtaining a bootstrapped interval estimates is to
+use the the boot package. This package is installed with the base
+version of R, but isn’t loaded by default. To use it, we therefore need
+to call it deliberately:</p>
+<pre class="r"><code>library(boot)</code></pre>
+<p>The boot package also uses loops internally, but the workflow is a
+bit different. Instead of writing down the for loop by ourselves, we
+create a custom function, which gives us the statistics of interest, and
+then pass it into the <code>boot()</code> function. The main advantage
+of this approach is that it will allows us to estimate more advanced
+(and often more accurate) types of bootstrap intervals.</p>
+<p>The first step is to create a new function, which will calculate the
+difference in medians between the postsoviet and the western
+countries:</p>
+<pre class="r"><code>adj_r_squared &lt;- function(data, i) {
+  boot_countries &lt;- data[i, ]
+  
+  m1 &lt;- lm(life_exp ~ postsoviet, data = boot_countries)
+  
+  summary(m1)$adj.r.squared
+}</code></pre>
+<p>A new function can be created by using the <code>function()</code>
+function, followed by <code>{}</code> parentheses. Functions in R behave
+like any other object and you can store them by assigning them a name
+using the <code>&lt;-</code> operator. In this case, our new function
+will be called <em>adj_r_squared</em>. Note, that our new function has
+two arguments, <code>data</code> and <code>i</code>, which are mandatory
+if we are planning to use the function for bootstrapping (though you can
+choose different names for them, if you want). The <code>data</code>
+argument will simply refer to the dataset we will be bootstrapping,
+while the <code>i</code> referes to the iteration number, just as we saw
+in the for loop approach.</p>
+<p>Inside the function itself, note the first line,
+<code>boot_countries &lt;- data[i, ]</code>. This line is what’s telling
+R which part of the our data we want to resample from. The
+<code>data[i, ]</code> means we will be resampling rows (as denoted by
+<code>[i, ]</code>) from the dataframe <code>data</code>. The resampled
+data will be stored inside an object called <code>boot_countries</code>.
+If you are planning to use the <em>boot</em> package, you custom
+function should always start like this.</p>
+<p>The rest of the function is the same as we have already seen. The
+only thing to note is that the output of the last line, i.e. the
+extraction of the adjusted <span class="math inline">\(R^2\)</span>, is
+not stored in any object. Instead, it’s just returned as is.</p>
+<p>After we have created our custom function, we can finally start with
+bootstrapping itself. This can be done using the <code>boot()</code>
+function from the <em>boot</em> package:</p>
+<pre class="r"><code>set.seed(1234)
+
+adj_r_squared_bootstraps &lt;- boot(data = countries, statistic = adj_r_squared, R = 1000)</code></pre>
+<p>The <code>boot()</code> function has three mandatory arguments. The
+first is <code>data</code>, which is the data we will be bootstrapping
+from. In our case, the dataset is called <code>countries</code>. The
+second is the statistic we want to bootstrap, which for us is
+<code>adj_r_squared</code> (This is the custom function we made!).
+Lastly, the <code>R</code> argument sets the number of bootstrap samples
+we want to create. Just as in the for loop section, we 1000 new samples.
+The results are stored in an object called
+<code>adj_r_squared_bootstraps</code>.</p>
+<p>The <code>adj_r_squared_bootstraps</code> object is not a single
+vector. Instead, it’s a list including the original data, the resampled
+statistic, information about weights used (if any) and more. As we can
+already see, the <code>boot()</code> function gives us much more options
+than the simple for loop from earlier.</p>
+<p>However, we still haven’t computed the confidence intervals we are
+looking for. To do this, we will call the <code>boot.ci()</code>
+function, which unsurprisingly stands for “bootstrapped confidence
+intervals”:</p>
+<pre class="r"><code>boot.ci(adj_r_squared_bootstraps, conf = 0.95)</code></pre>
+<pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+## Based on 1000 bootstrap replicates
+## 
+## CALL : 
+## boot.ci(boot.out = adj_r_squared_bootstraps, conf = 0.95)
+## 
+## Intervals : 
+## Level      Normal              Basic         
+## 95%   ( 0.3044,  0.8188 )   ( 0.3297,  0.8248 )  
+## 
+## Level     Percentile            BCa          
+## 95%   ( 0.3150,  0.8102 )   ( 0.2444,  0.7782 )  
+## Calculations and Intervals on Original Scale
+## Some BCa intervals may be unstable</code></pre>
+<p>As we can see, the <code>boot.ci()</code> function be default
+computes four different types of interval estimates (technical details
+can be found in chapter 5 of <span class="citation">Davison and Hinkley
+(1997)</span>):</p>
+<ul>
+<li><strong>Normal</strong> - This confidence interval is in essence
+computed very similarly to the classic parametric one, but instead of
+computing standard error by formula, it uses the variance of the
+bootstrap samples, plus a small bias correction. This assumes the
+sampling distribution of the statistic in question is normal and will
+behave especially bad if the sampling distribution is not symmetrical.
+You can reproduce these intervals by hand quite easily:</li>
+</ul>
+<pre class="r"><code># adj_r_squared_bootstraps$t is the vector of the bootstrapped samples
+# adj_r_squared_bootstraps$t0 is the point estimate from the original (real) data
+bias &lt;- mean(adj_r_squared_bootstraps$t) - adj_r_squared_bootstraps$t0 
+
+c(
+&quot;lower_bound&quot; = adj_r_squared_bootstraps$t0 - bias - 1.96*sd(adj_r_squared_bootstraps$t),
+&quot;upper_bound&quot; =adj_r_squared_bootstraps$t0 - bias + 1.96*sd(adj_r_squared_bootstraps$t)
+)</code></pre>
+<pre><code>## lower_bound upper_bound 
+##   0.3044034   0.8188394</code></pre>
+<ul>
+<li><strong>Percentile</strong> - This interval is constructed by taking
+the distribution of the bootstrap samples and computing their relevant
+quantiles. It is also the same interval we got by using the for loop
+earlier, though due how the <code>boot()</code> works, the results won’t
+match exactly even when the same seed is set just before calling both
+functions. This version of bootstrap strongly relies on the the
+distribution of the original sample being the same as the distribution
+of the population (arguably more so than the other options). You can
+replicate it by hand in the following manner (note the use of
+non-default quantile type):</li>
+</ul>
+<pre class="r"><code>quantile(adj_r_squared_bootstraps$t, probs = c(0.025, 0.975), type = 6)</code></pre>
+<pre><code>##      2.5%     97.5% 
+## 0.3150459 0.8102031</code></pre>
+<ul>
+<li><strong>Basic</strong> - In more recent literature known as
+empirical bootstrap. Similar to the percentile bootstrap, but instead of
+being based on just the bootstrapped estimates themselves, it is based
+on the differences between the original sample and the bootstrapped
+ones. This way, we can estimate the average difference between the
+population value and individual samples, which in turn makes it somewhat
+more robust and accurate to situations where the sampling distribution
+of the statistic in question is skewed, compared to the percentile
+method. See <a href="https://stats.stackexchange.com/a/357498">this high
+quality post</a> on StackExchange for comparison between basic and
+percentile confidence intervals. Without going into technical details,
+it can be reproduced like this:</li>
+</ul>
+<pre><code>##      2.5%     97.5% 
+## 0.8248389 0.3296817</code></pre>
+<ul>
+<li><strong>Bias Corrected Accelerated (BCa)</strong> - Sometimes a
+systemic difference may appear between the expected value of the
+original sample and the bootstrapped samples (e.g. between the observed
+median difference and the average median difference of the bootstrap
+samples), essentially meaning that the entire distribution of the
+bootstrapped samples is shifted compared to the original data. This
+leads to bias in the confidence interval bounds. Fortunately, there is a
+fix for that. The bias corrected accelerated bootstrap computes the
+difference between the expected value of the original sample and the
+expected value of the bootstrapped distribution. Using this, we can
+shift the bootstrap distribution back to where it should be. The BCa
+also account for the fact that sampling distribution could be skewed (by
+going through the effort of computing skewness of the bootstrapped
+samples), which would present problem for the normal bootstrap.
+Therefore, for large samples, the BCa confidence intervals are generally
+the best option of the four presented by the <code>boot.ci()</code>,
+though it also takes the longest to compute. However, in very small
+samples, the BCa intervals will have trouble estimating the skewness of
+bootstrap samples and the results may not therefore be reliable. R will
+warn you about this by printing a somewhat arcane warning
+<code>Some BCa intervals may be unstable</code>. In such cases, you
+either need to pick a narrow confidence interval (e.g. 90%) or rely on
+another estimation method. The reproduction of this bootstrap apprach is
+unfortunately beyond scope of this course.</li>
+</ul>
+</div>
+</div>
+<div id="more-involved-example-difference-between-two-models"
+class="section level1">
+<h1>More involved example: difference between two models</h1>
+<p>The example above gave a simple example of how can bootstrap be used
+to estimate uncertainty of our estimates. For motivation, we can also
+give a slightly more complicated example, comparing adjusted <span
+class="math inline">\(R^2\)</span> of two nested models. What if we
+tried adding the proportion of university educated citizens to our first
+model? Would it improved its predictive power? The point estimate
+suggests so:</p>
+<pre class="r"><code>m1 &lt;- lm(life_exp ~ postsoviet, data = countries)
+m2 &lt;- lm(life_exp ~ postsoviet + uni_prc, data = countries)
+
+summary(m2)$adj.r.squared - summary(m1)$adj.r.squared</code></pre>
+<pre><code>## [1] 0.01640507</code></pre>
+<p>However, this is merely a sample estimate, so we need to take into
+account uncertainty due to sampling error. To do this using the
+<code>boot()</code> approach, we first define a custom function:</p>
+<pre class="r"><code>adj_r2_diff &lt;- function(data, i){
+  countries_boot &lt;- data[i,]
+  
+  m1 &lt;- lm(life_exp ~ postsoviet, data = countries_boot)
+  m2 &lt;- lm(life_exp ~ postsoviet + uni_prc, data = countries_boot)
+  
+  summary(m2)$adj.r.squared - summary(m1)$adj.r.squared
+}</code></pre>
+<p>Then simply pass it into the the <code>boot()</code> function
+followed by <code>boot.ci()</code>:</p>
+<pre><code>## BOOTSTRAP CONFIDENCE INTERVAL CALCULATIONS
+## Based on 1000 bootstrap replicates
+## 
+## CALL : 
+## boot.ci(boot.out = adj_r_diff)
+## 
+## Intervals : 
+## Level      Normal              Basic         
+## 95%   (-0.1587,  0.1375 )   (-0.2110,  0.0863 )  
+## 
+## Level     Percentile            BCa          
+## 95%   (-0.0535,  0.2438 )   (-0.0537,  0.2433 )  
+## Calculations and Intervals on Original Scale</code></pre>
+<p>As we can see, all the estimated confidence intervals overlap zero.
+Consequently, it’s not really clear if adding the proportion of
+university educated will actually help our model!</p>
+</div>
+<div id="bootstrap-assumptions" class="section level1">
+<h1>Bootstrap assumptions</h1>
+<p>While bootstrap methods generally rest on fewer assumptions compared
+to the parametric ones, they are no magic. Apart from the assumptions we
+mentioned above, all the showcased techniques also rely on the following
+two main assumptions:</p>
+<ul>
+<li><p><strong>Representativity</strong> - All bootstrap estimates
+strongly rely on the assumption that the available sample is
+representative of its population. More specifically, they assume that
+the distribution of the sample is the same as the distribution of the
+population. This makes bootstrap problematic to use on small samples,
+which often differ considerably from their population. Bootstrap is
+therefore best used for medium and large sample (as is tradition, what
+constitutes “medium” or “large” sample depends on the amount of error we
+are willing to accept in our results).</p></li>
+<li><p><strong>Indepdence of observations</strong> - You may have notice
+that in the examples above, we are resampling entire rows of the
+original dataset using simple random sampling. This approach requires us
+to assume that the observations in the original sample are independent,
+i.e. that choosing one observation doesn’t change the probability of
+choosing another one. This assumption is similar to the assumption of
+independent errors discussed previously and is most often violated in
+cluster designs and when analyzing time series and spatial data. Not all
+bootstrap methods require independence of observations, but the one we
+have shown do.</p></li>
+</ul>
+</div>
+<div id="why-not-use-bootstrap-all-the-time" class="section level1">
+<h1>Why not use bootstrap all the time</h1>
+<p>With the relative small number of assumptions, one may ask why not
+use bootstrap every time instead of banking on parametric methods. The
+answer is that you can and sometimes you even have to (in some
+complicated models, there is literally no other options). However, the
+big show stopper are the computation requirements need to perform
+bootstrap. Computing confidence intervals for regression coefficient
+using the standard formula takes fraction of a second. Doing the same
+using bootstrap will take seconds, minutes or even hours depending the
+size of your dataset and the complexity of your model. Some people may
+even need to wait days for their results. In cases such as these, we are
+usually highly motivated to find a faster solution.</p>
+<p>Secondly, for some statistics bootstrap simply doesn’t work. Trying
+to estimate confidence intervals for minimums, maximums or anything that
+has <em>very</em> skewed sampling distribution (such as <a
+href="https://stats.stackexchange.com/questions/186957/is-there-a-reliable-nonparametric-confidence-interval-for-the-mean-of-a-skewed-d">log
+normal</a>) will simply fail. In these cases, another solution is
+needed.</p>
+<p>Still, bootstrap is a powerful technique that allows applied
+researchers to estimate uncertainty without drowning themselves in
+statistical theory or waiting for someone else to implement the right
+function into their favorite software. And for that, it deserves to be a
+part of our repertoire.</p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-davison1997" class="csl-entry">
+Davison, A. C., and D. V. Hinkley. 1997. <em>Bootstrap Methods and Their
+Application</em>. Cambridge Series in Statistical and Probabilistic
+Mathematics. Cambridge: Cambridge University Press. <a
+href="https://doi.org/10.1017/CBO9780511802843">https://doi.org/10.1017/CBO9780511802843</a>.
+</div>
+</div>
+</div>
+
+<br>
+  <footer class="bg-white fixed-bottom border">
+    <!-- Copyright -->
+    <div class="text-center p-1">
+      <a class="text-dark" color="black" href="https://ksoc.ff.cuni.cz/">Department of Sociology, Faculty of Arts </br> Charles University </a>
+    </div>
+    <!-- Copyright -->
+  </footer>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
