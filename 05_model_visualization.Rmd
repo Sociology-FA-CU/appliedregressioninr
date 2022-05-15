@@ -92,7 +92,7 @@ plot_summs(m1, scale = TRUE)
 The package also makes it easy to combine multiple confidence intervals into one plot. 95% is the default, but you can add an inner interval. 
 
 ```{r echo=TRUE}
-plot_summs(m1, scale = TRUE, inner_ci_level = .8) # compate two models
+plot_summs(m1, scale = TRUE, inner_ci_level = .8)
 ```
 
 Finally, it is really easy to compare multiple models visually. Here, adding eu_membership, in itself a statistically insignificant predictor, does almost nothing to the other predictors. 
